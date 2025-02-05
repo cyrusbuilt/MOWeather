@@ -1,0 +1,79 @@
+@REQUIRE "hurl"
+@INCLUDE "DTO/ForecastDTO.hws"
+@INCLUDE "DTO/GeoDTO.hws"
+@INCLUDE "DTO/WeatherResponseDTO.hws"
+@INCLUDE "../StringLib/StringUtils.hws"
+
+Global RQWeatherClient = {
+    VERSION = "1.0.0.0",
+    _hurl = Nil,
+    _baseUrl = "",
+    _recvBuffer = Nil
+}
+
+Function RQWeatherClient._recvData(data$)
+    RQWeatherClient._recvBuffer = RQWeatherClient._recvBuffer .. data$
+EndFunction
+
+Function RQWeatherClient.SetBaseURL(url)
+    RQWeatherClient._baseUrl = url
+EndFunction
+
+Function RQWeatherClient.Init()
+    RQWeatherClient._hurl = hurl.Easy()
+    RQWeatherClient._hurl.SetOpt_HTTPHeader({"Content-Type: application/json"})
+    RQWeatherClient._hurl.SetOpt_HTTPGet(True)
+    RQWeatherClient._hurl.SetOpt_Verbose(True)
+    RQWeatherClient._hurl.SetOpt_UserAgent("MOWeather")
+EndFunction
+
+Function RQWeatherClient.Close()
+    If Not (IsNil(RQWeatherClient._hurl))
+        RQWeatherClient._hurl.Close()
+        RQWeatherClient._hurl = Nil
+        RQWeatherClient._recvBuffer = Nil
+    EndIf
+EndFunction
+
+Function RQWeatherClient.GetCurrent(lat, lon)
+    Local url = RQWeatherClient._baseUrl .. "/current?lat="
+    url = url .. ToString(lat)
+    url = url .. "&lon="
+    url = url .. ToString(lon)
+    RQWeatherClient._hurl.SetOpt_URL(url)
+    RQWeatherClient._recvBuffer = Nil
+    RQWeatherClient._hurl.Perform()
+    Return (WeatherResponseDTO.ParseFromJsonString(RQWeatherClient._recvBuffer))
+EndFunction
+
+Function RQWeatherClient.GetForecast(lat, lon)
+    Local url = RQWeatherClient._baseUrl .. "/forecast?lat="
+    url = url .. ToString(lat)
+    url = url .. "&lon="
+    url = url .. ToString(lon)
+    RQWeatherClient._hurl.SetOpt_URL(url)
+    RQWeatherClient._recvBuffer = Nil
+    RQWeatherClient._hurl.Perform()
+    Return (ForecastDTO.ParseFromJsonString(RQWeatherClient._recvBuffer))
+EndFunction
+
+Function RQWeatherClient.GetGeoData(city, stateCode = "", countryCode = "")
+    stateCode = StringUtils.StripPrettyPrintChars(stateCode)
+    countryCode = StringUtils.StripPrettyPrintChars(countryCode)
+
+    Local url = RQWeatherClient._baseUrl .. "/geo?city="
+    url = url .. city
+
+    If Not (StringUtils.IsEmpty(stateCode))
+        url = url .. stateCode
+    EndIf
+
+    If Not (StringUtils.IsEmpty(countryCode))
+        url = url .. countryCode
+    EndIf
+
+    RQWeatherClient._hurl.SetOpt_URL(url)
+    RQWeatherClient._recvBuffer = Nil
+    RQWeatherClient._hurl.Perform()
+    Return (GeoDTO.ParseFromJsonString(RQWeatherClient._recvBuffer))
+EndFunction

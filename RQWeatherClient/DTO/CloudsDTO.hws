@@ -1,0 +1,21 @@
+Const #K_ALL_KEY = "all"
+
+Global CloudsDTO = {
+    all = 0
+}
+
+Function CloudsDTO.LoadFromTable(inTable)
+    Local instance = {
+        all = 0
+    }
+
+    If (IsNil(inTable) Or IsTableEmpty(inTable))
+        Return (instance)
+    EndIf
+
+    If (HaveItem(inTable, #K_ALL_KEY))
+        instance.all = inTable.all
+    EndIf
+
+    Return (instance)
+EndFunction

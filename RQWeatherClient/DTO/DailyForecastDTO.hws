@@ -1,0 +1,100 @@
+@INCLUDE "CloudsDTO.hws"
+@INCLUDE "ForecastPrecipitation.hws"
+@INCLUDE "ForecastSysDTO.hws"
+@INCLUDE "MainDTO.hws"
+@INCLUDE "WeatherConditionDTO.hws"
+@INCLUDE "WindDTO.hws"
+
+Const #K_CLOUDS_KEY = "clouds"
+Const #K_MAIN_KEY = "main"
+Const #K_POSS_PRECIP_KEY = "possibilityOfPrecipitation"
+Const #K_RAIN_KEY = "rain"
+Const #K_SNOW_KEY = "snow"
+Const #K_SYSTEM_KEY = "system"
+Const #K_TIMESTAMP_KEY = "timestamp"
+Const #K_VISIBILITY_KEY = "visibility"
+Const #K_WEATHER_KEY = "weather"
+Const #K_WIND_KEY = "wind"
+Const #K_TIMESTAMP_TEXT_KEY = "timestampText"
+
+Global DailyForecastDTO = {
+    possibilityOfPrecipitation = 0,
+    visibility = 0
+}
+
+DailyForecastDTO.clouds = {}
+DailyForecastDTO.main = {}
+DailyForecastDTO.rain = {}
+DailyForecastDTO.snow = {}
+DailyForecastDTO.system = {}
+DailyForecastDTO.timestamp = {}
+DailyForecastDTO.weather = {}
+DailyForecastDTO.wind = {}
+
+Function DailyForecastDTO._populateWeather(inTable, instance)
+    Local result = WeatherConditionDTO.LoadFromTable(inTable)
+    InsertItem(instance.weather, result)
+EndFunction
+
+Function DailyForecastDTO.LoadFromTable(inTable)
+    Local instance = {
+        possibilityOfPrecipitation = 0,
+        visibility = 0,
+        clouds = Nil,
+        main = Nil,
+        rain = Nil,
+        snow = Nil,
+        system = Nil,
+        timestamp = Nil,
+        weather = {},
+        wind = Nil
+    }
+
+    If (IsNil(inTable) Or IsTableEmpty(inTable))
+        Return (instance)
+    EndIf
+
+    If (HaveItem(inTable, #K_CLOUDS_KEY))
+        instance.clouds = CloudsDTO.LoadFromTable(inTable.clouds)
+    EndIf
+
+    If (HaveItem(inTable, #K_MAIN_KEY))
+        instance.main = MainDTO.LoadFromTable(inTable.main)
+    EndIf
+
+    If (HaveItem(inTable, #K_POSS_PRECIP_KEY))
+        instance.possibilityOfPrecipitation = inTable.possibilityOfPrecipitation
+    EndIf
+
+    If (HaveItem(inTable, #K_RAIN_KEY))
+        instance.rain = ForecastPrecipitationDTO.LoadFromTable(inTable.rain)
+    EndIf
+
+    If (HaveItem(inTable, #K_SNOW_KEY))
+        instance.snow = ForecastPrecipitationDTO.LoadFromTable(inTable.snow)
+    EndIf
+
+    If (HaveItem(inTable, #K_SYSTEM_KEY))
+        instance.system = ForecastSysDTO.LoadFromTable(inTable.system)
+    EndIf
+
+    If (HaveItem(inTable, #K_TIMESTAMP_KEY))
+        instance.timestamp = ParseDate(inTable.timestamp)
+    EndIf
+
+    If (HaveItem(inTable, #K_WEATHER_KEY))
+        If Not IsNil(inTable.weather) And Not IsTableEmpty(inTable.weather)
+            ForEach(inTable, DailyForecastDTO._populateWeather, instance)
+        EndIf
+    EndIf
+
+    If (HaveItem(inTable, #K_WIND_KEY))
+        instance.wind = WindDTO.LoadFromTable(inTable.wind)
+    EndIf
+
+    If (HaveItem(inTable, #K_TIMESTAMP_TEXT_KEY))
+        instance.timestampText = inTable.timestampText
+    EndIf
+
+    Return (instance)
+EndFunction

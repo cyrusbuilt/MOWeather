@@ -1,0 +1,42 @@
+Const #K_DESC_KEY = "description"
+Const #K_ICON_KEY = "icon"
+Const #K_ID_KEY = "id"
+Const #K_MAIN_KEY = "main"
+
+Global WeatherConditionDTO = {
+    description = "",
+    icon = "",
+    id = -1,
+    main = ""
+}
+
+Function WeatherConditionDTO.LoadFromTable(inTable)
+    Local instance = {
+        description = "",
+        icon = "",
+        id = -1,
+        main = ""
+    }
+
+    If (IsNil(inTable) Or IsTableEmpty(inTable))
+        Return (instance)
+    EndIf
+
+    If (HaveItem(inTable, #K_DESC_KEY))
+        instance.description = inTable.description
+    EndIf
+
+    If (HaveItem(inTable, #K_ICON_KEY))
+        instance.icon = inTable.icon
+    EndIf
+
+    If (HaveItem(inTable, #K_ID_KEY))
+        instance.id = inTable.id
+    EndIf
+
+    If (HaveItem(inTable, #K_MAIN_KEY))
+        instance.main = inTable.main
+    EndIf
+
+    Return (instance)
+EndFunction

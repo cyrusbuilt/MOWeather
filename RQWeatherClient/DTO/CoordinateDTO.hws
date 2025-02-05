@@ -1,0 +1,28 @@
+Const #K_LAT_KEY = "latitude"
+Const #K_LON_KEY = "longitude"
+
+Global CoordinateDTO = {
+    latitude = 0,
+    longitude = 0
+}
+
+Function CoordinateDTO.LoadFromTable(inTable)
+    Local instance = {
+        latitude = 0,
+        longitude = 0
+    }
+
+    If (IsNil(inTable) Or IsTableEmpty(inTable))
+        Return (instance)
+    EndIf
+    
+    If (HaveItem(inTable, #K_LAT_KEY))
+        instance.latitude = inTable.latitude
+    EndIf
+    
+    If (HaveItem(inTable, #K_LON_KEY))
+        instance.longitude = inTable.longitude
+    EndIf
+
+    Return (instance)
+EndFunction

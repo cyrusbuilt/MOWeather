@@ -1,0 +1,17 @@
+@INCLUDE "../StringLib/StringUtils.hws"
+
+Global JSONLib = {
+    VERSION = "1.0.0"
+}
+
+Function JSONLib.Parse(inStr)
+    If (StringUtils.IsEmpty(inStr))
+        Return ({})
+    EndIf
+
+    Return (DeserializeTable(inStr))
+EndFunction
+
+Function JSONLib.Serialize(inObj)
+    Return (SerializeTable(inObj))
+EndFunction

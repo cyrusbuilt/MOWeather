@@ -1,0 +1,21 @@
+Const #K_THREE_HOUR_KEY = "threeHour"
+
+Global ForecastPrecipitationDTO = {
+    threeHour = 0
+}
+
+Function ForecastPrecipitationDTO.LoadFromTable(inTable)
+    Local instance = {
+        threeHour = 0
+    }
+
+    If (IsNil(inTable) Or IsTableEmpty(inTable)) {
+        Return (instance)
+    }
+
+    If (HaveItem(inTable, #K_THREE_HOUR_KEY))
+        instance.threeHour = inTable.threeHour
+    EndIf
+
+    Return (instance)
+EndFunction

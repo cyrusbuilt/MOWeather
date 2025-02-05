@@ -1,0 +1,62 @@
+@INCLUDE "../../JSONLib/JSONLib.hws"
+
+Const #K_COUNTRY_KEY = "country"
+Const #K_LAT_KEY = "latitude"
+Const #K_LON_KEY = "longitude"
+Const #K_LOCAL_NAMES_KEY = "localNames"
+Const #K_NAME_KEY = "name"
+Const #K_STATE_KEY = "state"
+
+Global GeoDTO = {
+    country = "",
+    latitude = 0,
+    localNames = {},
+    longitude = 0,
+    name = "",
+    state = ""
+}
+
+Function GeoDTO.LoadFromTable(inTable)
+    Local instance = {
+        country = "",
+        latitude = 0,
+        localNames = {},
+        longitude = 0,
+        name = "",
+        state = ""
+    }
+
+    If (IsNil(inTable) Or IsTableEmpty(inTable))
+        Return (instance)
+    EndIf
+
+    If (HaveItem(inTable, #K_COUNTRY_KEY))
+        instance.country = inTable.country
+    EndIf
+
+    If (HaveItem(inTable, #K_LAT_KEY))
+        instance.latitude = inTable.latitude
+    EndIf
+
+    If (HaveItem(inTable, #K_LOCAL_NAMES_KEY))
+        instance.localNames = inTable.localNames
+    EndIf
+
+    If (HaveItem(inTable, #K_LON_KEY))
+        instance.longitude = inTable.longitude
+    EndIf
+
+    If (HaveItem(inTable, #K_NAME_KEY))
+        instance.name = inTable.name
+    EndIf
+
+    If (HaveItem(inTable, #K_STATE_KEY))
+        instance.state = inTable.state
+    EndIf
+
+    Return (instance)
+EndFunction
+
+Function GeoDTO.ParseFromJsonString(inStr)
+    Return (GeoDTO.LoadFromTable(JSONLib.Parse(inStr)))
+EndFunction

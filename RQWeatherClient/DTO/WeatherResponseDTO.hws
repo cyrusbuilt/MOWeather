@@ -1,0 +1,142 @@
+@INCLUDE "../../JSONLib/JSONLib.hws"
+@INCLUDE "../../StringLib/StringUtils.hws"
+@INCLUDE "CloudsDTO.hws"
+@INCLUDE "CoordinateDTO.hws"
+@INCLUDE "MainDTO.hws"
+@INCLUDE "PrecipitationDTO.hws"
+@INCLUDE "SystemDTO.hws"
+@INCLUDE "WeatherConditionDTO.hws"
+@INCLUDE "WindDTO.hws"
+
+Const #K_BASE_KEY = "base"
+Const #K_CODE_KEY = "code"
+Const #K_ID_KEY = "id"
+Const #K_NAME_KEY = "name"
+Const #K_TIMEZONE_KEY = "timezone"
+Const #K_VISIBILITY_KEY = "visibility"
+Const #K_CLOUDS_KEY = "clouds"
+Const #K_COORD_KEY = "coord"
+Const #K_MAIN_KEY = "main"
+Const #K_RAIN_KEY = "rain"
+Const #K_SNOW_KEY = "snow"
+Const #K_SYSTEM_KEY = "system"
+Const #K_TIMESTAMP_KEY = "timestamp"
+Const #K_WEATHER_KEY = "weather"
+Const #K_WIND_KEY = "wind"
+
+Global WeatherResponseDTO = {
+    base = "",
+    code = -1,
+    id = -1,
+    name = "",
+    timezone = 0,
+    visibility = 0
+}
+
+WeatherResponseDTO.clouds = {}
+WeatherResponseDTO.coord = {}
+WeatherResponseDTO.main = {}
+WeatherResponseDTO.rain = {}
+WeatherResponseDTO.snow = {}
+WeatherResponseDTO.system = {}
+WeatherResponseDTO.timestamp = {}
+WeatherResponseDTO.weather = {}
+WeatherResponseDTO.wind = {}
+
+Function WeatherResponseDTO._populateWeather(inTable, instance)
+    Local result = WeatherConditionDTO.LoadFromTable(inTable)
+    InsertItem(instance.weather, result)
+EndFunction
+
+Function WeatherResponseDTO.LoadFromTable(inTable)
+    Local instance = {
+        base = "",
+        code = -1,
+        id = -1,
+        name = "",
+        timezone = 0,
+        visibility = 0
+    }
+
+    instance.clouds = Nil
+    instance.coord = Nil
+    instance.main = Nil
+    instance.rain = Nil
+    instance.snow = Nil
+    instance.system = Nil
+    instance.timestamp = Nil
+    instance.weather = {}
+    instance.wind = Nil
+
+    If (IsNil(inTable) Or IsTableEmpty(inTable))
+        Return (instance)
+    EndIf
+
+    If (HaveItem(inTable, #K_BASE_KEY))
+        instance.base = inTable.base
+    EndIf
+
+    If (HaveItem(inTable, #K_CODE_KEY))
+        instance.code = inTable.code
+    EndIf
+
+    If (HaveItem(inTable, #K_ID_KEY))
+        instance.id = inTable.id
+    EndIf
+
+    If (HaveItem(inTable, #K_NAME_KEY))
+        instance.name = inTable.name
+    EndIf
+
+    If (HaveItem(inTable, #K_TIMEZONE_KEY))
+        instance.timezone = inTable.timezone
+    EndIf
+
+    If (HaveItem(inTable, #K_VISIBILITY_KEY))
+        instance.visibility = inTable.visibility
+    EndIf
+    
+    If (HaveItem(inTable, #K_CLOUDS_KEY))
+        instance.clouds = CloudsDTO.LoadFromTable(inTable.clouds)
+    EndIf
+
+    If (HaveItem(inTable, #K_COORD_KEY))
+        instance.coord = CoordinateDTO.LoadFromTable(inTable.coord)
+    EndIf
+
+    If (HaveItem(inTable, #K_MAIN_KEY))
+        instance.main = MainDTO.LoadFromTable(inTable.main)
+    EndIf
+
+    If (HaveItem(inTable, #K_RAIN_KEY))
+        instance.rain = PrecipitationDTO.LoadFromTable(inTable.rain)
+    EndIf
+
+    If (HaveItem(inTable, #K_SNOW_KEY))
+        instance.snow = PrecipitationDTO.LoadFromTable(inTable.snow)
+    EndIf
+
+    If (HaveItem(inTable, #K_SYSTEM_KEY))
+        instance.system = SystemDTO.LoadFromTable(inTable.system)
+    EndIf
+
+    If (HaveItem(inTable, #K_TIMESTAMP_KEY))
+        instance.timestamp = ParseDate(inTable.timestamp)
+    EndIf
+
+    If (HaveItem(inTable, #K_WEATHER_KEY))
+        If Not IsNil(inTable.weather) And Not IsTableEmpty(inTable.weather)
+            ForEach(inTable.weather, WeatherResponseDTO._populateWeather, instance)
+        EndIf
+    EndIf
+
+    If (HaveItem(inTable, #K_WIND_KEY))
+        instance.wind = WindDTO.LoadFromTable(inTable.wind)
+    EndIf
+
+    Return (instance)
+EndFunction
+
+Function WeatherResponseDTO.ParseFromJsonString(inStr)
+    Return (WeatherResponseDTO.LoadFromTable(JSONLib.Parse(inStr)))
+EndFunction

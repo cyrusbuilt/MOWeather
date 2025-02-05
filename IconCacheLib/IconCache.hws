@@ -1,0 +1,51 @@
+Global IconCache = {
+    VERSION = "1.0.0",
+    _cachePath = Nil
+}
+
+Function IconCache.Init()
+    Local type, name$, hw$ = GetProgramInfo()
+    Local appDir = GetStartDirectory()
+    If type = #PRGTYPE_PROGRAM
+        appDir = GetProgramDirectory()
+    EndIf
+
+    IconCache._cachePath = appDir .. "/IconCache"
+    If Not(IsDirectory(IconCache._cachePath))
+        MakeDirectory(IconCache._cachePath)
+    EndIf
+EndFunction
+
+Function IconCache._deleteItem(item$)
+    If (IsDirectory(item$))
+        For s$, t In DirectoryItems(item$)
+            Local path$ = FullPath(item$, s$)
+            If t.Type = #DOSTYPE_DIRECTORY
+                IconCache._deleteItem(path$)
+            Else
+                DeleteFile(path$)
+            EndIf
+        Next
+    Else
+        DeleteFile(item$)
+    EndIf
+EndFunction
+
+Function IconCache.ClearCache()
+    IconCache._deleteItem(IconCache._cachePath)
+EndFunction
+
+Function IconCache.GetSavePath(name$)
+    Return (FullPath(IconCache._cachePath, name$))
+EndFunction
+
+Function IconCache.GetIcon(name$)
+    Local result = Nil
+    For s$, t In DirectoryItems(IconCache._cachePath)
+        If (CompareStr(s$, name$, False) = 0)
+            result = FullPath(IconCache._cachePath, s$)
+            Break
+        EndIf
+    Next
+    Return (result)
+EndFunction

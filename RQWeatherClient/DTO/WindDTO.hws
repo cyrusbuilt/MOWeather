@@ -1,0 +1,35 @@
+Const #K_SPEED_KEY = "speed"
+Const #K_DEGREES_KEY = "degrees"
+Const #K_GUST_KEY = "gust"
+
+Global WindDTO = {
+    speed = 0,
+    degrees = 0,
+    gust = 0
+}
+
+Function WindDTO.LoadFromTable(inTable)
+    Local instance = {
+        speed = 0,
+        degrees = 0,
+        gust = 0
+    }
+
+    If (IsNil(inTable) Or IsTableEmpty(inTable))
+        Return (instance)
+    EndIf
+
+    If (HaveItem(inTable, #K_SPEED_KEY))
+        instance.speed = inTable.speed
+    EndIf
+
+    If (HaveItem(inTable, #K_DEGREES_KEY))
+        instance.degrees = inTable.degrees
+    EndIf
+
+    If (HaveItem(inTable, #K_GUST_KEY))
+        instance.gust = inTable.gust
+    EndIf
+
+    Return (instance)
+EndFunction

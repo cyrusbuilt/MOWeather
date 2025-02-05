@@ -1,0 +1,77 @@
+Const #K_TEMP_KEY = "temp"
+Const #K_FEELS_LIKE_KEY = "feelsLike"
+Const #K_PRESSURE_KEY = "pressure"
+Const #K_HUMIDITY_KEY = "humidity"
+Const #K_TEMP_MIN_KEY = "tempMin"
+Const #K_TEMP_MAX_KEY = "tempMax"
+Const #K_SEA_LEVEL_KEY = "seaLevel"
+Const #K_GROUND_LEVEL_KEY = "groundLevel"
+Const #K_TEMP_KF_KEY = "tempKf"
+
+Global MainDTO = {
+    temp = 0,
+    feelsLike = 0,
+    pressure = 0,
+    humidity = 0,
+    tempMin = 0,
+    tempMax = 0,
+    seaLevel = 0,
+    groundLevel = 0,
+    tempKf = 0
+}
+
+Function MainDTO.LoadFromTable(inTable)
+    Local instance = {
+        temp = 0,
+        feelsLike = 0,
+        pressure = 0,
+        humidity = 0,
+        tempMin = 0,
+        tempMax = 0,
+        seaLevel = 0,
+        groundLevel = 0,
+        tempKf = 0
+    }
+
+    If (IsNil(inTable) Or IsTableEmpty(inTable))
+        Return (instance)
+    EndIf
+
+    If (HaveItem(inTable, #K_TEMP_KEY))
+        instance.temp = inTable.temp
+    EndIf
+
+    If (HaveItem(inTable, #K_FEELS_LIKE_KEY))
+        instance.feelsLike = inTable.feelsLike
+    EndIf
+
+    If (HaveItem(inTable, #K_PRESSURE_KEY))
+        instance.pressure = inTable.pressure
+    EndIf
+
+    If (HaveItem(inTable, #K_HUMIDITY_KEY))
+        instance.humidity = inTable.humidity
+    EndIf
+
+    If (HaveItem(inTable, #K_TEMP_MIN_KEY))
+        instance.tempMin = inTable.tempMin
+    EndIf
+
+    If (HaveItem(inTable, #K_TEMP_MAX_KEY))
+        instance.tempMax = inTable.tempMax
+    EndIf
+
+    If (HaveItem(inTable, #K_SEA_LEVEL_KEY))
+        instance.seaLevel = inTable.seaLevel
+    EndIf
+
+    If (HaveItem(inTable, #K_GROUND_LEVEL_KEY))
+        instance.groundLevel = inTable.groundLevel
+    EndIf
+
+    If (HaveItem(inTable, #K_TEMP_KF_KEY))
+        instance.tempKf = inTable.tempKf
+    EndIf
+
+    Return (instance)
+EndFunction

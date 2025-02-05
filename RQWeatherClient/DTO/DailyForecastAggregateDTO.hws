@@ -1,0 +1,56 @@
+Const #K_DATE_STRING_KEY = "dateString"
+Const #K_DAY_NUM_KEY = "dayNum"
+Const #K_ICON_KEY = "icon"
+Const #K_TEMP_HIGH_KEY = "tempHigh"
+Const #K_TEMP_LOW_KEY = "tempLow"
+Const #K_WEATHER_TYPE_KEY = "weatherType"
+
+Global DailyForecastAggregateDTO = {
+    dateString = "",
+    dayNum = 0,
+    icon = "",
+    tempHigh = 0,
+    tempLow = 0,
+    weatherType = ""
+}
+
+Function DailyForecastAggregateDTO.LoadFromTable(inTable)
+    Local instance = {
+        dateString = "",
+        dayNum = 0,
+        icon = "",
+        tempHigh = 0,
+        tempLow = 0,
+        weatherType = ""
+    }
+
+    If (IsNil(inTable) Or IsTableEmpty(inTable))
+        Return (instance)
+    EndIf
+
+    If (HaveItem(inTable, #K_DATE_STRING_KEY))
+        instance.dateString = inTable.dateString
+    EndIf
+
+    If (HaveItem(inTable, #K_DAY_NUM_KEY))
+        instance.dayNum = inTable.dayNum
+    EndIf
+
+    If (HaveItem(inTable, #K_ICON_KEY))
+        instance.icon = inTable.icon
+    EndIf
+
+    If (HaveItem(inTable, #K_TEMP_HIGH_KEY))
+        instance.tempHigh = inTable.tempHigh
+    EndIf
+
+    If (HaveItem(inTable, #K_TEMP_LOW_KEY))
+        instance.tempLow = inTable.tempLow
+    EndIf
+
+    If (HaveItem(inTable, #K_WEATHER_TYPE_KEY))
+        instance.weatherType = inTable.weatherType
+    EndIf
+
+    Return (instance)
+EndFunction
