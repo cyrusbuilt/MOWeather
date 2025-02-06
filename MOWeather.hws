@@ -4,7 +4,13 @@ Version: 1.0
 Author: cyrusbuilt
 */
 
-@VERSION 1,0
+; We need at least hollywood 10.0!
+@VERSION 10,0
+
+; Enable DPI-awareness so that our GUI looks sharp evn on high DPI monitors
+@OPTIONS {DPIAware = True}
+
+; App info
 @APPTITLE "MOWeather"
 @APPVERSION "$VER: MOWeather 1.0"
 @APPCOPYRIGHT "© 2024, Chris 'Cyrus' Brunner"
@@ -12,16 +18,70 @@ Author: cyrusbuilt
 @APPDESCRIPTION "rqweather client for MorphOS"
 @APPIDENTIFIER "moweather"
 
+; We need the RapaGUI plugin
+@REQUIRE "RapaGUI"
 
-@REQUIRE "RapaGUI",{version=2,revision=1}
+; Local dependencies
+@INCLUDE "StringLib/StringUtils.hws"
 
+; Load GUI definition file
 @FILE 1, "MOWeather.xml"
 
-Function p_ProcessGUI(message)
-    DebugPrint(message.action)
-    If (message.action = "RapaGUI")
+; GUI constants
+Const #MSG_CLASS_BUTTON = "Button"
+Const #MSG_CLASS_MNUITM = "MenuItem"
+Const #MSG_ATTR_PRESSED = "Pressed"
+Const #MSG_ATTR_SELECTED = "Selected"
+Const #MSG_BTN_SEL_LOC = "btnSelectLoc"
+Const #MSG_BTN_GET_WEATHER = "btnGetWeather"
+Const #MSG_BTN_FETCH = "btnFetch"
+Const #MSG_MNU_ABOUT = "mnuAbout"
+Const #MSG_MNU_QUIT = "mnuQuit"
+Const #MSG_TE_LOG = "teLog"
 
+Function p_Log(text)
+    Local eolIndex = 0
+    Local currentText = moai.Get(#MSG_TE_LOG, "Text")
+    Local len = StringUtils.StringLength(currentText)
+    If len > 5000
+        eolIndex = StringUtils.IndexOf(currentText, "\n", 0)
+        currentText = StringUtils.Substring(currentText, eolIndex, len - eolIndex)
     EndIf
+
+    Local timestamp = GetDate(#DATELOCALNATIVE)
+    currentText = currentText .. "\n" .. timestamp .. " - " .. text .. "\n"
+    moai.Set(#MSG_TE_LOG, "Text", currentText)
+
+    Local pos = StringUtils.StringLength(currentText) - 1
+    moai.Set(#MSG_TE_LOG, "CursorPos", pos)
+EndFunction
+
+Function p_ProcessGUI(message)
+    DebugPrint("DEBUG: Event class: " .. message.Class)
+    DebugPrint("DEBUG: Event attrib: " .. message.Attribute)
+    DebugPrint("DEBUG: Event ID: " .. message.ID)
+    Switch message.Class
+    Case #MSG_CLASS_BUTTON:
+        Switch message.Attribute
+        Case #MSG_ATTR_PRESSED:
+            Switch message.ID
+            Case #MSG_BTN_SEL_LOC:
+
+            Case #MSG_BTN_GET_WEATHER:
+
+            Case #MSG_BTN_FETCH:
+
+            EndSwitch
+        EndSwitch
+    Case #MSG_CLASS_MNUITM:
+        Switch message.Attribute
+        Case #MSG_MNU_ABOUT:
+            moai.Request("About", "MOWeather\n" ..
+                "© 2025 by Cyrus Brunner")
+        Case #MSG_MNU_QUIT:
+            End
+        EndSwitch
+    EndSwitch
 EndFunction
 
 moai.CreateApp(ReadString(1))

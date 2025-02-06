@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<application id="MOWeather">
+<application id="moweather">
+    <menubar id="mnuApp">
+        <menu title="File">
+            <item id="mnuAbout">About...</item>
+            <item id="mnuQuit">Quit</item>
+        </menu>
+    </menubar>
+    <window title="MOWeather" menubar="mnuApp" width="734" height="681">
+        <vgroup>
+            <hgroup title="Location">
 
+            </hgroup>
+            <hgroup title="Current Conditions">
+
+            </hgroup>
+            <hgroup title="5-Day Forecast">
+
+            </hgroup>
+            <hgroup>
+                <texteditor id="teLog" align="left" width="728" height="95" disabled="true"></textview>
+            </hgroup>
+        </vgroup>
+    </window>
 </application>
