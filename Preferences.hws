@@ -1,0 +1,44 @@
+Global Preferences = {
+	ApiHostAddress = "",
+	ApiHostPort = 0,
+	LocationLatitude = 0,
+	LocationLongitude = 0,
+	LocationCity = "",
+	LocationState = "",
+	LocationCountryCode = ""
+}
+
+Function Preferences.Load()
+	Local prf = {
+		ApiHostAddress = "",
+		ApiHostPort = 0,
+		LocationLatitude = 0,
+		LocationLongitude = 0,
+		LocationCity = "",
+		LocationState = "",
+		LocationCountryCode = ""
+	}
+	
+	LoadPrefs(prf)
+	Preferences.ApiHostAddress = prf.ApiHostAddress
+	Preferences.ApiHostPort = prf.ApiHostPort
+	Preferences.LocationLatitude = prf.LocationLatitude
+	Preferences.LocationLongitude = prf.LocationLongitude
+	Preferences.LocationCity = prf.LocationCity
+	Preferences.LocationState = prf.LocationState
+	Preferences.LocationCountryCode = prf.LocationCountryCode
+EndFunction
+
+Function Preferences.Save()
+	Local prf = {
+		ApiHostAddress = Preferences.ApiHostAddress,
+		ApiHostPort = Preferences.ApiHostPort,
+		LocationLatitude = Preferences.LocationLatitude,
+		LocationLongitude = Preferences.LocationLongitude,
+		LocationCity = Preferences.LocationCity,
+		LocationState = Preferences.LocationState,
+		LocationCountryCode = Preferences.LocationCountryCode
+	}
+
+	SavePrefs(prf)
+EndFunction

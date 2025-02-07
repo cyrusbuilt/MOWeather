@@ -10,7 +10,7 @@
         <Option quietoutput="1"/>
         <Option cvscommand="gg:bin/cvs"/>
         <Option defaulttarget="RELEASE"/>
-        <Option activetarget="DEBUG"/>
+        <Option activetarget="RELEASE"/>
         <Option crossbuild="0"/>
         <Option crossserver=""/>
         <Option crosslogin=""/>
@@ -138,6 +138,10 @@
             <Option filetype="16"/>
         </FileUnit>
         <FileUnit filepath="RQWeatherClient/DTO/PrecipitationDTO.hws">
+            <Option inproject="1"/>
+            <Option filetype="16"/>
+        </FileUnit>
+        <FileUnit filepath="Preferences.hws">
             <Option inproject="1"/>
             <Option filetype="16"/>
         </FileUnit>

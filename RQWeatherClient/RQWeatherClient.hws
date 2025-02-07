@@ -1,22 +1,57 @@
-@REQUIRE "hurl"
 @INCLUDE "DTO/ForecastDTO.hws"
 @INCLUDE "DTO/GeoDTO.hws"
 @INCLUDE "DTO/WeatherResponseDTO.hws"
 @INCLUDE "../StringLib/StringUtils.hws"
+@INCLUDE "HTTPStatus.hws"
+
+Const #K_API_ROOT = "/api"
+Const #K_WEATHER_ROOT = "/weather"
+Const #K_GEO_ROOT = "/geo"
+Const #K_CURRENT_ROOT = "/current"
+Const #K_FORECAST_ROOT "/forecast"
+
 
 Global RQWeatherClient = {
     VERSION = "1.0.0.0",
+	Address = "",
+	Port = 0,
+	LastHttpStatus = HTTPStatus.STATUS_200_OK,
     _hurl = Nil,
-    _baseUrl = "",
-    _recvBuffer = Nil
+    _recvBuffer = Nil,
+	_connected = False,
+	_downloading = False
 }
+
+RQWeatherClient.ProcessingRequest = Function() EndFunction
+RQWeatherClient.ProcessingComplete = Function() EndFunction
+RQWeatherClient.ApiError = Function(errorCode, desc, inUrl, inResponse) EndFunction
+RQWeatherClient.ApiSuccess = Function(errorCode, desc) EndFunction
+RQWeatherClient.Connected = Function() EndFunction
+RQWeatherClient.DownloadComplete = Function() EndFunction
+RQWeatherClient.XferProgress = Function(totalBytes, bytesReceived) EndFunction
 
 Function RQWeatherClient._recvData(data$)
     RQWeatherClient._recvBuffer = RQWeatherClient._recvBuffer .. data$
 EndFunction
 
-Function RQWeatherClient.SetBaseURL(url)
-    RQWeatherClient._baseUrl = url
+Function RQWeatherClient._getBaseURL()
+    Return (RQWeatherClient.Address .. ":" .. ToString(RQWeatherClient.Port) .. #K_API_ROOT)
+EndFunction
+
+Function RQWeatherClient._weatherRoot()
+	Return (RQWeatherClient._getBaseURL() .. #K_WEATHER_ROOT)
+EndFunction
+
+Function RQWeatherClient._currentWeatherRoot()
+	Return (RQWeatherClient._weatherRoot() .. #K_CURRENT_ROOT)
+EndFunction
+
+Function RQWeatherClient._forecastRoot()
+	Return (RQWeatherClient._weatherRoot() .. #K_FORECAST_ROOT)
+EndFunction
+
+Function RQWeatherClient._geoRoot()
+	Return (RQWeatherClient._getBaseURL() .. #K_GEO_ROOT)
 EndFunction
 
 Function RQWeatherClient.Init()
