@@ -1,5 +1,5 @@
-Const #K_ONE_HOUR_KEY = "oneHour"
-Const #K_THREE_HOUR_KEY = "threeHour"
+Const #K_P_ONE_HOUR_KEY = "oneHour"
+Const #K_P_THREE_HOUR_KEY = "threeHour"
 
 Global PrecipitationDTO = {
     oneHour = 0,
@@ -16,11 +16,11 @@ Function PrecipitationDTO.LoadFromTable(inTable)
         Return (instance)
     EndIf
 
-    If (HaveItem(inTable, #K_ONE_HOUR_KEY))
+    If (HaveItem(inTable, #K_P_ONE_HOUR_KEY))
         instance.oneHour = inTable.oneHour
     EndIf
 
-    If (HaveItem(inTable, #K_THREE_HOUR_KEY))
+    If (HaveItem(inTable, #K_P_THREE_HOUR_KEY))
         instance.threeHour = inTable.threeHour
     EndIf
 

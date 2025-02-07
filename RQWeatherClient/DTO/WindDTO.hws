@@ -1,6 +1,6 @@
-Const #K_SPEED_KEY = "speed"
-Const #K_DEGREES_KEY = "degrees"
-Const #K_GUST_KEY = "gust"
+Const #K_W_SPEED_KEY = "speed"
+Const #K_W_DEGREES_KEY = "degrees"
+Const #K_W_GUST_KEY = "gust"
 
 Global WindDTO = {
     speed = 0,
@@ -19,15 +19,15 @@ Function WindDTO.LoadFromTable(inTable)
         Return (instance)
     EndIf
 
-    If (HaveItem(inTable, #K_SPEED_KEY))
+    If (HaveItem(inTable, #K_W_SPEED_KEY))
         instance.speed = inTable.speed
     EndIf
 
-    If (HaveItem(inTable, #K_DEGREES_KEY))
+    If (HaveItem(inTable, #K_W_DEGREES_KEY))
         instance.degrees = inTable.degrees
     EndIf
 
-    If (HaveItem(inTable, #K_GUST_KEY))
+    If (HaveItem(inTable, #K_W_GUST_KEY))
         instance.gust = inTable.gust
     EndIf
 

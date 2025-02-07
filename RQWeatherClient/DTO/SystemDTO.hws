@@ -1,9 +1,9 @@
-Const #K_TYPE_KEY = "type"
-Const #K_ID_KEY = "id"
-Const #K_MESSAGE_KEY = "message"
-Const #K_COUNTRY_KEY = "country"
-Const #K_SUNRISE_KEY = "sunrise"
-Const #K_SUNSET_KEY = "sunset"
+Const #K_SYS_TYPE_KEY = "type"
+Const #K_SYS_ID_KEY = "id"
+Const #K_SYS_MESSAGE_KEY = "message"
+Const #K_SYS_COUNTRY_KEY = "country"
+Const #K_SYS_SUNRISE_KEY = "sunrise"
+Const #K_SYS_SUNSET_KEY = "sunset"
 
 Global SystemDTO = {
     type = 2,
@@ -29,27 +29,27 @@ Function SystemDTO.LoadFromTable(inTable)
         Return (instance)
     EndIf
 
-    If (HaveItem(inTable, #K_TYPE_KEY))
+    If (HaveItem(inTable, #K_SYS_TYPE_KEY))
         instance.type = inTable.type
     EndIf
 
-    If (HaveItem(inTable, #K_ID_KEY))
+    If (HaveItem(inTable, #K_SYS_ID_KEY))
         instance.id = inTable.id
     EndIf
 
-    If (HaveItem(inTable, #K_MESSAGE_KEY))
+    If (HaveItem(inTable, #K_SYS_MESSAGE_KEY))
         instance.message = inTable.message
     EndIf
 
-    If (HaveItem(inTable, #K_COUNTRY_KEY))
+    If (HaveItem(inTable, #K_SYS_COUNTRY_KEY))
         instance.country = inTable.country
     EndIf
 
-    If (HaveItem(inTable, #K_SUNRISE_KEY))
+    If (HaveItem(inTable, #K_SYS_SUNRISE_KEY))
         instance.sunrise = ParseDate(inTable.sunrise)
     EndIf
 
-    If (HaveItem(inTable, #K_SUNSET_KEY))
+    If (HaveItem(inTable, #K_SYS_SUNSET_KEY))
         instance.sunset = ParseDate(inTable.sunset)
     EndIf
 

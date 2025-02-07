@@ -4,11 +4,14 @@
 @INCLUDE "../StringLib/StringUtils.hws"
 @INCLUDE "HTTPStatus.hws"
 
-Const #K_API_ROOT = "/api"
-Const #K_WEATHER_ROOT = "/weather"
-Const #K_GEO_ROOT = "/geo"
-Const #K_CURRENT_ROOT = "/current"
-Const #K_FORECAST_ROOT "/forecast"
+Const #K_RQW_API_ROOT = "/api"
+Const #K_RQW_WEATHER_ROOT = "/weather"
+Const #K_RQW_GEO_ROOT = "/geo"
+Const #K_RQW_CURRENT_ROOT = "/current"
+Const #K_RQW_FORECAST_ROOT "/forecast"
+ ; bad port = 4
+ ; no port = 15
+
 
 
 Global RQWeatherClient = {
@@ -35,36 +38,98 @@ Function RQWeatherClient._recvData(data$)
 EndFunction
 
 Function RQWeatherClient._getBaseURL()
-    Return (RQWeatherClient.Address .. ":" .. ToString(RQWeatherClient.Port) .. #K_API_ROOT)
+    Return (RQWeatherClient.Address .. ":" .. ToString(RQWeatherClient.Port) .. #K_RQW_API_ROOT)
 EndFunction
 
 Function RQWeatherClient._weatherRoot()
-	Return (RQWeatherClient._getBaseURL() .. #K_WEATHER_ROOT)
+	Return (RQWeatherClient._getBaseURL() .. #K_RQW_WEATHER_ROOT)
 EndFunction
 
 Function RQWeatherClient._currentWeatherRoot()
-	Return (RQWeatherClient._weatherRoot() .. #K_CURRENT_ROOT)
+	Return (RQWeatherClient._weatherRoot() .. #K_RQW_CURRENT_ROOT)
 EndFunction
 
 Function RQWeatherClient._forecastRoot()
-	Return (RQWeatherClient._weatherRoot() .. #K_FORECAST_ROOT)
+	Return (RQWeatherClient._weatherRoot() .. #K_RQW_FORECAST_ROOT)
 EndFunction
 
 Function RQWeatherClient._geoRoot()
-	Return (RQWeatherClient._getBaseURL() .. #K_GEO_ROOT)
+	Return (RQWeatherClient._getBaseURL() .. #K_RQW_GEO_ROOT)
+EndFunction
+
+Function RQWeatherClient._eventProcReq()
+    If (GetType(RQWeatherClient.ProcessingRequest) = #FUNCTION)
+        RQWeatherClient.ProcessingRequest()
+    EndIf
+EndFunction
+
+Function RQWeatherClient._eventProcComplete()
+    If (GetType(RQWeatherClient.ProcessingComplete) = #FUNCTION)
+        RQWeatherClient.ProcessingComplete()
+    EndIf
+EndFunction
+
+Function RQWeatherClient._eventApiError(errorCode, desc, inUrl, inResponse)
+    If (GetType(RQWeatherClient.ApiError) = #FUNCTION)
+        RQWeatherClient.ApiError(errorCode, desc, inUrl, inResponse)
+    EndIf
+EndFunction
+
+Function RQWeatherClient._eventApiSuccess(errorCode, desc)
+    If (GetType(RQWeatherClient.ApiSuccess) = #FUNCTION)
+        RQWeatherClient.ApiSuccess(errorCode, desc)
+    EndIf
+EndFunction
+
+Function RQWeatherClient._eventConnected()
+    If (GetType(RQWeatherClient.Connected) = #FUNCTION)
+        RQWeatherClient.Connected()
+    EndIf
+EndFunction
+
+Function RQWeatherClient._eventDownloadComplete()
+    If (GetType(RQWeatherClient.DownloadComplete) = #FUNCTION)
+        RQWeatherClient.DownloadComplete()
+    EndIf
+EndFunction
+
+Function RQWeatherClient._eventXferProgress(totalBytes, bytesReceived)
+    If (GetType(RQWeatherClient.XferProgress) = #FUNCTION)
+        RQWeatherClient.XferProgress(totalBytes, bytesReceived)
+    EndIf
+EndFunction
+
+Function RQWeatherClient._preflight(inUrl, inTimeout)
+    ; reset last status
+    ; Do HEAD and check errs?
+    ; Parse and get status
+    ; Check http status
+    ; fire fail/success event
+    ; return error or not
+EndFunction
+
+Function RQWeatherClient._getWithNotification()
+    ; ProcReq
+    ; Preflight(url, timeout) (empty str on fail)
+    ; result = Fetch result
+    ; ProcComp
+    ; ret result
 EndFunction
 
 Function RQWeatherClient.Init()
     RQWeatherClient._hurl = hurl.Easy()
-    RQWeatherClient._hurl.SetOpt_HTTPHeader({"Content-Type: application/json"})
-    RQWeatherClient._hurl.SetOpt_HTTPGet(True)
-    RQWeatherClient._hurl.SetOpt_Verbose(True)
-    RQWeatherClient._hurl.SetOpt_UserAgent("MOWeather")
+    RQWeatherClient._hurl:SetOpt_HTTPHeader({"Content-Type: application/json"})
+    RQWeatherClient._hurl:SetOpt_HTTPGet(True)
+    RQWeatherClient._hurl:SetOpt_Verbose(True)
+    RQWeatherClient._hurl:SetOpt_UserAgent("MOWeather")
+    RQWeatherClient.LastHttpStatus = HTTPStatus.STATUS_200_OK
+    RQWeatherClient._connected = False
+    RQWeatherClient._downloading = False
 EndFunction
 
 Function RQWeatherClient.Close()
     If Not (IsNil(RQWeatherClient._hurl))
-        RQWeatherClient._hurl.Close()
+        RQWeatherClient._hurl:Close()
         RQWeatherClient._hurl = Nil
         RQWeatherClient._recvBuffer = Nil
     EndIf
@@ -75,9 +140,9 @@ Function RQWeatherClient.GetCurrent(lat, lon)
     url = url .. ToString(lat)
     url = url .. "&lon="
     url = url .. ToString(lon)
-    RQWeatherClient._hurl.SetOpt_URL(url)
+    RQWeatherClient._hurl:SetOpt_URL(url)
     RQWeatherClient._recvBuffer = Nil
-    RQWeatherClient._hurl.Perform()
+    RQWeatherClient._hurl:Perform()
     Return (WeatherResponseDTO.ParseFromJsonString(RQWeatherClient._recvBuffer))
 EndFunction
 
@@ -86,9 +151,9 @@ Function RQWeatherClient.GetForecast(lat, lon)
     url = url .. ToString(lat)
     url = url .. "&lon="
     url = url .. ToString(lon)
-    RQWeatherClient._hurl.SetOpt_URL(url)
+    RQWeatherClient._hurl:SetOpt_URL(url)
     RQWeatherClient._recvBuffer = Nil
-    RQWeatherClient._hurl.Perform()
+    RQWeatherClient._hurl:Perform()
     Return (ForecastDTO.ParseFromJsonString(RQWeatherClient._recvBuffer))
 EndFunction
 
@@ -107,8 +172,12 @@ Function RQWeatherClient.GetGeoData(city, stateCode = "", countryCode = "")
         url = url .. countryCode
     EndIf
 
-    RQWeatherClient._hurl.SetOpt_URL(url)
+    RQWeatherClient._hurl:SetOpt_URL(url)
     RQWeatherClient._recvBuffer = Nil
-    RQWeatherClient._hurl.Perform()
+    RQWeatherClient._hurl:Perform()
     Return (GeoDTO.ParseFromJsonString(RQWeatherClient._recvBuffer))
+EndFunction
+
+Function RQWeatherClient.DownloadFile(inUrl, localFile)
+    
 EndFunction

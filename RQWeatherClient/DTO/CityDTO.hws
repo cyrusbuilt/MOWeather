@@ -1,13 +1,13 @@
 @INCLUDE "CoordinateDTO.hws"
 
-Const #K_ID_KEY = "id"
-Const #K_NAME_KEY = "name"
-Const #K_COORD_KEY = "coordinates"
-Const #K_COUNTRY_KEY = "country"
-Const #K_POP_KEY = "population"
-Const #K_TIMEZONE_KEY = "timezone"
-Const #K_SUNRISE_KEY = "sunrise"
-Const #K_SUNSET_KEY = "sunset"
+Const #K_CITY_ID_KEY = "id"
+Const #K_CITY_NAME_KEY = "name"
+Const #K_CITY_COORD_KEY = "coordinates"
+Const #K_CITY_COUNTRY_KEY = "country"
+Const #K_CITY_POP_KEY = "population"
+Const #K_CITY_TIMEZONE_KEY = "timezone"
+Const #K_CITY_SUNRISE_KEY = "sunrise"
+Const #K_CITY_SUNSET_KEY = "sunset"
 
 Global CityDTO = {
     id = 0,
@@ -37,35 +37,35 @@ Function CityDTO.LoadFromTable(inTable)
         Return (instance)
     EndIf
 
-    If (HaveItem(inTable, #K_ID_KEY))
+    If (HaveItem(inTable, #K_CITY_ID_KEY))
         instance.id = inTable.id
     EndIf
 
-    If (HaveItem(inTable, #K_NAME_KEY))
+    If (HaveItem(inTable, #K_CITY_NAME_KEY))
         instance.name = inTable.name
     EndIf
 
-    If (HaveItem(inTable, #K_COORD_KEY))
+    If (HaveItem(inTable, #K_CITY_COORD_KEY))
         instance.coordinates = CoordinateDTO.LoadFromTable(inTable)
     EndIf
 
-    If (HaveItem(inTable, #K_COUNTRY_KEY))
+    If (HaveItem(inTable, #K_CITY_COUNTRY_KEY))
         instance.country = inTable.country
     EndIf
 
-    If (HaveItem(inTable, #K_POP_KEY))
+    If (HaveItem(inTable, #K_CITY_POP_KEY))
         instance.population = inTable.population
     EndIf
 
-    If (HaveItem(inTable, #K_TIMEZONE_KEY))
+    If (HaveItem(inTable, #K_CITY_TIMEZONE_KEY))
         instance.timezone = inTable.timezone
     EndIf
 
-    If (HaveItem(inTable, #K_SUNRISE_KEY))
+    If (HaveItem(inTable, #K_CITY_SUNRISE_KEY))
         instance.sunrise = ParseDate(inTable.sunrise)
     EndIf
 
-    If (HaveItem(inTable, #K_SUNSET_KEY))
+    If (HaveItem(inTable, #K_CITY_SUNSET_KEY))
         instance.sunset = ParseDate(inTable.sunset)
     EndIf
 

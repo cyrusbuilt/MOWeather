@@ -1,11 +1,11 @@
 @INCLUDE "../../JSONLib/JSONLib.hws"
 
-Const #K_COUNTRY_KEY = "country"
-Const #K_LAT_KEY = "latitude"
-Const #K_LON_KEY = "longitude"
-Const #K_LOCAL_NAMES_KEY = "localNames"
-Const #K_NAME_KEY = "name"
-Const #K_STATE_KEY = "state"
+Const #K_GEO_COUNTRY_KEY = "country"
+Const #K_GEO_LAT_KEY = "latitude"
+Const #K_GEO_LON_KEY = "longitude"
+Const #K_GEO_LOCAL_NAMES_KEY = "localNames"
+Const #K_GEO_NAME_KEY = "name"
+Const #K_GEO_STATE_KEY = "state"
 
 Global GeoDTO = {
     country = "",
@@ -30,27 +30,27 @@ Function GeoDTO.LoadFromTable(inTable)
         Return (instance)
     EndIf
 
-    If (HaveItem(inTable, #K_COUNTRY_KEY))
+    If (HaveItem(inTable, #K_GEO_COUNTRY_KEY))
         instance.country = inTable.country
     EndIf
 
-    If (HaveItem(inTable, #K_LAT_KEY))
+    If (HaveItem(inTable, #K_GEO_LAT_KEY))
         instance.latitude = inTable.latitude
     EndIf
 
-    If (HaveItem(inTable, #K_LOCAL_NAMES_KEY))
+    If (HaveItem(inTable, #K_GEO_LOCAL_NAMES_KEY))
         instance.localNames = inTable.localNames
     EndIf
 
-    If (HaveItem(inTable, #K_LON_KEY))
+    If (HaveItem(inTable, #K_GEO_LON_KEY))
         instance.longitude = inTable.longitude
     EndIf
 
-    If (HaveItem(inTable, #K_NAME_KEY))
+    If (HaveItem(inTable, #K_GEO_NAME_KEY))
         instance.name = inTable.name
     EndIf
 
-    If (HaveItem(inTable, #K_STATE_KEY))
+    If (HaveItem(inTable, #K_GEO_STATE_KEY))
         instance.state = inTable.state
     EndIf
 

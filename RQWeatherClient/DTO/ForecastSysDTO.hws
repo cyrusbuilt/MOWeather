@@ -1,4 +1,4 @@
-Const #K_PART_OF_DAY_KEY = "partOfDay"
+Const #K_FS_PART_OF_DAY_KEY = "partOfDay"
 
 Global ForecastSysDTO = {
     partOfDay = ""
@@ -10,6 +10,10 @@ Function ForecastDTO.LoadFromTable(inTable)
     }
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
+        instance.partOfDay = inTable.partOfDay
+    EndIf
+
+    If (HaveItem(inTable, #K_FS_PART_OF_DAY_KEY))
         instance.partOfDay = inTable.partOfDay
     EndIf
 

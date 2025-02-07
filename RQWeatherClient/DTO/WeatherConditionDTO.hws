@@ -1,7 +1,7 @@
-Const #K_DESC_KEY = "description"
-Const #K_ICON_KEY = "icon"
-Const #K_ID_KEY = "id"
-Const #K_MAIN_KEY = "main"
+Const #K_WC_DESC_KEY = "description"
+Const #K_WC_ICON_KEY = "icon"
+Const #K_WC_ID_KEY = "id"
+Const #K_WC_MAIN_KEY = "main"
 
 Global WeatherConditionDTO = {
     description = "",
@@ -22,19 +22,19 @@ Function WeatherConditionDTO.LoadFromTable(inTable)
         Return (instance)
     EndIf
 
-    If (HaveItem(inTable, #K_DESC_KEY))
+    If (HaveItem(inTable, #K_WC_DESC_KEY))
         instance.description = inTable.description
     EndIf
 
-    If (HaveItem(inTable, #K_ICON_KEY))
+    If (HaveItem(inTable, #K_WC_ICON_KEY))
         instance.icon = inTable.icon
     EndIf
 
-    If (HaveItem(inTable, #K_ID_KEY))
+    If (HaveItem(inTable, #K_WC_ID_KEY))
         instance.id = inTable.id
     EndIf
 
-    If (HaveItem(inTable, #K_MAIN_KEY))
+    If (HaveItem(inTable, #K_WC_MAIN_KEY))
         instance.main = inTable.main
     EndIf
 

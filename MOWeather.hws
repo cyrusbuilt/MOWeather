@@ -7,7 +7,7 @@ Author: cyrusbuilt
 ; We need at least hollywood 10.0!
 @VERSION 10,0
 
-; Enable DPI-awareness so that our GUI looks sharp evn on high DPI monitors
+; Enable DPI-awareness so that our GUI looks sharp even on high DPI monitors
 @OPTIONS {DPIAware = True}
 
 ; App info
@@ -24,6 +24,7 @@ Author: cyrusbuilt
 
 ; Local dependencies
 @INCLUDE "Preferences.hws"
+@INCLUDE "RQWeatherClient/RQWeatherClient.hws"
 @INCLUDE "StringLib/StringUtils.hws"
 
 ; Load GUI definition file
