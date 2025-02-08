@@ -8,10 +8,7 @@ Const #K_RQW_API_ROOT = "/api"
 Const #K_RQW_WEATHER_ROOT = "/weather"
 Const #K_RQW_GEO_ROOT = "/geo"
 Const #K_RQW_CURRENT_ROOT = "/current"
-Const #K_RQW_FORECAST_ROOT "/forecast"
- ; bad port = 4
- ; no port = 15
-
+Const #K_RQW_FORECAST_ROOT = "/forecast"
 
 
 Global RQWeatherClient = {
@@ -22,7 +19,8 @@ Global RQWeatherClient = {
     _hurl = Nil,
     _recvBuffer = Nil,
 	_connected = False,
-	_downloading = False
+	_downloading = False,
+	_dlHandle = Nil
 }
 
 RQWeatherClient.ProcessingRequest = Function() EndFunction
@@ -93,14 +91,14 @@ Function RQWeatherClient._eventDownloadComplete()
     EndIf
 EndFunction
 
-Function RQWeatherClient._eventXferProgress(totalBytes, bytesReceived)
+Function RQWeatherClient._eventXferProgress(prg)
     If (GetType(RQWeatherClient.XferProgress) = #FUNCTION)
-        RQWeatherClient.XferProgress(totalBytes, bytesReceived)
+        RQWeatherClient.XferProgress(prg.Total, prg.Count)
     EndIf
 EndFunction
 
 Function RQWeatherClient._preflight(inUrl, inTimeout)
-    ; reset last status
+    RQWeatherClient.LastHttpStatus = HTTPStatus.STATUS_NO_STATUS
     ; Do HEAD and check errs?
     ; Parse and get status
     ; Check http status
@@ -109,7 +107,7 @@ Function RQWeatherClient._preflight(inUrl, inTimeout)
 EndFunction
 
 Function RQWeatherClient._getWithNotification()
-    ; ProcReq
+    RQWeatherClient._eventProcReq()
     ; Preflight(url, timeout) (empty str on fail)
     ; result = Fetch result
     ; ProcComp
@@ -122,12 +120,18 @@ Function RQWeatherClient.Init()
     RQWeatherClient._hurl:SetOpt_HTTPGet(True)
     RQWeatherClient._hurl:SetOpt_Verbose(True)
     RQWeatherClient._hurl:SetOpt_UserAgent("MOWeather")
+	RQWeatherClient._hurl:SetOpt_WriteFunction(RQWeatherClient._recvData)
     RQWeatherClient.LastHttpStatus = HTTPStatus.STATUS_200_OK
     RQWeatherClient._connected = False
     RQWeatherClient._downloading = False
 EndFunction
 
 Function RQWeatherClient.Close()
+	If RQWeatherClient._downloading And Not IsNil(RQWeatherClient._dlHandle)
+		CancelAsyncOperation(RQWeatherClient._dlHandle)
+		RQWeatherClient._downloading = False
+	EndIf
+
     If Not (IsNil(RQWeatherClient._hurl))
         RQWeatherClient._hurl:Close()
         RQWeatherClient._hurl = Nil
@@ -157,7 +161,10 @@ Function RQWeatherClient.GetForecast(lat, lon)
     Return (ForecastDTO.ParseFromJsonString(RQWeatherClient._recvBuffer))
 EndFunction
 
-Function RQWeatherClient.GetGeoData(city, stateCode = "", countryCode = "")
+Function RQWeatherClient.GetGeoData(city, stateCode, countryCode)
+	If IsNil(stateCode) Then stateCode = ""
+	If IsNil(countryCode) Then countryCode = ""
+
     stateCode = StringUtils.StripPrettyPrintChars(stateCode)
     countryCode = StringUtils.StripPrettyPrintChars(countryCode)
 
@@ -179,5 +186,11 @@ Function RQWeatherClient.GetGeoData(city, stateCode = "", countryCode = "")
 EndFunction
 
 Function RQWeatherClient.DownloadFile(inUrl, localFile)
-    
+	Local done = False
+	RQWeatherClient._downloading = True
+    RQWeatherClient._dlHandle = DownloadFile(inUrl, {Async=True, Adapter="hurl", File=localFile}, RQWeatherClient._eventXferProgress)
+	Repeat done = ContinueAsyncOperation(handle)
+		VWait()
+	Until done Or Not RQWeatherClient._downloading
+	RQWeatherClient._downloading = False
 EndFunction

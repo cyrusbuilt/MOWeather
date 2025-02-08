@@ -4,7 +4,7 @@ Global ForecastSysDTO = {
     partOfDay = ""
 }
 
-Function ForecastDTO.LoadFromTable(inTable)
+Function ForecastSysDTO.LoadFromTable(inTable)
     Local instance = {
         partOfDay = ""
     }

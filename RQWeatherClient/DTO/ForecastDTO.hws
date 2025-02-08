@@ -59,7 +59,7 @@ Function ForecastDTO.LoadFromTable(inTable)
         instance.city = CityDTO.LoadFromTable(inTable.city)
     EndIf
 
-    If (HaveItem(inTable, #K_FC_AGG_KEY)
+    If (HaveItem(inTable, #K_FC_AGG_KEY))
         If Not IsNil(inTable.aggregates) And Not IsTableEmpty(inTable.aggregates)
             ForEach(inTable.aggregates, ForecastDTO._populateAggs, instance)
         EndIf

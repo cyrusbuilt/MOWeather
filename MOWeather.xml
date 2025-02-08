@@ -8,17 +8,15 @@
     </menubar>
     <window title="MOWeather" menubar="mnuApp" width="734" height="681">
         <vgroup>
-            <hgroup title="Location">
-
+            <hgroup title="Location" width="728" height="145">
+                <label id="lblCity" width="53" height="20">City:</label>w
             </hgroup>
             <hgroup title="Current Conditions">
-
+                <label id="lblCurrent" width="565" height="20">Right Now:</label>
             </hgroup>
-            <hgroup title="5-Day Forecast">
-
-            </hgroup>
+            
             <hgroup>
-                <texteditor id="teLog" align="left" width="728" height="95" disabled="true"></textview>
+                <texteditor id="teLog" align="left" width="728" height="95" disabled="true"></texteditor>
             </hgroup>
         </vgroup>
     </window>

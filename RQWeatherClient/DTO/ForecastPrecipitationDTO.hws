@@ -9,9 +9,9 @@ Function ForecastPrecipitationDTO.LoadFromTable(inTable)
         threeHour = 0
     }
 
-    If (IsNil(inTable) Or IsTableEmpty(inTable)) {
+    If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)
-    }
+    EndIf
 
     If (HaveItem(inTable, #K_FP_THREE_HOUR_KEY))
         instance.threeHour = inTable.threeHour

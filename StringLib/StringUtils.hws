@@ -33,7 +33,10 @@ Function StringUtils.Quote(inString)
     Return (result)
 EndFunction
 
-Function StringUtils.IndexOf(haystack, needle, start = 0)
+Function StringUtils.IndexOf(haystack, needle, start)
+	If IsNil(start)
+		start = 0
+	EndIf
     Return (FindStr(haystack, needle, True, start))
 EndFunction
 
@@ -154,7 +157,11 @@ Function StringUtils.StripPrettyPrintChars(inString)
     Return (result)
 EndFunction
 
-Function StringUtils.StringReplace(inString, oldString, newString, allOccurrences = False)
+Function StringUtils.StringReplace(inString, oldString, newString, allOccurrences)
+	If IsNil(allOccurrences)
+		allOccurrences = False
+	EndIf
+
     If (allOccurrences)
         Return (ReplaceStr(inString, oldString, newString))
     EndIf
@@ -245,7 +252,8 @@ Function StringUtils.ParseDateFromYMDHMSString(inString)
             Return (False, Nil)
         EndIf
 
-        For Local tp In timeParts
+		Local tp
+        For tp In timeParts
             If (StringUtils.Contains(tp, "."))
                 Local secParts = StringUtils.StringSplit(tp, ".")
                 tp = secParts[0]
@@ -289,12 +297,13 @@ Function StringUtils.Join(inStrArray, delimiter)
         Return (inStrArray + delimiter)
     EndIf
 
-    If (IsNil(inStrArray) Or GetType(inStrArray) <> #TABLE) {
+    If (IsNil(inStrArray) Or GetType(inStrArray) <> #TABLE)
         Return (StringUtils.EMPTY)
-    }
+    EndIf
 
     Local result = StringUtils.EMPTY
-    For Local s In inStrArray
+	Local s
+    For s In inStrArray
         If (StrLen(result) > 0)
             result = result + delimiter
         EndIf

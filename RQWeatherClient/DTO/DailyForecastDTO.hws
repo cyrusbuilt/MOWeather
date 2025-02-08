@@ -1,5 +1,5 @@
 @INCLUDE "CloudsDTO.hws"
-@INCLUDE "ForecastPrecipitation.hws"
+@INCLUDE "ForecastPrecipitationDTO.hws"
 @INCLUDE "ForecastSysDTO.hws"
 @INCLUDE "MainDTO.hws"
 @INCLUDE "WeatherConditionDTO.hws"
