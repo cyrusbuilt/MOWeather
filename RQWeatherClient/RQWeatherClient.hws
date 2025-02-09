@@ -11,18 +11,16 @@ Const #K_RQW_CURRENT_ROOT = "/current"
 Const #K_RQW_FORECAST_ROOT = "/forecast"
 
 
-Global RQWeatherClient = {
-    VERSION = "1.0.0.0",
-	Address = "",
-	Port = 0,
-	LastHttpStatus = HTTPStatus.STATUS_200_OK,
-    _hurl = Nil,
-    _recvBuffer = Nil,
-	_connected = False,
-	_downloading = False,
-	_dlHandle = Nil
-}
-
+Global RQWeatherClient = {}
+RQWeatherClient.VERSION = "1.0.0.0"
+RQWeatherClient.Address = ""
+RQWeatherClient.Port = 0
+RQWeatherClient.LastHttpStatus = HTTPStatus.STATUS_200_OK
+RQWeatherClient._hurl = Nil
+RQWeatherClient._recvBuffer = Nil
+RQWeatherClient._connected = False
+RQWeatherClient._downloading = False
+RQWeatherClient._dlHandle = Nil
 RQWeatherClient.ProcessingRequest = Function() EndFunction
 RQWeatherClient.ProcessingComplete = Function() EndFunction
 RQWeatherClient.ApiError = Function(errorCode, desc, inUrl, inResponse) EndFunction
@@ -147,7 +145,7 @@ Function RQWeatherClient.GetCurrent(lat, lon)
     RQWeatherClient._hurl:SetOpt_URL(url)
     RQWeatherClient._recvBuffer = Nil
     RQWeatherClient._hurl:Perform()
-    Return (WeatherResponseDTO.ParseFromJsonString(RQWeatherClient._recvBuffer))
+    Return (WeatherResponseDTO:ParseFromJsonString(RQWeatherClient._recvBuffer))
 EndFunction
 
 Function RQWeatherClient.GetForecast(lat, lon)
@@ -158,12 +156,12 @@ Function RQWeatherClient.GetForecast(lat, lon)
     RQWeatherClient._hurl:SetOpt_URL(url)
     RQWeatherClient._recvBuffer = Nil
     RQWeatherClient._hurl:Perform()
-    Return (ForecastDTO.ParseFromJsonString(RQWeatherClient._recvBuffer))
+    Return (ForecastDTO:ParseFromJsonString(RQWeatherClient._recvBuffer))
 EndFunction
 
 Function RQWeatherClient.GetGeoData(city, stateCode, countryCode)
-	If IsNil(stateCode) Then stateCode = ""
-	If IsNil(countryCode) Then countryCode = ""
+	If IsNil(stateCode) Then stateCode = StringUtils.EMPTY
+	If IsNil(countryCode) Then countryCode = StringUtils.EMPTY
 
     stateCode = StringUtils.StripPrettyPrintChars(stateCode)
     countryCode = StringUtils.StripPrettyPrintChars(countryCode)
@@ -182,7 +180,7 @@ Function RQWeatherClient.GetGeoData(city, stateCode, countryCode)
     RQWeatherClient._hurl:SetOpt_URL(url)
     RQWeatherClient._recvBuffer = Nil
     RQWeatherClient._hurl:Perform()
-    Return (GeoDTO.ParseFromJsonString(RQWeatherClient._recvBuffer))
+    Return (GeoDTO:ParseFromJsonString(RQWeatherClient._recvBuffer))
 EndFunction
 
 Function RQWeatherClient.DownloadFile(inUrl, localFile)

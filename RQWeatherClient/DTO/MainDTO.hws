@@ -8,30 +8,23 @@ Const #K_M_SEA_LEVEL_KEY = "seaLevel"
 Const #K_M_GROUND_LEVEL_KEY = "groundLevel"
 Const #K_M_TEMP_KF_KEY = "tempKf"
 
-Global MainDTO = {
-    temp = 0,
-    feelsLike = 0,
-    pressure = 0,
-    humidity = 0,
-    tempMin = 0,
-    tempMax = 0,
-    seaLevel = 0,
-    groundLevel = 0,
-    tempKf = 0
-}
+Global MainDTO = {}
+MainDTO.temp = 0
+MainDTO.feelsLike = 0
+MainDTO.pressure = 0
+MainDTO.humidity = 0
+MainDTO.tempMin = 0
+MainDTO.tempMax = 0
+MainDTO.seaLevel = 0
+MainDTO.groundLevel = 0
+MainDTO.tempKf = 0
+
+Function MainDTO:New()
+    Return (CopyTable(self))
+EndFunction
 
 Function MainDTO.LoadFromTable(inTable)
-    Local instance = {
-        temp = 0,
-        feelsLike = 0,
-        pressure = 0,
-        humidity = 0,
-        tempMin = 0,
-        tempMax = 0,
-        seaLevel = 0,
-        groundLevel = 0,
-        tempKf = 0
-    }
+    Local instance = MainDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)

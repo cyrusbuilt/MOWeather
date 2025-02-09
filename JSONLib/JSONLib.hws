@@ -1,8 +1,7 @@
 @INCLUDE "../StringLib/StringUtils.hws"
 
-Global JSONLib = {
-    VERSION = "1.0.0"
-}
+Global JSONLib = {}
+JSONLib.VERSION = "1.0.0"
 
 Function JSONLib.Parse(inStr)
     If (StringUtils.IsEmpty(inStr))

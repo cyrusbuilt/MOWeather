@@ -7,24 +7,20 @@ Const #K_GEO_LOCAL_NAMES_KEY = "localNames"
 Const #K_GEO_NAME_KEY = "name"
 Const #K_GEO_STATE_KEY = "state"
 
-Global GeoDTO = {
-    country = "",
-    latitude = 0,
-    localNames = {},
-    longitude = 0,
-    name = "",
-    state = ""
-}
+Global GeoDTO = {}
+GeoDTO.country = ""
+GeoDTO.latitude = 0
+GeoDTO.localNames = {}
+GeoDTO.longitude = 0
+GeoDTO.name = ""
+GeoDTO.state = ""
 
-Function GeoDTO.LoadFromTable(inTable)
-    Local instance = {
-        country = "",
-        latitude = 0,
-        localNames = {},
-        longitude = 0,
-        name = "",
-        state = ""
-    }
+Function GeoDTO:New()
+    Return (CopyTable(self))
+EndFunction
+
+Function GeoDTO:LoadFromTable(inTable)
+    Local instance = GeoDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)
@@ -57,6 +53,6 @@ Function GeoDTO.LoadFromTable(inTable)
     Return (instance)
 EndFunction
 
-Function GeoDTO.ParseFromJsonString(inStr)
-    Return (GeoDTO.LoadFromTable(JSONLib.Parse(inStr)))
+Function GeoDTO:ParseFromJsonString(inStr)
+    Return (GeoDTO:LoadFromTable(JSONLib.Parse(inStr)))
 EndFunction

@@ -1,7 +1,6 @@
-Global IconCache = {
-    VERSION = "1.0.0",
-    _cachePath = Nil
-}
+Global IconCache = {}
+IconCache.VERSION = "1.0.0"
+IconCache._cachePath = Nil
 
 Function IconCache.Init()
     Local type, name$, hw$ = GetProgramInfo()
@@ -18,6 +17,8 @@ EndFunction
 
 Function IconCache._deleteItem(item$)
     If (IsDirectory(item$))
+        Local s$
+        Local t
         For s$, t In DirectoryItems(item$)
             Local path$ = FullPath(item$, s$)
             If t.Type = #DOSTYPE_DIRECTORY
@@ -41,6 +42,8 @@ EndFunction
 
 Function IconCache.GetIcon(name$)
     Local result = Nil
+    Local s$
+    Local t
     For s$, t In DirectoryItems(IconCache._cachePath)
         If (CompareStr(s$, name$, False) = 0)
             result = FullPath(IconCache._cachePath, s$)

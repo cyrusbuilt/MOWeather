@@ -5,24 +5,20 @@ Const #K_DFA_TEMP_HIGH_KEY = "tempHigh"
 Const #K_DFA_TEMP_LOW_KEY = "tempLow"
 Const #K_DFA_WEATHER_TYPE_KEY = "weatherType"
 
-Global DailyForecastAggregateDTO = {
-    dateString = "",
-    dayNum = 0,
-    icon = "",
-    tempHigh = 0,
-    tempLow = 0,
-    weatherType = ""
-}
+Global DailyForecastAggregateDTO = {}
+DailyForecastAggregateDTO.dateString = ""
+DailyForecastAggregateDTO.dayNum = 0
+DailyForecastAggregateDTO.icon = ""
+DailyForecastAggregateDTO.tempHigh = 0
+DailyForecastAggregateDTO.tempLow = 0
+DailyForecastAggregateDTO.weatherType = ""
+
+Function DailyForecastAggregateDTO:New()
+    Return (CopyTable(self))
+EndFunction
 
 Function DailyForecastAggregateDTO.LoadFromTable(inTable)
-    Local instance = {
-        dateString = "",
-        dayNum = 0,
-        icon = "",
-        tempHigh = 0,
-        tempLow = 0,
-        weatherType = ""
-    }
+    Local instance = DailyForecastAggregateDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)

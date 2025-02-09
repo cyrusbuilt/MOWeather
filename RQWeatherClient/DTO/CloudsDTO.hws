@@ -1,13 +1,14 @@
 Const #K_CLOUDS_ALL_KEY = "all"
 
-Global CloudsDTO = {
-    all = 0
-}
+Global CloudsDTO = {}
+CloudsDTO.all = 0
 
-Function CloudsDTO.LoadFromTable(inTable)
-    Local instance = {
-        all = 0
-    }
+Function CloudsDTO:New()
+    Return (CopyTable(self))
+EndFunction
+
+Function CloudsDTO:LoadFromTable(inTable)
+    Local instance = CloudsDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)

@@ -1,17 +1,17 @@
 Const #K_COORD_LAT_KEY = "latitude"
 Const #K_COORD_LON_KEY = "longitude"
 
-Global CoordinateDTO = {
-    latitude = 0,
-    longitude = 0
-}
+Global CoordinateDTO = {}
+CoordinateDTO.latitude = 0
+CoordinateDTO.longitude = 0
 
-Function CoordinateDTO.LoadFromTable(inTable)
-    Local instance = {
-        latitude = 0,
-        longitude = 0
-    }
+Function CoordinateDTO:New()
+    Return (CopyTable(self))
+EndFunction
 
+Function CoordinateDTO:LoadFromTable(inTable)
+    Local instance = CoordinateDTO:New()
+    
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)
     EndIf

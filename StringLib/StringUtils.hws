@@ -1,16 +1,15 @@
-Global StringUtils = {
-    DEFAULT_PAD_CHAR = " ",
-    EMPTY = "",
-    VERSION = "1.0.0.1",
-    _backspaceChar = 8,
-    _crChar = 13,
-    _doubleQuoteChar = 34,
-    _formFeedChar = 12,
-    _nilChar = 10,
-    _singleQuoteChar = 39,
-    _spaceChar = 32,
-    _tabChar = 9
-}
+Global StringUtils = {}
+StringUtils.DEFAULT_PAD_CHAR = " "
+StringUtils.EMPTY = ""
+StringUtils.VERSION = "1.0.0.1"
+StringUtils._backspaceChar = 8
+StringUtils._crChar = 13
+StringUtils._doubleQuoteChar = 34
+StringUtils._formFeedChar = 12
+StringUtils._nilChar = 10
+StringUtils._singleQuoteChar = 39
+StringUtils._spaceChar = 32
+StringUtils._tabChar = 9
 
 Function StringUtils.Backspace()
     Return (Chr(StringUtils._backspaceChar))
@@ -23,11 +22,11 @@ EndFunction
 Function StringUtils.Quote(inString)
     Local result = inString
     If (LeftStr(result, 1) <> Chr(StringUtils._doubleQuoteChar))
-        result = Chr(StringUtils._doubleQuoteChar) + result
+        result = Chr(StringUtils._doubleQuoteChar) .. result
     EndIf
 
     If (RightStr(result, 1) <> Chr(StringUtils._doubleQuoteChar))
-        result = result + Chr(StringUtils._doubleQuoteChar)
+        result = result .. Chr(StringUtils._doubleQuoteChar)
     EndIf
 
     Return (result)
@@ -86,7 +85,7 @@ Function StringUtils.Create(inChar, len)
     Local sb = StringUtils.EMPTY
     Local i = 1
     For i = 1 To len
-        sb = sb + input
+        sb = sb .. input
     Next
 
     Return (sb)
@@ -100,7 +99,7 @@ Function StringUtils.PadLeft(input, pad, len)
     Local sb = StringUtils.EMPTY
     Local i = 1
     For i = 1 To len
-        sb = sb + pad
+        sb = sb .. pad
     Next
 
     sb = sb + input
@@ -115,7 +114,7 @@ Function StringUtils.PadRight(input, pad, len)
     Local sb = input
     Local i = 1
     For i = 1 To len
-        sb = sb + pad
+        sb = sb .. pad
     Next
 
     Return (sb)
@@ -127,7 +126,7 @@ Function StringUtils.Pad(input, pad, len)
     EndIf
 
     Local p = StringUtils.Create(pad, len)
-    Return (p + input + p)
+    Return (p .. input .. p)
 EndFunction
 
 Function StringUtils.PadCenter(input, pad, len)
@@ -139,7 +138,7 @@ Function StringUtils.PadCenter(input, pad, len)
         Local firstHalf = StringUtils.Substring(input, 0, StrLen(input) \ 2)
         Local secondHalf = StringUtils.Substring(input, StrLen(input) \ 2, StrLen(input))
         Local padStr = StringUtils.Create(pad, len)
-        Return (firstHalf + padStr + secondHalf)
+        Return (firstHalf .. padStr .. secondHalf)
     EndIf
 
     Return (input)
@@ -176,7 +175,7 @@ Function StringUtils.StringReplace(inString, oldString, newString, allOccurrence
             Local firstHalf = StringUtils.Substring(inString, 0, startPos)
             Local endPos = startPos + oldStrLen
             Local secondHalf = StringUtils.Substring(inString, endPos, StrLen(inString) - oldStrLen)
-            Return (firstHalf + newString + secondHalf)
+            Return (firstHalf .. newString .. secondHalf)
         EndIf
     EndIf
 
@@ -204,7 +203,7 @@ Function StringUtils.Tab()
 EndFunction
 
 Function StringUtils.CRLF()
-    Return (Chr(StringUtils._crChar) + Chr(StringUtils._nilChar))
+    Return (Chr(StringUtils._crChar) .. Chr(StringUtils._nilChar))
 EndFunction
 
 Function StringUtils.Backspace()
@@ -286,15 +285,15 @@ Function StringUtils.DateToTimestamp(inDate)
         Return (StringUtils.EMPTY)
     EndIf
 
-    Local result = ToString(inDate.Year) + "-" + ToString(inDate.Mon) + "-" + ToString(inDate.MDay)
-    result = result + StringUtils.DEFAULT_PAD_CHAR + ToString(inDate.Hour) + ":"
-    result = result + ToString(inDate.Min) + ":" + ToString(inDate.Sec) + "Z"
+    Local result = ToString(inDate.Year) .. "-" .. ToString(inDate.Mon) .. "-" .. ToString(inDate.MDay)
+    result = result .. StringUtils.DEFAULT_PAD_CHAR .. ToString(inDate.Hour) .. ":"
+    result = result .. ToString(inDate.Min) .. ":" .. ToString(inDate.Sec) .. "Z"
     Return (result)
 EndFunction
 
 Function StringUtils.Join(inStrArray, delimiter)
     If (GetType(inStrArray) = #STRING)
-        Return (inStrArray + delimiter)
+        Return (inStrArray .. delimiter)
     EndIf
 
     If (IsNil(inStrArray) Or GetType(inStrArray) <> #TABLE)
@@ -305,10 +304,10 @@ Function StringUtils.Join(inStrArray, delimiter)
 	Local s
     For s In inStrArray
         If (StrLen(result) > 0)
-            result = result + delimiter
+            result = result .. delimiter
         EndIf
 
-        result = result + s
+        result = result .. s
     Next
 
     Return (result)

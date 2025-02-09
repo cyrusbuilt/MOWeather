@@ -1,13 +1,14 @@
 Const #K_FS_PART_OF_DAY_KEY = "partOfDay"
 
-Global ForecastSysDTO = {
-    partOfDay = ""
-}
+Global ForecastSysDTO = {}
+ForecastSysDTO.partOfDay = ""
 
-Function ForecastSysDTO.LoadFromTable(inTable)
-    Local instance = {
-        partOfDay = ""
-    }
+Function ForecastSysDTO:New()
+    Return (CopyTable(self))
+EndFunction
+
+Function ForecastSysDTO:LoadFromTable(inTable)
+    Local instance = ForecastSysDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         instance.partOfDay = inTable.partOfDay

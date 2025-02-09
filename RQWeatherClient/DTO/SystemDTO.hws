@@ -5,25 +5,20 @@ Const #K_SYS_COUNTRY_KEY = "country"
 Const #K_SYS_SUNRISE_KEY = "sunrise"
 Const #K_SYS_SUNSET_KEY = "sunset"
 
-Global SystemDTO = {
-    type = 2,
-    id = 0,
-    message = "",
-    country = ""
-}
-
+Global SystemDTO = {}
+SystemDTO.type = 2
+SystemDTO.id = 0
+SystemDTO.message = ""
+SystemDTO.country = ""
 SystemDTO.sunset = {}
 SystemDTO.sunrise = {}
 
-Function SystemDTO.LoadFromTable(inTable)
-    Local instance = {
-        type = 2,
-        id = 0,
-        message = "",
-        country = "",
-        sunrise = Nil,
-        sunset = Nil
-    }
+Function SystemDTO:New()
+    Return (CopyTable(self))
+EndFunction
+
+Function SystemDTO:LoadFromTable(inTable)
+    Local instance = SystemDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)

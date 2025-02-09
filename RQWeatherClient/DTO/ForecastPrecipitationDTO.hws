@@ -1,13 +1,14 @@
 Const #K_FP_THREE_HOUR_KEY = "threeHour"
 
-Global ForecastPrecipitationDTO = {
-    threeHour = 0
-}
+Global ForecastPrecipitationDTO = {}
+ForecastPrecipitationDTO.threeHour = 0
 
-Function ForecastPrecipitationDTO.LoadFromTable(inTable)
-    Local instance = {
-        threeHour = 0
-    }
+Function ForecastPrecipitationDTO:New()
+    Return (CopyTable(self))
+EndFunction
+
+Function ForecastPrecipitationDTO:LoadFromTable(inTable)
+    Local instance = ForecastPrecipitationDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)

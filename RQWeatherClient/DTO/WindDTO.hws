@@ -2,18 +2,17 @@ Const #K_W_SPEED_KEY = "speed"
 Const #K_W_DEGREES_KEY = "degrees"
 Const #K_W_GUST_KEY = "gust"
 
-Global WindDTO = {
-    speed = 0,
-    degrees = 0,
-    gust = 0
-}
+Global WindDTO = {}
+WindDTO.speed = 0
+WindDTO.degrees = 0
+WindDTO.gust = 0
 
-Function WindDTO.LoadFromTable(inTable)
-    Local instance = {
-        speed = 0,
-        degrees = 0,
-        gust = 0
-    }
+Function WindDTO:New()
+    Return (CopyTable(self))
+EndFunction
+
+Function WindDTO:LoadFromTable(inTable)
+    Local instance = WindDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)

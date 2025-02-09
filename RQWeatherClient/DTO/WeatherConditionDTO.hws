@@ -3,20 +3,18 @@ Const #K_WC_ICON_KEY = "icon"
 Const #K_WC_ID_KEY = "id"
 Const #K_WC_MAIN_KEY = "main"
 
-Global WeatherConditionDTO = {
-    description = "",
-    icon = "",
-    id = -1,
-    main = ""
-}
+Global WeatherConditionDTO = {}
+WeatherConditionDTO.description = ""
+WeatherConditionDTO.icon = ""
+WeatherConditionDTO.id = -1
+WeatherConditionDTO.main = ""
 
-Function WeatherConditionDTO.LoadFromTable(inTable)
-    Local instance = {
-        description = "",
-        icon = "",
-        id = -1,
-        main = ""
-    }
+Function WeatherConditionDTO:New()
+    Return (CopyTable(self))
+EndFunction
+
+Function WeatherConditionDTO:LoadFromTable(inTable)
+    Local instance = WeatherConditionDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)

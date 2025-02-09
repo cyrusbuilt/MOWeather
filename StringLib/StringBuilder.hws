@@ -1,41 +1,47 @@
 @INCLUDE "StringUtils.hws"
 
-StringBuilderInternal = {storage = CreateList()}
+Global StringBuilder = {}
+StringBuilder._storage = {}
 
-Function StringBuilderInternal:Count()
-    Return (ListItems(self.storage))
+Function StringBuilder:New()
+    Return (CopyTable(self))
 EndFunction
 
-Function StringBuilderInternal:ToString()
+Function StringBuilder:Count()
+    Return (ListItems(self._storage))
+EndFunction
+
+Function StringBuilder:ToString()
     Local result = StringUtils.EMPTY
-    If (Not IsTableEmpty(self.storage))
-        result = StringUtils.Join(self.storage, StringUtils.EMPTY)
+    If (Not IsTableEmpty(self._storage))
+        result = StringUtils.Join(self._storage, StringUtils.EMPTY)
     EndIf
 
     Return (result)
 EndFunction
 
-Function StringBuilderInternal:Length()
+Function StringBuilder:Length()
     Return (StrLen(self:ToString()))
 EndFunction
 
-Function StringBuilderInternal:Append(inString)
-    InsertItem(self.storage, inString)
+Function StringBuilder:Append(inString)
+    InsertItem(self._storage, inString)
 EndFunction
 
-Function StringBuilderInternal:Replace(index, replacementStr)
-    RemoveItem(self.storage, index)
-    InsertItem(self.storage, replacementStr, index)
+Function StringBuilder:Replace(index, replacementStr)
+    RemoveItem(self._storage, index)
+    InsertItem(self._storage, replacementStr, index)
 EndFunction
 
-Function StringBuilderInternal:Remove(index)
-    RemoveItem(self.storage, index)
+Function StringBuilder:Remove(index)
+    RemoveItem(self._storage, index)
 EndFunction
 
-Function StringBuilderInternal:GetIndex(inString)
+Function StringBuilder:GetIndex(inString)
     Local index = -1
-    For Local i = 0 To ListItems(self.storage) - 1
-        Local item = GetItem(self.storage, i)
+    Local i
+    For i = 0 To ListItems(self._storage) - 1
+        Local item = GetItem(self._storage, i)
         If (CompareStr(item, inString) = 0)
             index = i
             Break
@@ -45,12 +51,6 @@ Function StringBuilderInternal:GetIndex(inString)
     Return (index)
 EndFunction
 
-Function StringBuilderInternal:Clear()
-    self.storage = CreateList()
-EndFunction
-
-Global StringBuilder = {}
-
-Function StringBuilder.New()
-    Return (CopyTable(StringBuilderInternal))
+Function StringBuilder:Clear()
+    self._storage = CreateList()
 EndFunction
