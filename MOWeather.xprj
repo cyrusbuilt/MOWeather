@@ -133,6 +133,10 @@
             <Option inproject="1"/>
             <Option filetype="16"/>
         </FileUnit>
+        <FileUnit filepath="MainWindow.hws">
+            <Option inproject="1"/>
+            <Option filetype="16"/>
+        </FileUnit>
         <FileUnit filepath="MOWeather.hws">
             <Option inproject="1"/>
             <Option filetype="16"/>

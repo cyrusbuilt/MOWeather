@@ -103,7 +103,7 @@
                     </hgroup>
                 </vgroup>
             </vgroup>
-            <vgroup halign="Left" frame="true" frametitle="5-Day Forecast">
+            <vgroup halign="Center" frame="true" frametitle="5-Day Forecast">
                 <hgroup>
                     <vgroup>
                         <label>Day 1</label>

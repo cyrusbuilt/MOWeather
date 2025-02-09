@@ -24,84 +24,11 @@ Author: cyrusbuilt
 
 ; Local dependencies
 @INCLUDE "Preferences.hws"
-@INCLUDE "RQWeatherClient/RQWeatherClient.hws"
-@INCLUDE "StringLib/StringUtils.hws"
+@INCLUDE "MainWindow.hws"
 
-; Load GUI definition file
-@FILE 1, "MOWeather.xml"
 
-; GUI constants
-Const #MSG_CLASS_BUTTON = "Button"
-Const #MSG_CLASS_MNUITM = "Menuitem"
-Const #MSG_ATTR_PRESSED = "Pressed"
-Const #MSG_ATTR_SELECTED = "Selected"
-Const #MSG_BTN_SEL_LOC = "btnSelectLoc"
-Const #MSG_BTN_GET_WEATHER = "btnGetWeather"
-Const #MSG_BTN_FETCH = "btnFetch"
-Const #MSG_MNU_ABOUT = "mnuAbout"
-Const #MSG_MNU_QUIT = "mnuQuit"
-Const #MSG_TE_LOG = "teLog"
-
-Const #TE_CITY = "teCity"
-Const #TE_STATE_CODE = "teStateCode"
-Const #TE_COUNTRY_CODE = "teCountryCode"
-
-Function p_Log(text)
-    Local eolIndex = 0
-    Local currentText = moai.Get(#MSG_TE_LOG, "Text")
-    Local len = StringUtils.StringLength(currentText)
-    If len > 5000
-        eolIndex = StringUtils.IndexOf(currentText, "\n", 0)
-        currentText = StringUtils.Substring(currentText, eolIndex, len - eolIndex)
-    EndIf
-
-    Local timestamp = GetDate(#DATELOCALNATIVE)
-    currentText = currentText .. "\n" .. timestamp .. " - " .. text .. "\n"
-    moai.Set(#MSG_TE_LOG, "Text", currentText)
-
-    Local pos = StringUtils.StringLength(currentText) - 1
-    moai.Set(#MSG_TE_LOG, "CursorPos", pos)
-EndFunction
-
-Function p_ProcessGUI(message)
-    DebugPrint("DEBUG: Event class: " .. message.Class)
-    DebugPrint("DEBUG: Event attrib: " .. message.Attribute)
-    DebugPrint("DEBUG: Event ID: " .. message.ID)
-    Switch message.Class
-    Case #MSG_CLASS_BUTTON:
-        Switch message.Attribute
-        Case #MSG_ATTR_PRESSED:
-            Switch message.ID
-            Case #MSG_BTN_SEL_LOC:
-				DebugPrint("Select location pressed!")
-            Case #MSG_BTN_GET_WEATHER:
-
-            Case #MSG_BTN_FETCH:
-
-            EndSwitch
-        EndSwitch
-    Case #MSG_CLASS_MNUITM:
-        Switch message.Attribute
-		Case #MSG_ATTR_SELECTED:
-			Switch message.ID
-        	Case #MSG_MNU_ABOUT:
-            	moai.Request("About", "MOWeather\n" ..
-                	"© 2025 by Cyrus Brunner")
-        	Case #MSG_MNU_QUIT:
-            	End
-        	EndSwitch
-		EndSwitch
-    EndSwitch
-EndFunction
-
-Function p_InitWindow()
-	
-EndFunction
-
-moai.CreateApp(ReadString(1))
-InstallEventHandler({RapaGUI=p_ProcessGUI})
 Preferences.Load()
-p_InitWindow()
+p_MainWindow_Init()
 
 Repeat
     WaitEvent
