@@ -32,7 +32,7 @@ Author: cyrusbuilt
 
 ; GUI constants
 Const #MSG_CLASS_BUTTON = "Button"
-Const #MSG_CLASS_MNUITM = "MenuItem"
+Const #MSG_CLASS_MNUITM = "Menuitem"
 Const #MSG_ATTR_PRESSED = "Pressed"
 Const #MSG_ATTR_SELECTED = "Selected"
 Const #MSG_BTN_SEL_LOC = "btnSelectLoc"
@@ -41,6 +41,10 @@ Const #MSG_BTN_FETCH = "btnFetch"
 Const #MSG_MNU_ABOUT = "mnuAbout"
 Const #MSG_MNU_QUIT = "mnuQuit"
 Const #MSG_TE_LOG = "teLog"
+
+Const #TE_CITY = "teCity"
+Const #TE_STATE_CODE = "teStateCode"
+Const #TE_COUNTRY_CODE = "teCountryCode"
 
 Function p_Log(text)
     Local eolIndex = 0
@@ -69,7 +73,7 @@ Function p_ProcessGUI(message)
         Case #MSG_ATTR_PRESSED:
             Switch message.ID
             Case #MSG_BTN_SEL_LOC:
-
+				DebugPrint("Select location pressed!")
             Case #MSG_BTN_GET_WEATHER:
 
             Case #MSG_BTN_FETCH:
@@ -78,18 +82,26 @@ Function p_ProcessGUI(message)
         EndSwitch
     Case #MSG_CLASS_MNUITM:
         Switch message.Attribute
-        Case #MSG_MNU_ABOUT:
-            moai.Request("About", "MOWeather\n" ..
-                "© 2025 by Cyrus Brunner")
-        Case #MSG_MNU_QUIT:
-            End
-        EndSwitch
+		Case #MSG_ATTR_SELECTED:
+			Switch message.ID
+        	Case #MSG_MNU_ABOUT:
+            	moai.Request("About", "MOWeather\n" ..
+                	"© 2025 by Cyrus Brunner")
+        	Case #MSG_MNU_QUIT:
+            	End
+        	EndSwitch
+		EndSwitch
     EndSwitch
+EndFunction
+
+Function p_InitWindow()
+	
 EndFunction
 
 moai.CreateApp(ReadString(1))
 InstallEventHandler({RapaGUI=p_ProcessGUI})
 Preferences.Load()
+p_InitWindow()
 
 Repeat
     WaitEvent

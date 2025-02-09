@@ -8,16 +8,140 @@
     </menubar>
     <window title="MOWeather" menubar="mnuApp" width="734" height="681">
         <vgroup>
-            <hgroup title="Location" width="728" height="145">
-                <label id="lblCity" width="53" height="20">City:</label>w
-            </hgroup>
-            <hgroup title="Current Conditions">
-                <label id="lblCurrent" width="565" height="20">Right Now:</label>
-            </hgroup>
-            
-            <hgroup>
-                <texteditor id="teLog" align="left" width="728" height="95" disabled="true"></texteditor>
-            </hgroup>
+            <vgroup halign="Left" frame="true" frametitle="Location">
+                <hgroup>
+                    <label align="Left">City: </label>
+                    <textentry id="teCity"/>
+                    <hspace/>
+                    <button id="btnSelectLoc">Select Location</button>
+                </hgroup>
+                <hgroup>
+                    <label align="Left">State Code: </label>
+                    <textentry id="teStateCode"/>
+                    <label>Country Code:</label>
+                    <textentry id="teCountryCode"/>
+                    <hspace/>
+                    <button id="btnFetch">Fetch</button>
+                </hgroup>
+                <hgroup>
+                    <label align="Left">Latitude: </label>
+                    <label align="Left" id="lblLatitude"/>
+                    <hspace/>
+                    <label align="Left">Progress: </label>
+                </hgroup>
+                <hgroup>
+                    <label align="Left">Longitude: </label>
+                    <label align="Left" id="lblLongitude"/>
+                    <hspace/>
+                    <progressbar id="pbProgress"/>
+                </hgroup>
+            </vgroup>
+            <vgroup halign="Left" frame="true" frametitle="Current Conditions">
+                <vgroup>
+                    <hgroup halign="Left">
+                        <label align="Left">Right Now: </label>
+                        <label align="Left" id="lblRightNow"/>
+                    </hgroup>
+                </vgroup>
+                <vgroup>
+                    <hgroup>
+                        <vgroup halign="Left">
+                            <hgroup halign="Left">
+                                <label align="Left">Temperature: </label>
+                                <label align="Left" id="lblTemp"/>
+                            </hgroup>
+                            <hgroup>
+                                <label align="Left">High: </label>
+                                <label align="Left" id="lblHighTemp"/>
+                                <label align="Left">Low: </label>
+                                <label align="Left" id="lblLowTemp"/>
+                            </hgroup>
+                            <hgroup>
+                                <label align="Left">Humidity: </label>
+                                <label align="Left" id="lblHumidity"/>
+                            </hgroup>
+                            <hgroup>
+                                <label align="Left">Cloudiness: </label>
+                                <label align="Left" id="lblCloudiness">0%</label>
+                            </hgroup>
+                            <hgroup>
+                                <label align="Left">Rain: </label>
+                                <label align="Left" id="lblRain"/>
+                            </hgroup>
+                            <hgroup>
+                                <label align="Left">Sunrise: </label>
+                                <label align="Left" id="lblSunrise"/>
+                            </hgroup>
+                        </vgroup>
+                        <vgroup halign="Left">
+                            <hgroup halign="Left">
+                                <label align="Left">Feels Like: </label>
+                                <label align="Left" id="lblFeelsLike"/>
+                            </hgroup>
+                            <hgroup>
+                                <label align="Left">Pressure: </label>
+                                <label align="Left" id="lblPressure"/>
+                            </hgroup>
+                            <hgroup>
+                                <label align="Left">Visibility: </label>
+                                <label align="Left" id="lblVisibility"/>
+                            </hgroup>
+                            <hgroup>
+                                <label align="Left">Wind: </label>
+                                <label align="Left" id="lblWind"/>
+                            </hgroup>
+                            <hgroup>
+                                <label align="Left">Snow: </label>
+                                <label align="Left" id="lblSnow"/>
+                            </hgroup>
+                            <hgroup>
+                                <label align="Left">Sunset: </label>
+                                <label align="Left" id="lblSunset"/>
+                            </hgroup>
+                        </vgroup>
+                <!-- TODO need another vgroup here to hold the weather icon -->
+                    </hgroup>
+                </vgroup>
+            </vgroup>
+            <vgroup halign="Left" frame="true" frametitle="5-Day Forecast">
+                <hgroup>
+                    <vgroup>
+                        <label>Day 1</label>
+                        <!-- TODO condition icon -->
+                        <label id="lblDay1Cond">Condition</label>
+                        <label id="lblDay1Temps">Temps</label>
+                    </vgroup>
+                    <vgroup>
+                        <label>Day 2</label>
+                        <!-- TODO condition icon -->
+                        <label id="lblDay2Cond">Condition</label>
+                        <label id="lblDay2Temps">Temps</label>
+                    </vgroup>
+                    <vgroup>
+                        <label>Day 3</label>
+                        <!-- TODO condition icon -->
+                        <label id="lblDay3Cond">Condition</label>
+                        <label id="lblDay3Temps">Temps</label>
+                    </vgroup>
+                    <vgroup>
+                        <label>Day 4</label>
+                        <!-- TODO condition icon -->
+                        <label id="lblDay4Cond">Condition</label>
+                        <label id="lblDay4Temps">Temps</label>
+                    </vgroup>
+                    <vgroup>
+                        <label>Day 5</label>
+                        <!-- TODO condition icon -->
+                        <label id="lblDay5Cond">Condition</label>
+                        <label id="lblDay5Temps">Temps</label>
+                    </vgroup>
+                </hgroup>
+            </vgroup>
+            <vgroup>
+                <hgroup>
+                    <texteditor id="teLog" align="left" width="728" height="95" disabled="true"></texteditor>
+                </hgroup>
+            </vgroup>
         </vgroup>
     </window>
 </application>

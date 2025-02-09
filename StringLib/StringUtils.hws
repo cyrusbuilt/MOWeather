@@ -226,8 +226,9 @@ Function StringUtils.ParseDateFromYMDHMSString(inString)
     dateStr = StringUtils.StringReplace(dateStr, "Z", StringUtils.EMPTY)
 
     Local dtParts = StringUtils.StringSplit(dateStr, StringUtils.DEFAULT_PAD_CHAR)
+	Local dateParts = {}
     If (hasDash)
-        Local dateParts = StringUtils.StringSplit(dtParts[0], "-")
+        dateParts = StringUtils.StringSplit(dtParts[0], "-")
         If (ListItems(dateParts) <> 2)
             Return (False, Nil)
         EndIf
