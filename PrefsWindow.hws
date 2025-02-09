@@ -1,0 +1,37 @@
+@INCLUDE "Preferences.hws"
+@INCLUDE "StringLib/StringUtils.hws"
+
+Const #WIN_PREFS = "winPrefs"
+Const #BTN_PREFS_CANCEL = "btnPrefsCancel"
+Const #BTN_PREFS_SAVE = "btnPrefsSave"
+Const #TE_PREFS_API_HOST = "tePrefsApiHost"
+Const #TE_PREFS_API_PORT = "tePrefsApiPort"
+
+Function p_PrefsWindow_Show()
+	Preferences.Load()
+	moai.Set(#TE_PREFS_API_HOST, "Text", Preferences.ApiHostAddress)
+	moai.Set(#TE_PREFS_API_PORT, "Text", Preferences.ApiHostPort)
+	moai.Set(#WIN_PREFS, "Open", True)
+EndFunction
+
+Function p_PrefsWindow_Close()
+	moai.Set(#WIN_PREFS, "Open", False)
+EndFunction
+
+Function p_PrefsWindow_SaveAndClose()
+	Local apiHost = moai.Get(#TE_PREFS_API_HOST, "Text")
+	apiHost = StringUtils.StringTrim(apiHost)
+
+	Local apiPort = moai.Get(#TE_PREFS_API_PORT, "Text")
+	apiPort = StringUtils.StringTrim(apiPort)
+	If Not(StringUtils.IsEmpty(apiPort))
+		apiPort = Val(apiPort)
+	Else
+		apiPort = 0
+	EndIf
+
+	Preferences.ApiHostAddress = apiHost
+	Preferences.ApiHostPort = apiPort
+	Preferences.Save()
+	p_PrefsWindow_Close()
+EndFunction

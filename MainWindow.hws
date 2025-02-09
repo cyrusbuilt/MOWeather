@@ -1,21 +1,59 @@
 @INCLUDE "RQWeatherClient/RQWeatherClient.hws"
 @INCLUDE "StringLib/StringUtils.hws"
+@INCLUDE "PrefsWindow.hws"
 
 ; GUI constants
 Const #MSG_CLASS_BUTTON = "Button"
 Const #MSG_CLASS_MNUITM = "Menuitem"
 Const #MSG_ATTR_PRESSED = "Pressed"
 Const #MSG_ATTR_SELECTED = "Selected"
-Const #MSG_BTN_SEL_LOC = "btnSelectLoc"
-Const #MSG_BTN_GET_WEATHER = "btnGetWeather"
-Const #MSG_BTN_FETCH = "btnFetch"
-Const #MSG_MNU_ABOUT = "mnuAbout"
-Const #MSG_MNU_QUIT = "mnuQuit"
 Const #MSG_TE_LOG = "teLog"
 
+; Buttons
+Const #BTN_SEL_LOC = "btnSelectLoc"
+Const #BTN_GET_WEATHER = "btnGetWeather"
+Const #BTN_FETCH = "btnFetch"
+
+; Menus
+Const #MNU_ABOUT = "mnuAbout"
+Const #MNU_QUIT = "mnuQuit"
+Const #MNU_PREFS = "mnuPreferences"
+
+; Text input fields
 Const #TE_CITY = "teCity"
 Const #TE_STATE_CODE = "teStateCode"
 Const #TE_COUNTRY_CODE = "teCountryCode"
+
+; Labels
+Const #LBL_LATITUDE = "lblLatitude"
+Const #LBL_LONGITUDE = "lblLongitude"
+Const #LBL_RIGHT_NOW = "lblRightNow"
+Const #LBL_CURRENT_TEMP = "lblTemp"
+Const #LBL_HIGH_TEMP = "lblHighTemp"
+Const #LBL_LOW_TEMP = "lblLowTemp"
+Const #LBL_HUMIDITY = "lblHumidity"
+Const #LBL_CLOUDINESS = "lblCloudiness"
+Const #LBL_RAIN = "lblRain"
+Const #LBL_SUNRISE = "lblSunrise"
+Const #LBL_FEELS_LIKE = "lblFeelsLike"
+Const #LBL_PRESSURE = "lblPressure"
+Const #LBL_VISIBILITY = "lblVisibility"
+Const #LBL_WIND = "lblWind"
+Const #LBL_SNOW = "lblSnow"
+Const #LBL_SUNSET = "lblSunset"
+Const #LBL_DAY_1_COND = "lblDay1Cond"
+Const #LBL_DAY_1_TEMPS = "lblDay1Temps"
+Const #LBL_DAY_2_COND = "lblDay2Cond"
+Const #LBL_DAY_2_TEMPS = "lblDay2Temps"
+Const #LBL_DAY_3_COND = "lblDay3Cond"
+Const #LBL_DAY_3_TEMPS = "lblDay3Temps"
+Const #LBL_DAY_4_COND = "lblDay4Cond"
+Const #LBL_DAY_4_TEMPS = "lblDay4Temps"
+Const #LBL_DAY_5_COND = "lblDay5Cond"
+Const #LBL_DAY_5_TEMPS = "lblDay5Temps"
+
+; Progress bars
+Const #PB_PROGRESS = "pbProgress"
 
 Function p_MainWindow_Log(text)
     Local eolIndex = 0
@@ -26,7 +64,7 @@ Function p_MainWindow_Log(text)
         currentText = StringUtils.Substring(currentText, eolIndex, len - eolIndex)
     EndIf
 
-    Local timestamp = GetDate(#DATELOCALNATIVE)
+    Local timestamp = GetDate() .. " " .. GetTime()
     currentText = currentText .. "\n" .. timestamp .. " - " .. text .. "\n"
     moai.Set(#MSG_TE_LOG, "Text", currentText)
 
@@ -43,23 +81,29 @@ Function p_MainWindow_ProcessGUI(message)
         Switch message.Attribute
         Case #MSG_ATTR_PRESSED:
             Switch message.ID
-            Case #MSG_BTN_SEL_LOC:
+            Case #BTN_SEL_LOC:
 				DebugPrint("Select location pressed!")
-            Case #MSG_BTN_GET_WEATHER:
+            Case #BTN_GET_WEATHER:
 
-            Case #MSG_BTN_FETCH:
-
+            Case #BTN_FETCH:
+			
+			Case #BTN_PREFS_CANCEL:
+				p_PrefsWindow_Close()
+			Case #BTN_PREFS_SAVE:
+				p_PrefsWindow_SaveAndClose()
             EndSwitch
         EndSwitch
     Case #MSG_CLASS_MNUITM:
         Switch message.Attribute
 		Case #MSG_ATTR_SELECTED:
 			Switch message.ID
-        	Case #MSG_MNU_ABOUT:
+        	Case #MNU_ABOUT:
             	moai.Request("About", "MOWeather\n" ..
                 	"© 2025 by Cyrus Brunner")
-        	Case #MSG_MNU_QUIT:
+        	Case #MNU_QUIT:
             	End
+			Case #MNU_PREFS:
+				p_PrefsWindow_Show()
         	EndSwitch
 		EndSwitch
     EndSwitch
@@ -70,4 +114,5 @@ Function p_MainWindow_Init()
 	@FILE 1, "MainWindow.xml"
 	moai.CreateApp(ReadString(1))
 	InstallEventHandler({RapaGUI=p_MainWindow_ProcessGUI})
+	p_MainWindow_Log("Ready.")
 EndFunction

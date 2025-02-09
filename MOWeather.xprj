@@ -149,6 +149,10 @@
             <Option inproject="1"/>
             <Option filetype="16"/>
         </FileUnit>
+        <FileUnit filepath="PrefsWindow.hws">
+            <Option inproject="1"/>
+            <Option filetype="16"/>
+        </FileUnit>
         <FileUnit filepath="RQWeatherClient/RQWeatherClient.hws">
             <Option inproject="1"/>
             <Option filetype="16"/>

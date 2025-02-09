@@ -5,6 +5,9 @@
             <item id="mnuAbout">About...</item>
             <item id="mnuQuit">Quit</item>
         </menu>
+        <menu title="Settings">
+            <item id="mnuPreferences">Preferences...</item>
+        </menu>
     </menubar>
     <window title="MOWeather" menubar="mnuApp" width="734" height="681">
         <vgroup>
@@ -139,9 +142,27 @@
             </vgroup>
             <vgroup>
                 <hgroup>
-                    <texteditor id="teLog" align="left" width="728" height="95" disabled="true"></texteditor>
+                    <texteditor id="teLog" align="left" width="728" height="95" readonly="true"></texteditor>
                 </hgroup>
             </vgroup>
+        </vgroup>
+    </window>
+    <window id="winPrefs" title="Preferences" width="912" height="300" open="False">
+        <vgroup halign="Left">
+            <hgroup halign="Left">
+                <label align="Left">API Host: </label>
+                <textentry id="tePrefsApiHost"/>
+            </hgroup>
+            <hgroup halign="Left">
+                <label align="Left">Port: </label>
+                <textentry id="tePrefsApiPort"/>
+            </hgroup>
+            <vspace/>
+            <hgroup halign="Right">
+                <hspace width="400"/>
+                <button id="btnPrefsCancel">Cancel</button>
+                <button id="btnPrefsSave">Save and Close</button>
+            </hgroup>
         </vgroup>
     </window>
 </application>
