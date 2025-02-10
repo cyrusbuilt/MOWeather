@@ -10,7 +10,8 @@ Function IconCache.Init()
     EndIf
 
     IconCache._cachePath = appDir .. "/IconCache"
-    If Not(IsDirectory(IconCache._cachePath))
+	DebugPrint("Icon cache path: " .. IconCache._cachePath)
+    If Not(Exists(IconCache._cachePath)) Or Not(IsDirectory(IconCache._cachePath))
         MakeDirectory(IconCache._cachePath)
     EndIf
 EndFunction

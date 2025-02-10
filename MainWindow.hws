@@ -1,8 +1,12 @@
 @INCLUDE "RQWeatherClient/RQWeatherClient.hws"
+@INCLUDE "RQWeatherClient/HTTPStatus.hws"
+@INCLUDE "RQWeatherClient/DTO/GeoDTO.hws"
 @INCLUDE "StringLib/StringUtils.hws"
+@INCLUDE "Preferences.hws"
 @INCLUDE "PrefsWindow.hws"
+@INCLUDE "IconCacheLib/IconCache.hws"
 
-; GUI constants
+; Window message constants
 Const #MSG_CLASS_BUTTON = "Button"
 Const #MSG_CLASS_MNUITM = "Menuitem"
 Const #MSG_ATTR_PRESSED = "Pressed"
@@ -55,6 +59,15 @@ Const #LBL_DAY_5_TEMPS = "lblDay5Temps"
 ; Progress bars
 Const #PB_PROGRESS = "pbProgress"
 
+; File IDs
+Const #FILE_WINDOW_DEF = "MainWindow.xml"
+Const #FILE_BRUSH_DEF_ICON = "icons/weather.png"
+Const #ID_WINDOW_DEF = 1
+Const #ID_BRUSH_WEATHER_COND = 2
+
+Global pCurrentLocation = nil
+Global pDownloading = False
+
 Function p_MainWindow_Log(text)
     Local eolIndex = 0
     Local currentText = moai.Get(#MSG_TE_LOG, "Text")
@@ -70,6 +83,65 @@ Function p_MainWindow_Log(text)
 
     Local pos = StringUtils.StringLength(currentText) - 1
     moai.Set(#MSG_TE_LOG, "CursorPos", pos)
+EndFunction
+
+Function p_MainWindow_Reload()
+	Preferences.Load()
+	RQWeatherClient.Address = Preferences.ApiHostAddress
+	RQWeatherClient.Port = Preferences.ApiHostPort
+	If IsNil(pCurrentLocation)
+		If Preferences.LocationLatitude <> 0 And Preferences.LocationLongitude <> 0
+			pCurrentLocation = GeoDTO:New()
+			pCurrentLocation.Latitude = Preferences.LocationLatitude
+			pCurrentLocation.Longitude = Preferences.LocationLongitude
+			pCurrentLocation.Name = Preferences.LocationCity
+			pCurrentLocation.State = Preferences.LocationState
+			pCurrentLocation.Country = Preferences.LocationCountryCode
+		Else
+			Return ()
+		EndIf
+	EndIf
+	
+	moai.Set(#TE_CITY, "Text", pCurrentLocation.Name)
+	moai.Set(#TE_STATE_CODE, "Text", pCurrentLocation.State)
+	moai.Set(#TE_COUNTRY_CODE, "Text", pCurrentLocation.Country)
+	moai.Set(#LBL_LATITUDE, "Text", ToString(pCurrentLocation.Latitude))
+	moai.Set(#LBL_LONGITUDE, "Text", ToString(pCurrentLocation.Longitude))
+EndFunction
+
+Function p_MainWindow_SetCurrentLocation(location)
+	pCurrentLocation = location
+	Preferences.LocationLatitude = pCurrentLocation.Latitude
+	Preferences.LocationLongitude = pCurrentLocation.Longitude
+	Preferences.LocationCity = pCurrentLocation.Name
+	Preferences.LocationState = pCurrentLocation.State
+	Preferences.LocationCountryCode = pCurrentLocation.Country
+	Preferences.Save()
+	p_MainWindow_Reload()	
+EndFunction
+
+Function p_MainWindow_GetCurrentWeather()
+	If IsNil(pCurrentLocation)
+		Return ()
+	EndIf
+	
+	Local condition = nil
+	Local nameParts = {}
+	Local lat = pCurrentLocation.Latitude
+	Local lon = pCurrentLocation.Longitude
+	Local windSpeed = 0
+	Local direction = StringUtils.EMPTY
+	Local gust = 0
+	Local oneHour = 0
+	Local threeHour = 0
+	Local sunrise = StringUtils.EMPTY
+	Local sunset = StringUtils.EMPTY
+	Local tstamp = StringUtils.EMPTY
+	Local timestamp = {}
+	Local tzOffsetHours = 0
+	
+	; Fetch current weather data and check response status
+	;Local currentWeather = 
 EndFunction
 
 Function p_MainWindow_ProcessGUI(message)
@@ -109,10 +181,66 @@ Function p_MainWindow_ProcessGUI(message)
     EndSwitch
 EndFunction
 
+Function p_MainWindow_ReceiveProgress(totalBytes, bytesReceived)
+	pDownloading = True
+	moai.Set(#PB_PROGRESS, "Max", totalBytes)
+	Local value = (bytesReceived * 100) / totalBytes
+	moai.Set(#PB_PROGRESS, "Level", value) 
+EndFunction
+
+Function p_MainWindow_ProcessingRequest()
+	p_MainWindow_Log("Beginning API request")
+EndFunction
+
+Function p_MainWindow_ProcessingComplete()
+	p_MainWindow_Log("API request complete")
+EndFunction
+
+Function p_MainWindow_DownloadComplete(url, httpStatus, filePath)
+	moai.Set(#PB_PROGRESS, "Max", 100)
+	moai.Set(#PB_PROGRESS, "Level", 100)
+	If httpStatus = HTTPStatus.STATUS_200_OK And Not(IsNil(filePath))
+		
+	EndIf
+	
+	pDownloading = False
+EndFunction
+
+Function p_MainWindow_Connected()
+	p_MainWindow_Log("Client connected")
+EndFunction
+
+Function p_MainWindow_ApiSuccess(errorCode, desc)
+	p_MainWindow_Log("Request result: [" .. ToString(errorCode) .. "] " .. desc)
+EndFunction
+
+Function p_MainWindow_ApiError(errorCode, desc, inUrl, inResponse)
+	p_MainWindow_Log("API Error: [" .. ToString(errorCode) .. "] " .. desc .. " (URL: " .. inUrl .. ")")
+EndFunction
+
+
 Function p_MainWindow_Init()
 	; Load GUI definition file
-	@FILE 1, "MainWindow.xml"
-	moai.CreateApp(ReadString(1))
+	@FILE #ID_WINDOW_DEF, #FILE_WINDOW_DEF
+
+	; Load default weather icon
+	LoadBrush(#ID_BRUSH_WEATHER_COND, #FILE_BRUSH_DEF_ICON)
+
+	moai.CreateApp(ReadString(#ID_WINDOW_DEF))
 	InstallEventHandler({RapaGUI=p_MainWindow_ProcessGUI})
+
+	IconCache.Init()
+	IconCache.ClearCache()
+	
+	RQWeatherClient.OnProcessingRequest = p_MainWindow_ProcessingRequest
+	RQWeatherClient.OnProcessingComplete = p_MainWindow_ProcessingComplete
+	RQWeatherClient.OnXferProgress = p_MainWindow_ReceiveProgress
+	RQWeatherClient.OnDownloadComplete = p_MainWindow_DownloadComplete
+	RQWeatherClient.OnConnected = p_MainWindow_Connected
+	RQWeatherClient.OnApiSuccess = p_MainWindow_ApiSuccess
+	RQWeatherClient.OnApiError = p_MainWindow_ApiError
+	
+
+	p_MainWindow_Reload()
 	p_MainWindow_Log("Ready.")
 EndFunction

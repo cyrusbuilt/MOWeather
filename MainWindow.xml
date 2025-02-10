@@ -102,7 +102,9 @@
                                 <label align="Left" id="lblSunset"/>
                             </hgroup>
                         </vgroup>
-                <!-- TODO need another vgroup here to hold the weather icon -->
+                        <vgroup>
+                            <image id="imgCondition" brush="2"/>
+                        </vgroup>
                     </hgroup>
                 </vgroup>
             </vgroup>

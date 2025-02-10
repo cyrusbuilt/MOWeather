@@ -21,13 +21,13 @@ RQWeatherClient._recvBuffer = Nil
 RQWeatherClient._connected = False
 RQWeatherClient._downloading = False
 RQWeatherClient._dlHandle = Nil
-RQWeatherClient.ProcessingRequest = Function() EndFunction
-RQWeatherClient.ProcessingComplete = Function() EndFunction
-RQWeatherClient.ApiError = Function(errorCode, desc, inUrl, inResponse) EndFunction
-RQWeatherClient.ApiSuccess = Function(errorCode, desc) EndFunction
-RQWeatherClient.Connected = Function() EndFunction
-RQWeatherClient.DownloadComplete = Function() EndFunction
-RQWeatherClient.XferProgress = Function(totalBytes, bytesReceived) EndFunction
+RQWeatherClient.OnProcessingRequest = Function() EndFunction
+RQWeatherClient.OnProcessingComplete = Function() EndFunction
+RQWeatherClient.OnApiError = Function(errorCode, desc, inUrl, inResponse) EndFunction
+RQWeatherClient.OnApiSuccess = Function(errorCode, desc) EndFunction
+RQWeatherClient.OnConnected = Function() EndFunction
+RQWeatherClient.OnDownloadComplete = Function(url, httpStatus, filePath) EndFunction
+RQWeatherClient.OnXferProgress = Function(totalBytes, bytesReceived) EndFunction
 
 Function RQWeatherClient._recvData(data$)
     RQWeatherClient._recvBuffer = RQWeatherClient._recvBuffer .. data$
@@ -54,44 +54,44 @@ Function RQWeatherClient._geoRoot()
 EndFunction
 
 Function RQWeatherClient._eventProcReq()
-    If (GetType(RQWeatherClient.ProcessingRequest) = #FUNCTION)
-        RQWeatherClient.ProcessingRequest()
+    If (GetType(RQWeatherClient.OnProcessingRequest) = #FUNCTION)
+        RQWeatherClient.OnProcessingRequest()
     EndIf
 EndFunction
 
 Function RQWeatherClient._eventProcComplete()
-    If (GetType(RQWeatherClient.ProcessingComplete) = #FUNCTION)
-        RQWeatherClient.ProcessingComplete()
+    If (GetType(RQWeatherClient.OnProcessingComplete) = #FUNCTION)
+        RQWeatherClient.OnProcessingComplete()
     EndIf
 EndFunction
 
 Function RQWeatherClient._eventApiError(errorCode, desc, inUrl, inResponse)
-    If (GetType(RQWeatherClient.ApiError) = #FUNCTION)
-        RQWeatherClient.ApiError(errorCode, desc, inUrl, inResponse)
+    If (GetType(RQWeatherClient.OnApiError) = #FUNCTION)
+        RQWeatherClient.OnApiError(errorCode, desc, inUrl, inResponse)
     EndIf
 EndFunction
 
 Function RQWeatherClient._eventApiSuccess(errorCode, desc)
     If (GetType(RQWeatherClient.ApiSuccess) = #FUNCTION)
-        RQWeatherClient.ApiSuccess(errorCode, desc)
+        RQWeatherClient.OnApiSuccess(errorCode, desc)
     EndIf
 EndFunction
 
 Function RQWeatherClient._eventConnected()
-    If (GetType(RQWeatherClient.Connected) = #FUNCTION)
-        RQWeatherClient.Connected()
+    If (GetType(RQWeatherClient.OnConnected) = #FUNCTION)
+        RQWeatherClient.OnConnected()
     EndIf
 EndFunction
 
-Function RQWeatherClient._eventDownloadComplete()
-    If (GetType(RQWeatherClient.DownloadComplete) = #FUNCTION)
-        RQWeatherClient.DownloadComplete()
+Function RQWeatherClient._eventDownloadComplete(inUrl, stat, localFile)
+    If (GetType(RQWeatherClient.OnDownloadComplete) = #FUNCTION)
+        RQWeatherClient.OnDownloadComplete(inUrl, stat, localFile)
     EndIf
 EndFunction
 
 Function RQWeatherClient._eventXferProgress(prg)
-    If (GetType(RQWeatherClient.XferProgress) = #FUNCTION)
-        RQWeatherClient.XferProgress(prg.Total, prg.Count)
+    If (GetType(RQWeatherClient.OnXferProgress) = #FUNCTION)
+        RQWeatherClient.OnXferProgress(prg.Total, prg.Count)
     EndIf
 EndFunction
 
@@ -186,9 +186,13 @@ EndFunction
 Function RQWeatherClient.DownloadFile(inUrl, localFile)
 	Local done = False
 	RQWeatherClient._downloading = True
+
     RQWeatherClient._dlHandle = DownloadFile(inUrl, {Async=True, Adapter="hurl", File=localFile}, RQWeatherClient._eventXferProgress)
-	Repeat done = ContinueAsyncOperation(handle)
+	Repeat done = ContinueAsyncOperation(RQWeatherClient._dlHandle)
 		VWait()
 	Until done Or Not RQWeatherClient._downloading
+	
 	RQWeatherClient._downloading = False
+	Local stat = RQWeatherClient._hurl:GetInfo_ResponseCode()
+	RQWeatherClient._eventDownloadComplete(inUrl, stat, localFile)
 EndFunction
