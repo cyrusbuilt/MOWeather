@@ -112,31 +112,31 @@
                 <hgroup>
                     <vgroup>
                         <label>Day 1</label>
-                        <!-- TODO condition icon -->
+                        <image id="imgDay1Cond" brush="2"/>
                         <label id="lblDay1Cond">Condition</label>
                         <label id="lblDay1Temps">Temps</label>
                     </vgroup>
                     <vgroup>
                         <label>Day 2</label>
-                        <!-- TODO condition icon -->
+                        <image id="imgDay2Cond" brush="2"/>
                         <label id="lblDay2Cond">Condition</label>
                         <label id="lblDay2Temps">Temps</label>
                     </vgroup>
                     <vgroup>
                         <label>Day 3</label>
-                        <!-- TODO condition icon -->
+                        <image id="imgDay3Cond" brush="2"/>
                         <label id="lblDay3Cond">Condition</label>
                         <label id="lblDay3Temps">Temps</label>
                     </vgroup>
                     <vgroup>
                         <label>Day 4</label>
-                        <!-- TODO condition icon -->
+                        <image id="imgDay4Cond" brush="2"/>
                         <label id="lblDay4Cond">Condition</label>
                         <label id="lblDay4Temps">Temps</label>
                     </vgroup>
                     <vgroup>
                         <label>Day 5</label>
-                        <!-- TODO condition icon -->
+                        <image id="imagDay5Cond" brush="2"/>
                         <label id="lblDay5Cond">Condition</label>
                         <label id="lblDay5Temps">Temps</label>
                     </vgroup>

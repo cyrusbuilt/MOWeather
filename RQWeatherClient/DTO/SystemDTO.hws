@@ -1,3 +1,5 @@
+@INCLUDE "../../StringLib/StringUtils.hws"
+
 Const #K_SYS_TYPE_KEY = "type"
 Const #K_SYS_ID_KEY = "id"
 Const #K_SYS_MESSAGE_KEY = "message"
@@ -40,12 +42,20 @@ Function SystemDTO:LoadFromTable(inTable)
         instance.country = inTable.country
     EndIf
 
+    Local success = False
+    Local tstamp = Nil
     If (HaveItem(inTable, #K_SYS_SUNRISE_KEY))
-        instance.sunrise = ParseDate(inTable.sunrise)
+        success, tstamp = StringUtils.ParseDateFromYMDHMSString(inTable.sunrise)
+        If success
+            instance.sunrise = tstamp
+        EndIf
     EndIf
 
     If (HaveItem(inTable, #K_SYS_SUNSET_KEY))
-        instance.sunset = ParseDate(inTable.sunset)
+        success, tstamp = StringUtils.ParseDateFromYMDHMSString(inTable.sunset)
+        If success
+            instance.sunset = tstamp
+        EndIf
     EndIf
 
     Return (instance)

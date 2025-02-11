@@ -1,3 +1,5 @@
+@INCLUDE "WindDirection.hws"
+
 Const #K_W_SPEED_KEY = "speed"
 Const #K_W_DEGREES_KEY = "degrees"
 Const #K_W_GUST_KEY = "gust"
@@ -31,4 +33,34 @@ Function WindDTO:LoadFromTable(inTable)
     EndIf
 
     Return (instance)
+EndFunction
+
+Function WindDTO:ToWindDirection()
+    Local result = ""
+    Local sectors = {}
+    sectors[0] = WindDirection.N
+    sectors[1] = WindDirection.NNE
+    sectors[2] = WindDirection.NE
+    sectors[3] = WindDirection.ENE
+    sectors[4] = WindDirection.E
+    sectors[5] = WindDirection.ESE
+    sectors[6] = WindDirection.SE
+    sectors[7] = WindDirection.SSE
+    sectors[8] = WindDirection.S
+    sectors[9] = WindDirection.SSW
+    sectors[10] = WindDirection.SW
+    sectors[11] = WindDirection.WSW
+    sectors[12] = WindDirection.W
+    sectors[13] = WindDirection.WNW
+    sectors[14] = WindDirection.NW
+    sectors[15] = WindDirection.NNW
+    sectors[16] = WindDirection.N
+
+    Local modulo = self.degrees % 360
+    Local index = Round(modulo / 22.5)
+    If index >= 0 And index <= 16
+        result = sectors[index]
+    EndIf
+
+    Return (result)
 EndFunction

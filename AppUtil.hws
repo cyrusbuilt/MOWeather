@@ -1,0 +1,27 @@
+@INCLUDE "StringLib/StringUtils.hws"
+
+Global AppUtil = {}
+
+Function AppUtil.PrettyTimestamp(inTimestampString, timeOnly)
+    If IsNil(timeOnly) Then timeOnly = False
+    Local result = inTimestampString
+    result = StringUtils.StringReplace(result, "Z", StringUtils.EMPTY)
+
+    Local tsParts = StringUtils.StringSplit(result, "T")
+    Local dateParts = StringUtils.StringSplit(tsParts[0], "-")
+    Local timePart = tsParts[1]
+
+    If timeOnly
+        result = timePart
+    Else
+        result = dateParts[1] .. "/" .. dateParts[2] .. "/" .. dateParts[0]
+        result = result .. StringUtils.DEFAULT_PAD_CHAR .. timePart
+    EndIf
+
+    Return (result)
+EndFunction
+
+Function AppUtil.PrettyTimeOnly(inTimestampString)
+    Local result = AppUtil.PrettyTimestamp(inTimestampString)
+    Return (StringUtils.Substring(result, 0, 6))
+EndFunction

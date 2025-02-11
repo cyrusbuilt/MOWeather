@@ -4,6 +4,7 @@
 @INCLUDE "MainDTO.hws"
 @INCLUDE "WeatherConditionDTO.hws"
 @INCLUDE "WindDTO.hws"
+@INCLUDE "../../StringLib/StringUtils.hws"
 
 Const #K_DF_CLOUDS_KEY = "clouds"
 Const #K_DF_MAIN_KEY = "main"
@@ -70,7 +71,10 @@ Function DailyForecastDTO:LoadFromTable(inTable)
     EndIf
 
     If (HaveItem(inTable, #K_DF_TIMESTAMP_KEY))
-        instance.timestamp = ParseDate(inTable.timestamp)
+        Local success, tstamp = StringUtils.ParseDateFromYMDHMSString(inTable.timestamp)
+        If success
+            instance.timestamp = tstamp
+        EndIf
     EndIf
 
     If (HaveItem(inTable, #K_DF_WEATHER_KEY))

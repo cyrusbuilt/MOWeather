@@ -2,6 +2,7 @@
 @INCLUDE "RQWeatherClient/HTTPStatus.hws"
 @INCLUDE "RQWeatherClient/DTO/GeoDTO.hws"
 @INCLUDE "StringLib/StringUtils.hws"
+@INCLUDE "AppUtil.hws"
 @INCLUDE "Preferences.hws"
 @INCLUDE "PrefsWindow.hws"
 @INCLUDE "IconCacheLib/IconCache.hws"
@@ -59,14 +60,24 @@ Const #LBL_DAY_5_TEMPS = "lblDay5Temps"
 ; Progress bars
 Const #PB_PROGRESS = "pbProgress"
 
+; Image boxes
+Const #IMG_COND = "imgCondition"
+Const #IMG_DAY_1_COND = "imgDay1Cond"
+Const #IMG_DAY_2_COND = "imgDay2Cond"
+Const #IMG_DAY_3_COND = "imgDay3Cond"
+Const #IMG_DAY_4_COND = "imgDay4Cond"
+Const #IMG_DAY_5_COND = "imgDay5Cond"
+
 ; File IDs
 Const #FILE_WINDOW_DEF = "MainWindow.xml"
 Const #FILE_BRUSH_DEF_ICON = "icons/weather.png"
 Const #ID_WINDOW_DEF = 1
 Const #ID_BRUSH_WEATHER_COND = 2
 
-Global pCurrentLocation = nil
+Global pCurrentLocation = Nil
 Global pDownloading = False
+Global pImageIndex = 0
+Global pCurrentFilename = Nil
 
 Function p_MainWindow_Log(text)
     Local eolIndex = 0
@@ -83,6 +94,13 @@ Function p_MainWindow_Log(text)
 
     Local pos = StringUtils.StringLength(currentText) - 1
     moai.Set(#MSG_TE_LOG, "CursorPos", pos)
+EndFunction
+
+Function p_MainWindow_SetProgressBar(value, max)
+	If IsNil(value) Then value = 0
+	If IsNil(max) Then max = 0
+	moai.Set(#PB_PROGRESS, "Max", max)
+	moai.Set(#PB_PROGRESS, "Level", value)
 EndFunction
 
 Function p_MainWindow_Reload()
@@ -107,6 +125,7 @@ Function p_MainWindow_Reload()
 	moai.Set(#TE_COUNTRY_CODE, "Text", pCurrentLocation.Country)
 	moai.Set(#LBL_LATITUDE, "Text", ToString(pCurrentLocation.Latitude))
 	moai.Set(#LBL_LONGITUDE, "Text", ToString(pCurrentLocation.Longitude))
+	p_MainWindow_SetProgressBar(0, 100)
 EndFunction
 
 Function p_MainWindow_SetCurrentLocation(location)
@@ -120,28 +139,124 @@ Function p_MainWindow_SetCurrentLocation(location)
 	p_MainWindow_Reload()	
 EndFunction
 
+Function p_MainWindow_PopulateImage(expectedFileName, fileNameActual)
+	If expectedFileName = pCurrentFilename
+		Local brushId = LoadBrush(Nil, fileNameActual)
+		Switch pImageIndex
+		Case 0:
+			moai.Set(#IMG_COND, "Brush", brushId)
+		Case 1:
+			moai.Set(#IMG_DAY_1_COND, "Brush", brushId)
+		Case 2:
+			moai.Set(#IMG_DAY_2_COND, "Brush", brushId)
+		Case 3:
+			moai.Set(#IMG_DAY_3_COND, "Brush", brushId)
+		Case 4:
+			moai.Set(#IMG_DAY_4_COND, "Brush", brushId)
+		Case 5:
+			moai.Set(#IMG_DAY_5_COND, "Brush", brushId)
+		EndSwitch
+	EndIf
+EndFunction
+
+Function p_MainWindow_LoadImageFromCacheOrSource(fileUri)
+	Local nameParts = StringUtils.StringSplit(fileUri, "/")
+	pCurrentFilename = GetTime(nameParts, TableItems(nameParts) - 1)
+
+	Local imageFile = IconCache.GetIcon(pCurrentFilename)
+	If IsNil(imageFile)
+		pDownloading = True
+		p_MainWindow_SetProgressBar(0, 100)
+		p_MainWindow_Log("Downloading image: " .. fileUri)
+		RQWeatherClient.GetFile(fileUri, IconCache.GetIconSavePath(pCurrentFilename))
+	Else
+		p_MainWindow_Log("Loading image from cache: " .. imageFile)
+		p_MainWindow_PopulateImage(pCurrentFilename, imageFile)
+	EndIf
+EndFunction
+
 Function p_MainWindow_GetCurrentWeather()
 	If IsNil(pCurrentLocation)
 		Return ()
 	EndIf
 	
-	Local condition = nil
-	Local nameParts = {}
+	RQWeatherClient.Init()
 	Local lat = pCurrentLocation.Latitude
 	Local lon = pCurrentLocation.Longitude
-	Local windSpeed = 0
-	Local direction = StringUtils.EMPTY
-	Local gust = 0
-	Local oneHour = 0
-	Local threeHour = 0
-	Local sunrise = StringUtils.EMPTY
-	Local sunset = StringUtils.EMPTY
-	Local tstamp = StringUtils.EMPTY
-	Local timestamp = {}
-	Local tzOffsetHours = 0
-	
+
 	; Fetch current weather data and check response status
-	;Local currentWeather = 
+	Local currentWeather = RQWeatherClient.GetCurrentWeather(lat, lon)
+	If currentWeather.code = HTTPStatus.STATUS_200_OK
+		; Get current condition
+		Local condition = currentWeather.weather[0]
+		pImageIndex = 0
+		p_MainWindow_LoadImageFromCacheOrSource(condition.icon)
+
+		; Adjust timestamp for timezone
+		Local timestamp = currentWeather.timestamp
+		Local tstamp = DateToTimestamp(MakeDate(timestamp))
+		tstamp = tstamp + currentWeather.timezone
+		timestamp = TimestampToDate(tstamp)
+		Local tstampStr = StringUtils.DateToTimestamp(timestamp)
+
+		; Display current conditions
+		moai.Set(#LBL_RIGHT_NOW, "Text", condition.description " .. as of " .. tstampStr)
+		moai.Set(#LBL_CURRENT_TEMP, "Text", ToString(currentWeather.main.tempMin) .. "F")
+		moai.Set(#LBL_FEELS_LIKE, "Text", ToString(currentWeather.main.feelsLike) .. "F")
+		moai.Set(#LBL_HIGH_TEMP, "Text", ToString(currentWeather.main.tempMax) .. "F")
+		moai.Set(#LBL_LOW_TEMP, "Text", ToString(currentWeather.main.tempMin) .. "F")
+		moai.Set(#LBL_PRESSURE, "Text", ToString(currentWeather.main.pressure) .. "F")
+		moai.Set(#LBL_HUMIDITY, "Text", ToString(currentWeather.main.humidity) .. "%")
+		moai.Set(#LBL_VISIBILITY, "Text", ToString(currentWeather.visibility * 0.0006211371) .. " Miles")
+
+		; Display cloud data if present
+		If GetType(currentWeather.clouds) = #TABLE
+			moai.Set(#LBL_CLOUDINESS, "Text", ToString(currentWeather.clouds.all) .. "%")
+		EndIf
+
+		; Display wind data if present
+		If GetType(currentWeather.wind) = #TABLE
+			Local windSpeed = currentWeather.wind.speed
+			Local direction = currentWeather.wind:ToWindDirection()
+			Local gust = currentWeather.wind.gust
+			moai.Set(#LBL_WIND, "Text", ToString(windSpeed) .. "MPH " .. direction .. ", Gust: " .. ToString(gust) .. "MPH")
+		EndIf
+
+		Local oneHour = 0
+		Local threeHour = 0
+
+		; Display rain data if present
+		If GetType(currentWeather.rain) = #TABLE
+			oneHour = currentWeather.rain.oneHour / 25.4
+			threeHour = currentWeather.rain.threeHour / 25.4
+			moai.Set(#LBL_RAIN, "Text", "Last Hour: " .. ToString(Round(oneHour)) .. ", Last 3 Hours: " .. ToString(Round(threeHour)))	
+		EndIf
+
+		; Display snow data if present
+		If GetType(currentWeather.snow) = #TABLE
+			oneHour = currentWeather.snow.oneHour / 25.4
+			threeHour = currentWeather.snow.threeHour / 25.4
+			moai.Set(#LBL_SNOW, "Text", "Last Hour: " .. ToString(Round(oneHour)) .. ", Last 3 Hours: " .. ToString(Round(threeHour)))
+		EndIf
+
+		; Compute and display sunrise timestamp adjusted for timezone
+		timestamp = currentWeather.system.sunrise
+		tstamp = DateToTimestamp(MakeDate(timestamp))
+		tstamp = tstamp + currentWeather.timezone
+		timestamp = TimestampToDate(tstamp)
+		Local sunrise = StringUtils.DateToTimestamp(timestamp)
+		moai.Set(#LBL_SUNRISE, "Text", sunrise)
+
+		; Compute and display sunset timestamp adjusted for timezone
+		timestamp = currentWeather.system.sunset
+		tstamp = DateToTimestamp(MakeDate(timestamp))
+		tstamp = tstamp + currentWeather.timezone
+		timestamp = TimestampToDate(tstamp)
+		Local sunset = StringUtils.DateToTimestamp(timestamp)
+		moai.Set(#LBL_SUNSET, "Text", sunset)
+	EndIf
+
+	RQWeatherClient.Close()
 EndFunction
 
 Function p_MainWindow_ProcessGUI(message)
@@ -183,9 +298,8 @@ EndFunction
 
 Function p_MainWindow_ReceiveProgress(totalBytes, bytesReceived)
 	pDownloading = True
-	moai.Set(#PB_PROGRESS, "Max", totalBytes)
 	Local value = (bytesReceived * 100) / totalBytes
-	moai.Set(#PB_PROGRESS, "Level", value) 
+	p_MainWindow_SetProgressBar(value, totalBytes)
 EndFunction
 
 Function p_MainWindow_ProcessingRequest()
@@ -197,10 +311,9 @@ Function p_MainWindow_ProcessingComplete()
 EndFunction
 
 Function p_MainWindow_DownloadComplete(url, httpStatus, filePath)
-	moai.Set(#PB_PROGRESS, "Max", 100)
-	moai.Set(#PB_PROGRESS, "Level", 100)
+	p_MainWindow_SetProgressBar(100, 100)
 	If httpStatus = HTTPStatus.STATUS_200_OK And Not(IsNil(filePath))
-		
+		p_MainWindow_PopulateImage(FilePart(filePath), filePath)
 	EndIf
 	
 	pDownloading = False
@@ -216,8 +329,8 @@ EndFunction
 
 Function p_MainWindow_ApiError(errorCode, desc, inUrl, inResponse)
 	p_MainWindow_Log("API Error: [" .. ToString(errorCode) .. "] " .. desc .. " (URL: " .. inUrl .. ")")
+	p_MainWindow_Log("Error response: " .. inResponse)
 EndFunction
-
 
 Function p_MainWindow_Init()
 	; Load GUI definition file

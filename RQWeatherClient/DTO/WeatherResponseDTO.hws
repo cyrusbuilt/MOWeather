@@ -106,7 +106,10 @@ Function WeatherResponseDTO:LoadFromTable(inTable)
     EndIf
 
     If (HaveItem(inTable, #K_WR_TIMESTAMP_KEY))
-        instance.timestamp = ParseDate(inTable.timestamp)
+        Local success, tstamp = StringUtils.ParseDateFromYMDHMSString(inTable.timestamp)
+        If success
+            instance.timestamp = tstamp
+        EndIf
     EndIf
 
     If (HaveItem(inTable, #K_WR_WEATHER_KEY))
