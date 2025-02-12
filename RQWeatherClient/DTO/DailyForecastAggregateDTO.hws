@@ -17,7 +17,7 @@ Function DailyForecastAggregateDTO:New()
     Return (CopyTable(self))
 EndFunction
 
-Function DailyForecastAggregateDTO.LoadFromTable(inTable)
+Function DailyForecastAggregateDTO:LoadFromTable(inTable)
     Local instance = DailyForecastAggregateDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))

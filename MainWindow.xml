@@ -124,35 +124,38 @@
             </vgroup>
             <vgroup halign="Center" frame="true" frametitle="5-Day Forecast">
                 <hgroup>
-                    <vgroup>
-                        <label>Day 1</label>
+                    <vgroup halign="Center">
+                        <label align="Center" id="lblDay1">Day 1</label>
                         <image id="imgDay1Cond" brush="2"/>
-                        <label id="lblDay1Cond">Condition</label>
-                        <label id="lblDay1Temps">Temps</label>
+                        <label align="Center" id="lblDay1Cond">Condition</label>
+                        <label align="Center" id="lblDay1Temps">Temps</label>
                     </vgroup>
                     <vgroup>
-                        <label>Day 2</label>
+                        <label align="Center" id="lblDay2">Day 2</label>
                         <image id="imgDay2Cond" brush="2"/>
-                        <label id="lblDay2Cond">Condition</label>
-                        <label id="lblDay2Temps">Temps</label>
+                        <label align="Center" id="lblDay2Cond">Condition</label>
+                        <label align="Center" id="lblDay2Temps">Temps</label>
                     </vgroup>
                     <vgroup>
-                        <label>Day 3</label>
+                        <label align="Center" id="lblDay3">Day 3</label>
                         <image id="imgDay3Cond" brush="2"/>
-                        <label id="lblDay3Cond">Condition</label>
-                        <label id="lblDay3Temps">Temps</label>
+                        <label align="Center" id="lblDay3Cond">Condition</label>
+                        <label align="Center" id="lblDay3Temps">Temps</label>
                     </vgroup>
                     <vgroup>
-                        <label>Day 4</label>
+                        <label align="Center" id="lblDay4">Day 4</label>
                         <image id="imgDay4Cond" brush="2"/>
-                        <label id="lblDay4Cond">Condition</label>
-                        <label id="lblDay4Temps">Temps</label>
+                        <label align="Center" id="lblDay4Cond">Condition</label>
+                        <label align="Center" id="lblDay4Temps">Temps</label>
                     </vgroup>
                     <vgroup>
-                        <label>Day 5</label>
-                        <image id="imagDay5Cond" brush="2"/>
-                        <label id="lblDay5Cond">Condition</label>
-                        <label id="lblDay5Temps">Temps</label>
+                        <label align="Center" id="lblDay5">Day 5</label>
+                        <image id="imgDay5Cond" brush="2"/>
+                        <label align="Center" id="lblDay5Cond">Condition</label>
+                        <label align="Center" id="lblDay5Temps">Temps</label>
+                    </vgroup>
+                    <vgroup>
+                        <button id="btnFetch">Fetch</button>
                     </vgroup>
                 </hgroup>
             </vgroup>

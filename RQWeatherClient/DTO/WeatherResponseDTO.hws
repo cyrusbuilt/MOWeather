@@ -130,6 +130,5 @@ Function WeatherResponseDTO:LoadFromTable(inTable)
 EndFunction
 
 Function WeatherResponseDTO:ParseFromJsonString(inStr)
-	DebugPrint("parsed inStr: " .. SerializeTable(JSONLib.Parse(inStr)))
     Return (WeatherResponseDTO:LoadFromTable(JSONLib.Parse(inStr)))
 EndFunction

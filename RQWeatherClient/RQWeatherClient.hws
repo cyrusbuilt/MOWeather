@@ -317,7 +317,6 @@ Function RQWeatherClient.GetGeoData(city, stateCode, countryCode)
 
 	Local response = {}
     Local result = RQWeatherClient._getWithNotification(url, 30)
-	DebugPrint("DEBUG: Geo result: " .. result)
 	If StringUtils.IsEmpty(result)
 		Return (response)
 	EndIf
@@ -339,8 +338,6 @@ Function RQWeatherClient.GetGeoData(city, stateCode, countryCode)
 EndFunction
 
 Function RQWeatherClient.GetFile(inUrl, localFile)
-	DebugPrint("DEBUG: GetFile(): inUrl: " .. inUrl)
-	DebugPrint("DEBUg: GetFile(): localFile: " .. localFile)
 	Local done = False
 	RQWeatherClient._downloading = True
 

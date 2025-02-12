@@ -45,6 +45,10 @@ Function DailyForecastDTO:LoadFromTable(inTable)
     If (IsNil(inTable) Or IsTableEmpty(inTable))
         Return (instance)
     EndIf
+	
+	If (HaveItem(inTable, #K_DF_VISIBILITY_KEY))
+		instance.visibility = inTable.visibility
+	EndIf
 
     If (HaveItem(inTable, #K_DF_CLOUDS_KEY))
         instance.clouds = CloudsDTO:LoadFromTable(inTable.clouds)
@@ -79,8 +83,12 @@ Function DailyForecastDTO:LoadFromTable(inTable)
 
     If (HaveItem(inTable, #K_DF_WEATHER_KEY))
         If Not IsNil(inTable.weather) And Not IsTableEmpty(inTable.weather)
-            ForEach(inTable, DailyForecastDTO:_populateWeather, instance)
-        EndIf
+			Local n, i = NextItem(inTable.weather)
+			While GetType(n) <> #NIL
+        		self:_populateWeather(i, instance)
+				n, i = NextItem(inTable.weather, n)
+			Wend
+		EndIf
     EndIf
 
     If (HaveItem(inTable, #K_DF_WIND_KEY))

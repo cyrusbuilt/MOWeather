@@ -1,4 +1,5 @@
 @INCLUDE "CoordinateDTO.hws"
+@INCLUDE "../../StringLib/StringUtils.hws"
 
 Const #K_CITY_ID_KEY = "id"
 Const #K_CITY_NAME_KEY = "name"
@@ -39,7 +40,7 @@ Function CityDTO:LoadFromTable(inTable)
     EndIf
 
     If (HaveItem(inTable, #K_CITY_COORD_KEY))
-        instance.coordinates = CoordinateDTO:LoadFromTable(inTable)
+        instance.coordinates = CoordinateDTO:LoadFromTable(inTable.coordinates)
     EndIf
 
     If (HaveItem(inTable, #K_CITY_COUNTRY_KEY))
@@ -55,11 +56,17 @@ Function CityDTO:LoadFromTable(inTable)
     EndIf
 
     If (HaveItem(inTable, #K_CITY_SUNRISE_KEY))
-        instance.sunrise = ParseDate(inTable.sunrise)
+		Local success, tstamp = StringUtils.ParseDateFromYMDHMSString(inTable.sunrise)
+        If success
+            instance.sunrise = tstamp
+        EndIf
     EndIf
 
     If (HaveItem(inTable, #K_CITY_SUNSET_KEY))
-        instance.sunset = ParseDate(inTable.sunset)
+		Local success, tstamp = StringUtils.ParseDateFromYMDHMSString(inTable.sunset)
+        If success
+            instance.sunset = tstamp
+        EndIf
     EndIf
 
     Return (instance)
