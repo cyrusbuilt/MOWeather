@@ -7,18 +7,24 @@ Const #BTN_PREFS_SAVE = "btnPrefsSave"
 Const #TE_PREFS_API_HOST = "tePrefsApiHost"
 Const #TE_PREFS_API_PORT = "tePrefsApiPort"
 
-Function p_PrefsWindow_Show()
+Global PrefsWindow = {}
+
+Function PrefsWindow:New()
+	Return (CopyTable(self))
+EndFunction
+
+Function PrefsWindow:Show()
 	Preferences.Load()
 	moai.Set(#TE_PREFS_API_HOST, "Text", Preferences.ApiHostAddress)
 	moai.Set(#TE_PREFS_API_PORT, "Text", Preferences.ApiHostPort)
 	moai.Set(#WIN_PREFS, "Open", True)
 EndFunction
 
-Function p_PrefsWindow_Close()
+Function PrefsWindow:Close()
 	moai.Set(#WIN_PREFS, "Open", False)
 EndFunction
 
-Function p_PrefsWindow_SaveAndClose()
+Function PrefsWindow:SaveAndClose()
 	Local apiHost = moai.Get(#TE_PREFS_API_HOST, "Text")
 	apiHost = StringUtils.StringTrim(apiHost)
 
@@ -33,5 +39,5 @@ Function p_PrefsWindow_SaveAndClose()
 	Preferences.ApiHostAddress = apiHost
 	Preferences.ApiHostPort = apiPort
 	Preferences.Save()
-	p_PrefsWindow_Close()
+	self:Close()
 EndFunction

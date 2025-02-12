@@ -33,9 +33,7 @@ Function StringUtils.Quote(inString)
 EndFunction
 
 Function StringUtils.IndexOf(haystack, needle, start)
-	If IsNil(start)
-		start = 0
-	EndIf
+	If IsNil(start) Then start = 0
     Return (FindStr(haystack, needle, True, start))
 EndFunction
 
@@ -229,7 +227,7 @@ Function StringUtils.ParseDateFromYMDHMSString(inString)
 	Local dateParts = {}
     If (hasDash)
         dateParts = StringUtils.StringSplit(dtParts[0], "-")
-        If (ListItems(dateParts) <> 2)
+        If (ListItems(dateParts) <> 3)
             Return (False, Nil)
         EndIf
 
@@ -246,26 +244,30 @@ Function StringUtils.ParseDateFromYMDHMSString(inString)
         EndIf
     EndIf
 
+	Local timeParts = {}
     If (hasColon)
-        Local timeParts = StringUtils.StringSplit(dtParts[1], ":")
-        If (ListItems(timeParts) <> 2)
+        timeParts = StringUtils.StringSplit(dtParts[1], ":")
+        If (ListItems(timeParts) <> 3)
             Return (False, Nil)
         EndIf
 
-		Local tp
-        For tp In timeParts
-            If (StringUtils.Contains(tp, "."))
-                Local secParts = StringUtils.StringSplit(tp, ".")
-                tp = secParts[0]
-            EndIf
+		Local n, i = NextItem(timeParts)
+		While GetType(n) <> #NIL
+    		If (StringUtils.Contains(i, "."))
+				Local secParts = StringUtils.StringSplit(i, ".")
+				i = secParts[0]
+			EndIf
+			
+			If (StrLen(i) <> 2 Or Not IsDigit(i))
+				Return(False, Nil)
+			EndIf
+			
+			n, i = NextItem(timeParts, n)
+		Wend
+	EndIf
 
-            If (StrLen(tp) <> 2 Or Not IsDigit(tp))
-                Return (False, Nil)
-            EndIf
-        Next
-    EndIf
-
-    Local date = ParseDate(GetDate(#DATELOCALNATIVE))
+	Local spec = GetDate(#DATELOCAL)
+    Local date = ParseDate(spec)
     If (hasDash)
         date.Year = ToNumber(dateParts[0])
         date.Mon = ToNumber(dateParts[1])

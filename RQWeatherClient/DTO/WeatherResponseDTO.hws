@@ -114,7 +114,11 @@ Function WeatherResponseDTO:LoadFromTable(inTable)
 
     If (HaveItem(inTable, #K_WR_WEATHER_KEY))
         If Not IsNil(inTable.weather) And Not IsTableEmpty(inTable.weather)
-            ForEach(inTable.weather, WeatherResponseDTO:_populateWeather, instance)
+			Local n, i = NextItem(inTable.weather)
+			While GetType(n) <> #NIL
+				self:_populateWeather(i, instance)
+				n, i = NextItem(inTable.weather, n)
+			Wend
         EndIf
     EndIf
 
@@ -126,5 +130,6 @@ Function WeatherResponseDTO:LoadFromTable(inTable)
 EndFunction
 
 Function WeatherResponseDTO:ParseFromJsonString(inStr)
+	DebugPrint("parsed inStr: " .. SerializeTable(JSONLib.Parse(inStr)))
     Return (WeatherResponseDTO:LoadFromTable(JSONLib.Parse(inStr)))
 EndFunction

@@ -26,10 +26,24 @@ Author: cyrusbuilt
 @INCLUDE "Preferences.hws"
 @INCLUDE "MainWindow.hws"
 
-
+; Load prefs
 Preferences.Load()
-p_MainWindow_Init()
 
+; Create main window
+Global mainWindow = MainWindow:New()
+mainWindow:Show()
+
+; UI event handler
+Function p_MainWindow_ProcessGUI(message)
+	DebugPrint("DEBUG: UI Event: " .. SerializeTable(message))
+	If GetType(message) = #TABLE And GetType(mainWindow) = #TABLE
+		mainWindow:ProcessGUI(message)
+	EndIf
+EndFunction
+
+InstallEventHandler({RapaGUI=p_MainWindow_ProcessGUI})
+
+; Enter event loop
 Repeat
-    WaitEvent
+    WaitEvent()
 Forever
