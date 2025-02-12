@@ -1,0 +1,133 @@
+@INCLUDE "Preferences.hws"
+@INCLUDE "RQWeatherClient/RQWeatherClient.hws"
+@INCLUDE "RQWeatherClient/DTO/GeoDTO.hws"
+@INCLUDE "StringLib/StringUtils.hws"
+
+Const #WIN_SEL_LOC = "winSelLoc"
+Const #TE_SEL_CITY = "teSelCity"
+Const #TE_SEL_STATE_CODE = "teSelStateCode"
+Const #TE_SEL_COUNTRY_CODE = "teSelCountryCode"
+Const #LBL_SEL_LAT = "lblSelLat"
+Const #LBL_SEL_LON = "lblSelLon"
+Const #BTN_SEL_SEARCH = "btnSelSearch"
+Const #BTN_SEL_ACCEPT = "btnSelAccept"
+Const #BTN_SEL_CANCEL = "btnSelCancel"
+Const #CB_SEL_LOCATION = "cbSelLocation"
+
+Global SelectLocationWindow = {}
+SelectLocationWindow.Shown = False
+SelectLocationWindow._selLocations = {}
+SelectLocationWindow._nameLocLookup = {}
+SelectLocationWindow._mainWindow = {}
+
+Function SelectLocationWindow:New(mainWindow)
+	Local instance = CopyTable(self)
+	instance._mainWindow = mainWindow
+	Return (instance)
+EndFunction
+
+Function SelectLocationWindow:_getLocationByName(name)
+	Local selected = Nil
+	If Not IsTableEmpty(self._namedLocLookup)
+		Local n, i = NextItem(self._namedLocLookup)
+		While GetType(n) <> #NIL
+			If i.name = name
+				selected = i.data
+				Break
+			EndIf
+			n, i = NextItem(self._namedLocLookup, n)
+		Wend
+	EndIf
+	
+	Return (selected)
+EndFunction
+
+Function SelectLocationWindow:_onDropDownSelected()
+	If IsTableEmpty(self._namedLocLookup)
+		Return()
+	EndIf
+	
+	Local value = moai.Get(#CB_SEL_LOCATION, "Value")
+	Local selected = self:_getLocationByName(value)
+	If Not IsNil(selected)
+		DebugPrint("Match found!")
+		moai.Set(#LBL_SEL_LAT, "Text", ToString(selected.latitude))
+		moai.Set(#LBL_SEL_LON, "Text", ToString(selected.longitude))
+	EndIf
+EndFunction
+
+Function SelectLocationWindow:_onSearch()
+	moai.DoMethod(#CB_SEL_LOCATION, "Clear")
+	self._selLocations = {}
+	self._namedLocLookup = {}
+
+	Local city = StringUtils.StringTrim(moai.Get(#TE_SEL_CITY, "Text"))
+	Local state = StringUtils.StringTrim(moai.Get(#TE_SEL_STATE_CODE, "Text"))
+	Local country = StringUtils.StringTrim(moai.Get(#TE_SEL_COUNTRY_CODE, "Text"))
+	
+	RQWeatherClient.Init()
+	self._selLocations = RQWeatherClient.GetGeoData(city, state, country)
+	RQWeatherClient.Close()
+	
+	If Not IsTableEmpty(self._selLocations)
+		Local pos = 0
+		Local n, i = NextItem(self._selLocations)
+		While GetType(n) <> #NIL
+			Local loc = i.name .. ", " .. i.state .. ", " .. i.country
+			InsertItem(self._namedLocLookup, {name=loc, data=i})
+			moai.DoMethod(#CB_SEL_LOCATION, "Insert", pos, loc)
+			pos = pos + 1
+			n, i = NextItem(self._selLocations, n)
+		Wend
+		
+		moai.Set(#CB_SEL_LOCATION, "Value", moai.DoMethod(#CB_SEL_LOCATION, "GetEntry", 0))
+		self:_onDropDownSelected()
+	EndIf
+EndFunction
+
+Function SelectLocationWindow:Show()
+	moai.Notify(#CB_SEL_LOCATION, "Selected", True)
+	moai.Set(#WIN_SEL_LOC, "Open", True)
+	self.Shown = True
+EndFunction
+
+Function SelectLocationWindow:Close()
+	moai.Notify(#CB_SEL_LOCATION, "Selected", False)
+	moai.Set(#WIN_SEL_LOC, "Open", False)
+	self.Shown = False
+EndFunction
+
+Function SelectLocationWindow:_onAccept()
+	Local value = moai.Get(#CB_SEL_LOCATION, "Value")
+	Local selected = self:_getLocationByName(value)
+	If Not IsNil(selected)
+		self._mainWindow:SetCurrentLocation(selected)	
+	EndIf
+	
+	self:Close()
+EndFunction
+
+Function SelectLocationWindow:DoEvents(message)
+	Switch message.Class
+	Case #MSG_CLASS_COMBOBOX:
+		Switch message.Attribute
+		Case #MSG_ATTR_SELECTED:
+			Switch message.ID
+			Case #CB_SEL_LOCATION:
+				self:_onDropDownSelected()
+			EndSwitch
+		EndSwitch
+	Case #MSG_CLASS_BUTTON:
+		Switch message.Attribute
+		Case #MSG_ATTR_PRESSED:
+			Switch message.ID
+			Case #BTN_SEL_SEARCH:
+				self:_onSearch()
+			Case #BTN_SEL_CANCEL:
+				self:Close()
+			Case #BTN_SEL_ACCEPT:
+				self:_onAccept()
+			EndSwitch
+		EndSwitch
+	EndSwitch
+EndFunction

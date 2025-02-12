@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
+<!-- TODO Note: RapaGUI does not let you set the horizontal width of things like text fields -->
+<!-- and labels (for reasons I'll never understand), preferring instead to auto-adjust as    -->
+<!-- the form is being laid out. This presents a problem because several elemnts are going   -->
+<!-- to shift around as their sizes change. It also means that several of the labels which   -->
+<!-- are populated at runtime do not display their contents. The only workaround I've come   -->
+<!-- up with so far is to put a shitload of spaces into the label at design time, as a sort  -->
+<!-- of "placeholder" for the text that will eventually be populated in them, in order to    -->
+<!-- size the control properly. This is a shitty hack. But it sort of works and I don't have -->
+<!-- a better solution yet. So everywhere you see lots of &#160;, that's what is happening.  -->
+<!-- If you have a better solution, feel free to open a PR because I hate this.              -->
+<!-- I may also investigate using a different UI framework (MUI Royale? HGUI?). But that     -->
+<!-- means refactoring a ton of code. So that will have to wait.                             -->
 <application id="moweather">
     <menubar id="mnuApp">
         <menu title="File">
@@ -13,28 +25,28 @@
         <vgroup>
             <vgroup halign="Left" frame="true" frametitle="Location">
                 <hgroup>
-                    <label align="Left">City: </label>
+                    <label align="Left">City:&#160;</label>
                     <textentry id="teCity"/>
                     <hspace/>
                     <button id="btnSelectLoc">Select Location</button>
                 </hgroup>
                 <hgroup>
-                    <label align="Left">State Code: </label>
+                    <label align="Left">State Code:&#160;</label>
                     <textentry id="teStateCode"/>
                     <label>Country Code:</label>
                     <textentry id="teCountryCode"/>
                     <hspace/>
-                    <button id="btnFetch">Fetch</button>
+                    <button id="btnGetWeather">Get Weather</button>
                 </hgroup>
                 <hgroup>
-                    <label align="Left">Latitude: </label>
-                    <label align="Left" id="lblLatitude"/>
+                    <label align="Left">Latitude:&#160;</label>
+                    <label align="Left" id="lblLatitude">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                     <hspace/>
-                    <label align="Left">Progress: </label>
+                    <label align="Left">Progress:</label>
                 </hgroup>
                 <hgroup>
-                    <label align="Left">Longitude: </label>
-                    <label align="Left" id="lblLongitude"/>
+                    <label align="Left">Longitude:&#160;</label>
+                    <label align="Left" id="lblLongitude">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                     <hspace/>
                     <progressbar id="pbProgress"/>
                 </hgroup>
@@ -42,66 +54,68 @@
             <vgroup halign="Left" frame="true" frametitle="Current Conditions">
                 <vgroup>
                     <hgroup halign="Left">
-                        <label align="Left">Right Now: </label>
-                        <label align="Left" id="lblRightNow"/>
+                        <label align="Left">Right Now:&#160;</label>
+                        <label align="Left" id="lblRightNow">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                     </hgroup>
                 </vgroup>
                 <vgroup>
                     <hgroup>
                         <vgroup halign="Left">
                             <hgroup halign="Left">
-                                <label align="Left">Temperature: </label>
-                                <label align="Left" id="lblTemp"/>
+                                <label align="Left">Temperature:&#160;</label>
+                                <label align="Left" id="lblTemp">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                             <hgroup>
-                                <label align="Left">High: </label>
-                                <label align="Left" id="lblHighTemp"/>
-                                <label align="Left">Low: </label>
-                                <label align="Left" id="lblLowTemp"/>
+                                <label align="Left">High:&#160;</label>
+                                <label align="Left" id="lblHighTemp">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                                <label align="Left">Low:&#160;</label>
+                                <label align="Left" id="lblLowTemp">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                             <hgroup>
-                                <label align="Left">Humidity: </label>
-                                <label align="Left" id="lblHumidity"/>
+                                <label align="Left">Humidity:&#160;</label>
+                                <label align="Left" id="lblHumidity">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                             <hgroup>
-                                <label align="Left">Cloudiness: </label>
-                                <label align="Left" id="lblCloudiness">0%</label>
+                                <label align="Left">Cloudiness:&#160;</label>
+                                <label align="Left" id="lblCloudiness">&#160;&#160;&#160;&#160;&#160;&#160;&#160;0%&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                             <hgroup>
-                                <label align="Left">Rain: </label>
-                                <label align="Left" id="lblRain"/>
+                                <label align="Left">Rain:&#160;</label>
+                                <label align="Left" id="lblRain">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                             <hgroup>
-                                <label align="Left">Sunrise: </label>
-                                <label align="Left" id="lblSunrise"/>
+                                <label align="Left">Sunrise:&#160;</label>
+                                <label align="Left" id="lblSunrise">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                         </vgroup>
+                        <hspace width="50"/>
                         <vgroup halign="Left">
                             <hgroup halign="Left">
-                                <label align="Left">Feels Like: </label>
-                                <label align="Left" id="lblFeelsLike"/>
+                                <label align="Left">Feels Like:&#160;</label>
+                                <label align="Left" id="lblFeelsLike">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                             <hgroup>
-                                <label align="Left">Pressure: </label>
-                                <label align="Left" id="lblPressure"/>
+                                <label align="Left">Pressure:&#160;</label>
+                                <label align="Left" id="lblPressure">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                             <hgroup>
-                                <label align="Left">Visibility: </label>
-                                <label align="Left" id="lblVisibility"/>
+                                <label align="Left">Visibility:&#160;</label>
+                                <label align="Left" id="lblVisibility">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                             <hgroup>
-                                <label align="Left">Wind: </label>
-                                <label align="Left" id="lblWind"/>
+                                <label align="Left">Wind:&#160;</label>
+                                <label align="Left" id="lblWind">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                             <hgroup>
-                                <label align="Left">Snow: </label>
-                                <label align="Left" id="lblSnow"/>
+                                <label align="Left">Snow:&#160;</label>
+                                <label align="Left" id="lblSnow">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                             <hgroup>
-                                <label align="Left">Sunset: </label>
-                                <label align="Left" id="lblSunset"/>
+                                <label align="Left">Sunset:&#160;</label>
+                                <label align="Left" id="lblSunset">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             </hgroup>
                         </vgroup>
+                        <hspace width="50" />
                         <vgroup>
                             <image id="imgCondition" brush="2"/>
                         </vgroup>
@@ -152,11 +166,11 @@
     <window id="winPrefs" title="Preferences" width="912" height="300" open="False">
         <vgroup halign="Left">
             <hgroup halign="Left">
-                <label align="Left">API Host: </label>
+                <label align="Left">API Host:&#160;</label>
                 <textentry id="tePrefsApiHost"/>
             </hgroup>
             <hgroup halign="Left">
-                <label align="Left">Port: </label>
+                <label align="Left">Port:&#160;</label>
                 <textentry id="tePrefsApiPort"/>
             </hgroup>
             <vspace/>
@@ -164,6 +178,42 @@
                 <hspace width="400"/>
                 <button id="btnPrefsCancel">Cancel</button>
                 <button id="btnPrefsSave">Save and Close</button>
+            </hgroup>
+        </vgroup>
+    </window>
+    <window id="winSelLoc" title="Select Location" width="840" height="508" open="False">
+        <vgroup>
+            <hgroup>
+                <label align="Left">City/Location Name:&#160;</label>
+                <textentry id="teSelCity"/>
+            </hgroup>
+            <hgroup>
+                <label align="Left">State Code:&#160;</label>
+                <textentry id="teSelStateCode"/>
+                <label align="Left">Country Code:&#160;</label>
+                <textentry id="teSelCountryCode"/>
+            </hgroup>
+            <hgroup>
+                <label align="Left">Latitude:&#160;</label>
+                <label align="Left" id="lblSelLat">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+            </hgroup>
+            <hgroup>
+                <label align="Left">Longitude:&#160;</label>
+                <label align="Left" id="lblSelLon">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+            </hgroup>
+            <hgroup>
+                <hspace/>
+                <button id="btnSelSearch">Search</button>
+                <hspace/>
+            </hgroup>
+            <vgroup halign="Left">
+                <label align="Left">Use Location:</label>
+                <combobox id="cbSelLocation"/>
+                <vspace/>
+            </vgroup>
+            <hgroup halign="Left">
+                <button id="btnSelAccept">Accept</button>
+                <button id="btnSelCancel">Cancel</button>
             </hgroup>
         </vgroup>
     </window>

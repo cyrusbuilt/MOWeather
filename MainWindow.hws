@@ -1,15 +1,7 @@
-@INCLUDE "RQWeatherClient/RQWeatherClient.hws"
-@INCLUDE "RQWeatherClient/HTTPStatus.hws"
-@INCLUDE "RQWeatherClient/DTO/GeoDTO.hws"
-@INCLUDE "StringLib/StringUtils.hws"
-@INCLUDE "AppUtil.hws"
-@INCLUDE "Preferences.hws"
-@INCLUDE "PrefsWindow.hws"
-@INCLUDE "IconCacheLib/IconCache.hws"
-
 ; Window message constants
 Const #MSG_CLASS_BUTTON = "Button"
 Const #MSG_CLASS_MNUITM = "Menuitem"
+Const #MSG_CLASS_COMBOBOX = "Combobox"
 Const #MSG_ATTR_PRESSED = "Pressed"
 Const #MSG_ATTR_SELECTED = "Selected"
 Const #MSG_TE_LOG = "teLog"
@@ -74,12 +66,26 @@ Const #FILE_BRUSH_DEF_ICON = "icons/weather.png"
 Const #ID_WINDOW_DEF = 1
 Const #ID_BRUSH_WEATHER_COND = 2
 
-Global pCurrentLocation = Nil
-Global pDownloading = False
-Global pImageIndex = 0
-Global pCurrentFilename = Nil
+@INCLUDE "RQWeatherClient/RQWeatherClient.hws"
+@INCLUDE "RQWeatherClient/HTTPStatus.hws"
+@INCLUDE "RQWeatherClient/DTO/GeoDTO.hws"
+@INCLUDE "RQWeatherClient/DTO/PrecipitationDTO.hws"
+@INCLUDE "StringLib/StringUtils.hws"
+@INCLUDE "AppUtil.hws"
+@INCLUDE "Preferences.hws"
+@INCLUDE "PrefsWindow.hws"
+@INCLUDE "SelectLocationWindow.hws"
+@INCLUDE "IconCacheLib/IconCache.hws"
 
-Function p_MainWindow_Log(text)
+Global MainWindow = {}
+MainWindow._currentLocation = {}
+MainWindow._downloading = False
+MainWindow._imageIndex = 0
+MainWindow._currentFilename = StringUtils.EMPTY
+MainWindow._prefsWindow = {}
+MainWindow._selLocWindow = {}
+
+Function MainWindow:_log(text)
     Local eolIndex = 0
     Local currentText = moai.Get(#MSG_TE_LOG, "Text")
     Local len = StringUtils.StringLength(currentText)
@@ -96,55 +102,66 @@ Function p_MainWindow_Log(text)
     moai.Set(#MSG_TE_LOG, "CursorPos", pos)
 EndFunction
 
-Function p_MainWindow_SetProgressBar(value, max)
-	If IsNil(value) Then value = 0
-	If IsNil(max) Then max = 0
-	moai.Set(#PB_PROGRESS, "Max", max)
-	moai.Set(#PB_PROGRESS, "Level", value)
+Function MainWindow:_setProgressBar(current, maxVal)
+	If IsNil(current) Then value = 0
+	If IsNil(maxVal) Then max = 0
+	moai.Set(#PB_PROGRESS, "Max", maxVal)
+	moai.Set(#PB_PROGRESS, "Level", current)
 EndFunction
 
-Function p_MainWindow_Reload()
+Function MainWindow:_reload()
 	Preferences.Load()
 	RQWeatherClient.Address = Preferences.ApiHostAddress
 	RQWeatherClient.Port = Preferences.ApiHostPort
-	If IsNil(pCurrentLocation)
+	If GetType(self._currentLocation) <> #TABLE Or IsTableEmpty(self._currentLocation)
 		If Preferences.LocationLatitude <> 0 And Preferences.LocationLongitude <> 0
-			pCurrentLocation = GeoDTO:New()
-			pCurrentLocation.Latitude = Preferences.LocationLatitude
-			pCurrentLocation.Longitude = Preferences.LocationLongitude
-			pCurrentLocation.Name = Preferences.LocationCity
-			pCurrentLocation.State = Preferences.LocationState
-			pCurrentLocation.Country = Preferences.LocationCountryCode
+			self._currentLocation = GeoDTO:New()
+			self._currentLocation.Latitude = Preferences.LocationLatitude
+			self._currentLocation.Longitude = Preferences.LocationLongitude
+			self._currentLocation.Name = Preferences.LocationCity
+			self._currentLocation.State = Preferences.LocationState
+			self._currentLocation.Country = Preferences.LocationCountryCode
 		Else
 			Return ()
 		EndIf
 	EndIf
 	
-	moai.Set(#TE_CITY, "Text", pCurrentLocation.Name)
-	moai.Set(#TE_STATE_CODE, "Text", pCurrentLocation.State)
-	moai.Set(#TE_COUNTRY_CODE, "Text", pCurrentLocation.Country)
-	moai.Set(#LBL_LATITUDE, "Text", ToString(pCurrentLocation.Latitude))
-	moai.Set(#LBL_LONGITUDE, "Text", ToString(pCurrentLocation.Longitude))
-	p_MainWindow_SetProgressBar(0, 100)
+	moai.Set(#TE_CITY, "Text", self._currentLocation.name)
+	moai.Set(#TE_STATE_CODE, "Text", self._currentLocation.state)
+	moai.Set(#TE_COUNTRY_CODE, "Text", self._currentLocation.country)
+	moai.Set(#LBL_LATITUDE, "Text", ToString(self._currentLocation.latitude))
+	moai.Set(#LBL_LONGITUDE, "Text", ToString(self._currentLocation.longitude))
+	self:_setProgressBar(0, 100)
 EndFunction
 
-Function p_MainWindow_SetCurrentLocation(location)
-	pCurrentLocation = location
-	Preferences.LocationLatitude = pCurrentLocation.Latitude
-	Preferences.LocationLongitude = pCurrentLocation.Longitude
-	Preferences.LocationCity = pCurrentLocation.Name
-	Preferences.LocationState = pCurrentLocation.State
-	Preferences.LocationCountryCode = pCurrentLocation.Country
-	Preferences.Save()
-	p_MainWindow_Reload()	
+Function MainWindow:SetCurrentLocation(location)
+	self._currentLocation = location
+	If GetType(self._currentLocation) = #TABLE
+		Preferences.LocationLatitude = self._currentLocation.latitude
+		Preferences.LocationLongitude = self._currentLocation.longitude
+		Preferences.LocationCity = self._currentLocation.name
+		Preferences.LocationState = self._currentLocation.state
+		Preferences.LocationCountryCode = self._currentLocation.country
+		Preferences.Save()
+		self:_reload()
+	EndIf
 EndFunction
 
-Function p_MainWindow_PopulateImage(expectedFileName, fileNameActual)
-	If expectedFileName = pCurrentFilename
-		Local brushId = LoadBrush(Nil, fileNameActual)
-		Switch pImageIndex
+Function MainWindow:_populateImage(expectedFileName, fileNameActual)
+	DebugPrint("fileNameActual: " .. fileNameActual)
+	If expectedFileName = self._currentFilename
+		Local id = Rnd(50)
+		DebugPrint("generated ID: " .. ToString(id))
+		Local absPath = CanonizePath(fileNameActual)
+		DebugPrint("abs path: " .. absPath)
+		If Not Exists(absPath)
+			DebugPrint("file not found")
+		EndIf
+		Local brushId = LoadBrush(id, absPath)
+		DebugPrint("DEBUG: brush ID: " .. ToString(brushId))
+		Switch self._imageIndex
 		Case 0:
-			moai.Set(#IMG_COND, "Brush", brushId)
+			moai.Set(#IMG_COND, "Brush", id)
 		Case 1:
 			moai.Set(#IMG_DAY_1_COND, "Brush", brushId)
 		Case 2:
@@ -159,48 +176,50 @@ Function p_MainWindow_PopulateImage(expectedFileName, fileNameActual)
 	EndIf
 EndFunction
 
-Function p_MainWindow_LoadImageFromCacheOrSource(fileUri)
+Function MainWindow:_loadImageFromCacheOrSource(fileUri)
 	Local nameParts = StringUtils.StringSplit(fileUri, "/")
-	pCurrentFilename = GetTime(nameParts, TableItems(nameParts) - 1)
+	self._currentFilename = GetItem(nameParts, TableItems(nameParts) - 1)
+	DebugPrint("DEBUG: _loadImageFromCacheOrSource(): current filename: " .. self._currentFilename)
+	DebugPrint("DEBUG: _loadImageFromCacheOrSource(): fileUri: " .. fileUri)
 
-	Local imageFile = IconCache.GetIcon(pCurrentFilename)
+	Local imageFile = IconCache.GetIcon(self._currentFilename)
 	If IsNil(imageFile)
-		pDownloading = True
-		p_MainWindow_SetProgressBar(0, 100)
-		p_MainWindow_Log("Downloading image: " .. fileUri)
-		RQWeatherClient.GetFile(fileUri, IconCache.GetIconSavePath(pCurrentFilename))
+		self._downloading = True
+		self:_setProgressBar(0, 100)
+		self:_log("Downloading image: " .. fileUri)
+		RQWeatherClient.GetFile(fileUri, IconCache.GetSavePath(self._currentFilename))
 	Else
-		p_MainWindow_Log("Loading image from cache: " .. imageFile)
-		p_MainWindow_PopulateImage(pCurrentFilename, imageFile)
+		self:_log("Loading image from cache: " .. imageFile)
+		self:_populateImage(self._currentFilename, imageFile)
 	EndIf
 EndFunction
 
-Function p_MainWindow_GetCurrentWeather()
-	If IsNil(pCurrentLocation)
+Function MainWindow:_getCurrentWeather()
+	If IsNil(self._currentLocation) Or IsTableEmpty(self._currentLocation)
 		Return ()
 	EndIf
 	
 	RQWeatherClient.Init()
-	Local lat = pCurrentLocation.Latitude
-	Local lon = pCurrentLocation.Longitude
+	Local lat = self._currentLocation.latitude
+	Local lon = self._currentLocation.longitude
 
 	; Fetch current weather data and check response status
-	Local currentWeather = RQWeatherClient.GetCurrentWeather(lat, lon)
-	If currentWeather.code = HTTPStatus.STATUS_200_OK
+	Local currentWeather = RQWeatherClient.GetCurrent(lat, lon)
+	If currentWeather.code = #HTTPStatus_STATUS_200_OK
 		; Get current condition
 		Local condition = currentWeather.weather[0]
 		pImageIndex = 0
-		p_MainWindow_LoadImageFromCacheOrSource(condition.icon)
+		DebugPrint("DEBUG: _getCurrentWeather(): icon: " ..condition.icon)
+		self:_loadImageFromCacheOrSource(condition.icon)
 
 		; Adjust timestamp for timezone
 		Local timestamp = currentWeather.timestamp
 		Local tstamp = DateToTimestamp(MakeDate(timestamp))
 		tstamp = tstamp + currentWeather.timezone
-		timestamp = TimestampToDate(tstamp)
-		Local tstampStr = StringUtils.DateToTimestamp(timestamp)
+		Local tstampStr = TimestampToDate(tstamp)
 
 		; Display current conditions
-		moai.Set(#LBL_RIGHT_NOW, "Text", condition.description " .. as of " .. tstampStr)
+		moai.Set(#LBL_RIGHT_NOW, "Text", condition.description .. " as of " .. tstampStr)
 		moai.Set(#LBL_CURRENT_TEMP, "Text", ToString(currentWeather.main.tempMin) .. "F")
 		moai.Set(#LBL_FEELS_LIKE, "Text", ToString(currentWeather.main.feelsLike) .. "F")
 		moai.Set(#LBL_HIGH_TEMP, "Text", ToString(currentWeather.main.tempMax) .. "F")
@@ -227,40 +246,44 @@ Function p_MainWindow_GetCurrentWeather()
 
 		; Display rain data if present
 		If GetType(currentWeather.rain) = #TABLE
-			oneHour = currentWeather.rain.oneHour / 25.4
-			threeHour = currentWeather.rain.threeHour / 25.4
-			moai.Set(#LBL_RAIN, "Text", "Last Hour: " .. ToString(Round(oneHour)) .. ", Last 3 Hours: " .. ToString(Round(threeHour)))	
+			If HaveItem(currentWeather.rain, #K_P_ONE_HOUR_KEY) And HaveItem(currentWeather.rain, #K_P_THREE_HOUR_KEY)
+				oneHour = currentWeather.rain.oneHour / 25.4
+				threeHour = currentWeather.rain.threeHour / 25.4
+				moai.Set(#LBL_RAIN, "Text", "Last Hour: " .. ToString(Round(oneHour)) .. ", Last 3 Hours: " .. ToString(Round(threeHour)))
+			EndIf
 		EndIf
 
 		; Display snow data if present
-		If GetType(currentWeather.snow) = #TABLE
-			oneHour = currentWeather.snow.oneHour / 25.4
-			threeHour = currentWeather.snow.threeHour / 25.4
-			moai.Set(#LBL_SNOW, "Text", "Last Hour: " .. ToString(Round(oneHour)) .. ", Last 3 Hours: " .. ToString(Round(threeHour)))
+		If GetType(currentWeather.snow) = #table
+			If HaveItem(currentWeather.snow, #K_P_ONE_HOUR_KEY) And HaveItem(currentWeather.snow, #K_P_THREE_HOUR_KEY)
+				oneHour = currentWeather.snow.oneHour / 25.4
+				threeHour = currentWeather.snow.threeHour / 25.4
+				moai.Set(#LBL_SNOW, "Text", "Last Hour: " .. ToString(Round(oneHour)) .. ", Last 3 Hours: " .. ToString(Round(threeHour)))
+			EndIf
 		EndIf
 
 		; Compute and display sunrise timestamp adjusted for timezone
 		timestamp = currentWeather.system.sunrise
 		tstamp = DateToTimestamp(MakeDate(timestamp))
 		tstamp = tstamp + currentWeather.timezone
-		timestamp = TimestampToDate(tstamp)
-		Local sunrise = StringUtils.DateToTimestamp(timestamp)
+		Local sunrise = TimestampToDate(tstamp)
 		moai.Set(#LBL_SUNRISE, "Text", sunrise)
 
 		; Compute and display sunset timestamp adjusted for timezone
 		timestamp = currentWeather.system.sunset
 		tstamp = DateToTimestamp(MakeDate(timestamp))
 		tstamp = tstamp + currentWeather.timezone
-		timestamp = TimestampToDate(tstamp)
-		Local sunset = StringUtils.DateToTimestamp(timestamp)
+		Local sunset = TimestampToDate(tstamp)
 		moai.Set(#LBL_SUNSET, "Text", sunset)
 	EndIf
 
+	CheckEvents()
 	RQWeatherClient.Close()
 EndFunction
 
-Function p_MainWindow_ProcessGUI(message)
-    DebugPrint("DEBUG: Event class: " .. message.Class)
+Function MainWindow:ProcessGUI(message)
+	If IsNil(message) Then Return ()
+	DebugPrint("DEBUG: Event class: " .. message.Class)
     DebugPrint("DEBUG: Event attrib: " .. message.Attribute)
     DebugPrint("DEBUG: Event ID: " .. message.ID)
     Switch message.Class
@@ -269,15 +292,15 @@ Function p_MainWindow_ProcessGUI(message)
         Case #MSG_ATTR_PRESSED:
             Switch message.ID
             Case #BTN_SEL_LOC:
-				DebugPrint("Select location pressed!")
+				self._selLocWindow:Show()
             Case #BTN_GET_WEATHER:
-
+				self:_getCurrentWeather()
             Case #BTN_FETCH:
 			
 			Case #BTN_PREFS_CANCEL:
-				p_PrefsWindow_Close()
+				self._prefsWindow:Close()
 			Case #BTN_PREFS_SAVE:
-				p_PrefsWindow_SaveAndClose()
+				self._prefsWindow:SaveAndClose()
             EndSwitch
         EndSwitch
     Case #MSG_CLASS_MNUITM:
@@ -285,54 +308,60 @@ Function p_MainWindow_ProcessGUI(message)
 		Case #MSG_ATTR_SELECTED:
 			Switch message.ID
         	Case #MNU_ABOUT:
-            	moai.Request("About", "MOWeather\n" ..
-                	"© 2025 by Cyrus Brunner")
+            	moai.Request("About", "MOWeather\n© 2025 by Cyrus Brunner", "OK")
         	Case #MNU_QUIT:
             	End
 			Case #MNU_PREFS:
-				p_PrefsWindow_Show()
+				self._prefsWindow:Show()
         	EndSwitch
 		EndSwitch
     EndSwitch
+	
+	If self._selLocWindow.Shown
+		DebugPrint("DEBUG: Select location window shown")
+		self._selLocWindow:DoEvents(message)
+	EndIf
 EndFunction
 
-Function p_MainWindow_ReceiveProgress(totalBytes, bytesReceived)
-	pDownloading = True
+Function MainWindow:_receiveProgress(totalBytes, bytesReceived)
+	If IsNil(totalBytes) Or totalBytes = 0 Then totalBytes = 1
+	If IsNil(bytesReceived) Or bytesReceived = 0 Then bytesReceived = 1
+	self._downloading = True
 	Local value = (bytesReceived * 100) / totalBytes
-	p_MainWindow_SetProgressBar(value, totalBytes)
+	self:_setProgressBar(value, totalBytes)
 EndFunction
 
-Function p_MainWindow_ProcessingRequest()
-	p_MainWindow_Log("Beginning API request")
+Function MainWindow:_processingRequest()
+	self:_log("Beginning API request")
 EndFunction
 
-Function p_MainWindow_ProcessingComplete()
-	p_MainWindow_Log("API request complete")
+Function MainWindow:_processingComplete()
+	self:_log("API request complete")
 EndFunction
 
-Function p_MainWindow_DownloadComplete(url, httpStatus, filePath)
-	p_MainWindow_SetProgressBar(100, 100)
-	If httpStatus = HTTPStatus.STATUS_200_OK And Not(IsNil(filePath))
-		p_MainWindow_PopulateImage(FilePart(filePath), filePath)
+Function MainWindow:_downloadComplete(url, httpStatus, filePath)
+	self:_setProgressBar(100, 100)
+	If httpStatus = #HTTPStatus_STATUS_200_OK And Not(IsNil(filePath))
+		self:_populateImage(FilePart(filePath), filePath)
 	EndIf
 	
-	pDownloading = False
+	self._downloading = False
 EndFunction
 
-Function p_MainWindow_Connected()
-	p_MainWindow_Log("Client connected")
+Function MainWindow:_connected()
+	self:_log("Client connected")
 EndFunction
 
-Function p_MainWindow_ApiSuccess(errorCode, desc)
-	p_MainWindow_Log("Request result: [" .. ToString(errorCode) .. "] " .. desc)
+Function MainWindow:_apiSuccess(errorCode, desc)
+	self:_log("Request result: [" .. ToString(errorCode) .. "] " .. desc)
 EndFunction
 
-Function p_MainWindow_ApiError(errorCode, desc, inUrl, inResponse)
-	p_MainWindow_Log("API Error: [" .. ToString(errorCode) .. "] " .. desc .. " (URL: " .. inUrl .. ")")
-	p_MainWindow_Log("Error response: " .. inResponse)
+Function MainWindow:_apiError(errorCode, desc, inUrl, inResponse)
+	self:_log("API Error: [" .. ToString(errorCode) .. "] " .. desc .. " (URL: " .. inUrl .. ")")
+	self:_log("Error response: " .. inResponse)
 EndFunction
 
-Function p_MainWindow_Init()
+Function MainWindow:Show()
 	; Load GUI definition file
 	@FILE #ID_WINDOW_DEF, #FILE_WINDOW_DEF
 
@@ -340,20 +369,25 @@ Function p_MainWindow_Init()
 	LoadBrush(#ID_BRUSH_WEATHER_COND, #FILE_BRUSH_DEF_ICON)
 
 	moai.CreateApp(ReadString(#ID_WINDOW_DEF))
-	InstallEventHandler({RapaGUI=p_MainWindow_ProcessGUI})
 
 	IconCache.Init()
 	IconCache.ClearCache()
 	
-	RQWeatherClient.OnProcessingRequest = p_MainWindow_ProcessingRequest
-	RQWeatherClient.OnProcessingComplete = p_MainWindow_ProcessingComplete
-	RQWeatherClient.OnXferProgress = p_MainWindow_ReceiveProgress
-	RQWeatherClient.OnDownloadComplete = p_MainWindow_DownloadComplete
-	RQWeatherClient.OnConnected = p_MainWindow_Connected
-	RQWeatherClient.OnApiSuccess = p_MainWindow_ApiSuccess
-	RQWeatherClient.OnApiError = p_MainWindow_ApiError
+	RQWeatherClient.OnProcessingRequest = Function() self:_processingRequest() EndFunction 
+	RQWeatherClient.OnProcessingComplete = function() self:_processingComplete() EndFunction
+	RQWeatherClient.OnXferProgress = Function(totalBytes, bytesReceived) self:_receiveProgress(totalBytes, bytesReceived) EndFunction
+	RQWeatherClient.OnDownloadComplete = Function(url, httpStatus, filePath) self:_downloadComplete(url, httpStatus, filePath) EndFunction
+	RQWeatherClient.OnConnected = Function() self:_connected() EndFunction
+	RQWeatherClient.OnApiSuccess = Function(errorCode, desc) self:_apiSuccess(errorCode, desc) EndFunction
+	RQWeatherClient.OnApiError = Function(errorCode, desc, inUrl, inResponse) self:_apiError(errorCode, desc, inUrl, inResponse) EndFunction
 	
+	self:_reload()
+	self:_log("Ready.")
+EndFunction
 
-	p_MainWindow_Reload()
-	p_MainWindow_Log("Ready.")
+Function MainWindow:New()
+	Local instance = CopyTable(self)
+	instance._prefsWindow = PrefsWindow:New()
+	instance._selLocWindow = SelectLocationWindow:New(instance)
+	Return (instance)
 EndFunction

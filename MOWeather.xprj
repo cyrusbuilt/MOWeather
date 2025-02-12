@@ -157,6 +157,10 @@
             <Option inproject="1"/>
             <Option filetype="16"/>
         </FileUnit>
+        <FileUnit filepath="SelectLocationWindow.hws">
+            <Option inproject="1"/>
+            <Option filetype="16"/>
+        </FileUnit>
         <FileUnit filepath="StringLib/StringBuilder.hws">
             <Option inproject="1"/>
             <Option filetype="16"/>
@@ -174,6 +178,10 @@
             <Option filetype="16"/>
         </FileUnit>
         <FileUnit filepath="RQWeatherClient/DTO/WeatherResponseDTO.hws">
+            <Option inproject="1"/>
+            <Option filetype="16"/>
+        </FileUnit>
+        <FileUnit filepath="RQWeatherClient/DTO/WindDirection.hws">
             <Option inproject="1"/>
             <Option filetype="16"/>
         </FileUnit>

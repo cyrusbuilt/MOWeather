@@ -15,7 +15,7 @@ Global RQWeatherClient = {}
 RQWeatherClient.VERSION = "1.0.0.0"
 RQWeatherClient.Address = ""
 RQWeatherClient.Port = 0
-RQWeatherClient.LastHttpStatus = HTTPStatus.STATUS_200_OK
+RQWeatherClient.LastHttpStatus = #HTTPStatus_STATUS_200_OK
 RQWeatherClient._hurl = Nil
 RQWeatherClient._recvBuffer = Nil
 RQWeatherClient._connected = False
@@ -30,6 +30,9 @@ RQWeatherClient.OnDownloadComplete = Function(url, httpStatus, filePath) EndFunc
 RQWeatherClient.OnXferProgress = Function(totalBytes, bytesReceived) EndFunction
 
 Function RQWeatherClient._recvData(data$)
+	If IsNil(RQWeatherClient._recvBuffer)
+		RQWeatherClient._recvBuffer = StringUtils.EMPTY
+	EndIf
     RQWeatherClient._recvBuffer = RQWeatherClient._recvBuffer .. data$
 EndFunction
 
@@ -72,7 +75,7 @@ Function RQWeatherClient._eventApiError(errorCode, desc, inUrl, inResponse)
 EndFunction
 
 Function RQWeatherClient._eventApiSuccess(errorCode, desc)
-    If (GetType(RQWeatherClient.ApiSuccess) = #FUNCTION)
+    If (GetType(RQWeatherClient.OnApiSuccess) = #FUNCTION)
         RQWeatherClient.OnApiSuccess(errorCode, desc)
     EndIf
 EndFunction
@@ -99,41 +102,41 @@ Function RQWeatherClient._getStatusDesc(status)
     Local desc = StringUtils.EMPTY
 
     Switch status
-    Case HTTPStatus.STATUS_200_OK:
+    Case #HTTPStatus_STATUS_200_OK:
         desc = "OK"
-    Case HTTPStatus.STATUS_201_CREATED:
+    Case #HTTPStatus_STATUS_201_CREATED:
         desc = "Created"
-    Case HTTPStatus.STATUS_202_ACCEPTED
+    Case #HTTPStatus_STATUS_202_ACCEPTED
         desc = "Accepted"
-    Case HTTPStatus.STATUS_203_NON_AUTHORITATIVE_INFO:
+    Case #HTTPStatus_STATUS_203_NON_AUTHORITATIVE_INFO:
         desc = "Non-authoritative info"
-    Case HTTPStatus.STATUS_204_NO_CONTENT:
+    Case #HTTPStatus_STATUS_204_NO_CONTENT:
         desc = "No content"
-    Case HTTPStatus.STATUS_205_RESET_CONTENT:
+    Case #HTTPStatus_STATUS_205_RESET_CONTENT:
         desc = "Reset content"
-    Case HTTPStatus.STATUS_206_PARTIAL_CONTENT:
+    Case #HTTPStatus_STATUS_206_PARTIAL_CONTENT:
         desc = "Partial content"
-    Case HTTPStatus.STATUS_400_BAD_REQUEST:
+    Case #HTTPStatus_STATUS_400_BAD_REQUEST:
         desc = "Bad request"
-    Case HTTPStatus.STATUS_401_UNAUTHORIZED:
+    Case #HTTPStatus_STATUS_401_UNAUTHORIZED:
         desc = "Unauthorized"
-    Case HTTPStatus.STATUS_403_FORBIDDEN:
+    Case #HTTPStatus_STATUS_403_FORBIDDEN:
         desc = "Forbidden"
-    Case HTTPStatus.STATUS_404_NOT_FOUND:
+    Case #HTTPStatus_STATUS_404_NOT_FOUND:
         desc = "Not found"
-    Case HTTPStatus.STATUS_405_METHOD_NOT_ALLOWED:
-        desc "Method not allowed"
-    Case HTTPStatus.STATUS_408_REQUEST_TIMEOUT:
+    Case #HTTPStatus_STATUS_405_METHOD_NOT_ALLOWED:
+        desc = "Method not allowed"
+    Case #HTTPStatus_STATUS_408_REQUEST_TIMEOUT:
         desc = "Request timed out"
-    Case HTTPStatus.STATUS_500_INTERNAL_SERVER_ERROR:
+    Case #HTTPStatus_STATUS_500_INTERNAL_SERVER_ERROR:
         desc = "Internal server error"
-    Case HTTPStatus.STATUS_503_SERVICE_UNAVAILABLE:
+    Case #HTTPStatus_STATUS_503_SERVICE_UNAVAILABLE:
         desc = "Service unavailable"
-    Case HTTPStatus.STATUS_511_NETWORK_AUTHENTICATION_REQUIRED:
+    Case #HTTPStatus_STATUS_511_NETWORK_AUTHENTICATION_REQUIRED:
         desc = "Network authentication required"
-    Case HTTPStatus.STATUS_NEG_1_SOCKET_TIMEOUT:
+    Case #HTTPStatus_STATUS_NEG_1_SOCKET_TIMEOUT:
         desc = "Socket timeout"
-    Case HTTPStatus.STATUS_NO_STATUS:
+    Case #HTTPStatus_STATUS_NO_STATUS:
         desc = "Status unknown" 
     EndSwitch
 
@@ -141,21 +144,25 @@ Function RQWeatherClient._getStatusDesc(status)
 EndFunction
 
 Function RQWeatherClient._gotError(inUrl, inResponse)
-    Local errorCode = 0
+    Local errorCode = #HTTPStatus_STATUS_200_OK
     Local isError = False
     Local desc = StringUtils.EMPTY
 
-    Local lastError = RQWeatherClient._hurl:GetInfo_ResponseCode()
+    Local lastError = RQWeatherClient._hurl:GetInfo_Response_Code()
     If lastError = 0
         errorCode = -1
         isError = True
         desc = "No response"
-    ElseIf lastError >= HTTPStatus.STATUS_400_BAD_REQUEST
+    ElseIf lastError >= #HTTPStatus_STATUS_400_BAD_REQUEST
         errorCode = lastError
         isError = True
         desc = "HTTP ERROR: " .. RQWeatherClient._getStatusDesc(lastError)
+	Else
+		errorCode = lastError
+		desc = RQWeatherClient._getStatusDesc(lastError)
     EndIf
 
+	DebugPrint("DEBUG: gotError: code: " .. ToString(errorCode) .. ", desc: " .. desc)
     If isError
         RQWeatherClient._eventApiError(errorCode, desc, inUrl, inResponse)
     Else
@@ -167,12 +174,13 @@ EndFunction
 
 Function RQWeatherClient._preflight(inUrl, inTimeout)
     ; First, make a HEAD request and check for errors
-    RQWeatherClient.LastHttpStatus = HTTPStatus.STATUS_NO_STATUS
-    RQWeatherClient._recvBuffer = Nil
+    RQWeatherClient.LastHttpStatus = #HTTPStatus_STATUS_NO_STATUS
+    RQWeatherClient._recvBuffer = StringUtils.EMPTY
     RQWeatherClient._hurl:SetOpt_Nobody(True)
     RQWeatherClient._hurl:SetOpt_URL(inUrl)
     RQWeatherClient._hurl:SetOpt_ConnectTimeout(inTimeout)
-    RQWeatherClient._hurl.Perform()
+	RQWeatherClient._hurl:SetOpt_HeaderFunction(RQWeatherClient._recvData)
+    RQWeatherClient._hurl:Perform()
     If RQWeatherClient._gotError(inUrl, RQWeatherClient._recvBuffer)
         Return (False)
     EndIf
@@ -182,7 +190,8 @@ Function RQWeatherClient._preflight(inUrl, inTimeout)
     Local rawStr = RQWeatherClient._recvBuffer
     If StringUtils.IsEmpty(rawStr)
         desc = "No response from server"
-        RQWeatherClient.LastHttpStatus = HTTPStatus.STATUS_NEG_1_SOCKET_TIMEOUT
+		DebugPrint("DEBUG: preflight: " .. desc)
+        RQWeatherClient.LastHttpStatus = #HTTPStatus_STATUS_NEG_1_SOCKET_TIMEOUT
         RQWeatherClient._eventApiError(RQWeatherClient.LastHttpStatus, desc, inUrl, rawStr)
         Return (False)
     EndIf
@@ -191,9 +200,11 @@ Function RQWeatherClient._preflight(inUrl, inTimeout)
     Local isError = False
     RQWeatherClient.LastHttpStatus = Val(StringUtils.Substring(rawStr, 10, 3))
     desc = RQWeatherClient._getStatusDesc(RQWeatherClient.LastHttpStatus)
-    If RQWeatherClient.LastHttpStatus >= HTTPStatus.STATUS_400_BAD_REQUEST
+    If RQWeatherClient.LastHttpStatus >= #HTTPStatus_STATUS_400_BAD_REQUEST
         isError = True
     EndIf
+	
+	DebugPrint("DEBUG: preflight: last status: " .. ToString(RQWeatherClient.LastHttpStatus))
 
     If isError
         RQWeatherClient._eventApiError(RQWeatherClient.LastHttpStatus, desc, inUrl, rawStr)
@@ -201,7 +212,24 @@ Function RQWeatherClient._preflight(inUrl, inTimeout)
         RQWeatherClient._eventApiSuccess(RQWeatherClient.LastHttpStatus, desc)
     EndIf
 
-    Return (Not isError)
+    Return (Not(isError))
+EndFunction
+
+Function RQWeatherClient._extractRestBody(inStr)
+	Local result = StringUtils.EMPTY
+	If Not StringUtils.IsEmpty(inStr)
+		Local lines = StringUtils.StringSplit(inStr, "\n")
+		Local n, i = NextItem(lines)
+		While GetType(n) <> #NIL
+			If StringUtils.StartsWith(i, "[") Or StringUtils.StartsWith(i, "{")
+				result = i
+				break
+			EndIf
+			n, i = NextItem(lines, n)
+		Wend
+	EndIf
+	
+	Return (result)
 EndFunction
 
 Function RQWeatherClient._getWithNotification(inUrl, inTimeout)
@@ -211,13 +239,13 @@ Function RQWeatherClient._getWithNotification(inUrl, inTimeout)
         Return StringUtils.EMPTY
     EndIf
 
-    RQWeatherClient._recvBuffer = Nil
+    RQWeatherClient._recvBuffer = StringUtils.EMPTY
     RQWeatherClient._hurl:SetOpt_URL(inUrl)
     RQWeatherClient._hurl:SetOpt_HTTPGet(True)
     RQWeatherClient._hurl:SetOpt_ConnectTimeout(inTimeout)
     RQWeatherClient._hurl:Perform()
 
-    Local result = RQWeatherClient._recvBuffer
+    Local result = RQWeatherClient._extractRestBody(RQWeatherClient._recvBuffer)
     If RQWeatherClient._gotError(inUrl, result)
         result = StringUtils.EMPTY
     EndIf
@@ -230,10 +258,10 @@ Function RQWeatherClient.Init()
     RQWeatherClient._hurl = hurl.Easy()
     RQWeatherClient._hurl:SetOpt_HTTPHeader({"Content-Type: application/json"})
     RQWeatherClient._hurl:SetOpt_HTTPGet(True)
-    RQWeatherClient._hurl:SetOpt_Verbose(True)
+    RQWeatherClient._hurl:SetOpt_Verbose(False)
     RQWeatherClient._hurl:SetOpt_UserAgent("MOWeather")
 	RQWeatherClient._hurl:SetOpt_WriteFunction(RQWeatherClient._recvData)
-    RQWeatherClient.LastHttpStatus = HTTPStatus.STATUS_200_OK
+    RQWeatherClient.LastHttpStatus = #HTTPStatus_STATUS_200_OK
     RQWeatherClient._connected = False
     RQWeatherClient._downloading = False
 EndFunction
@@ -252,7 +280,7 @@ Function RQWeatherClient.Close()
 EndFunction
 
 Function RQWeatherClient.GetCurrent(lat, lon)
-    Local url = RQWeatherClient._baseUrl .. "/current?lat="
+    Local url = RQWeatherClient._currentWeatherRoot() .. "?lat="
     url = url .. ToString(lat)
     url = url .. "&lon="
     url = url .. ToString(lon)
@@ -261,7 +289,7 @@ Function RQWeatherClient.GetCurrent(lat, lon)
 EndFunction
 
 Function RQWeatherClient.GetForecast(lat, lon)
-    Local url = RQWeatherClient._baseUrl .. "/forecast?lat="
+    Local url = RQWeatherClient._forecastRoot() .. "?lat="
     url = url .. ToString(lat)
     url = url .. "&lon="
     url = url .. ToString(lon)
@@ -276,31 +304,53 @@ Function RQWeatherClient.GetGeoData(city, stateCode, countryCode)
     stateCode = StringUtils.StripPrettyPrintChars(stateCode)
     countryCode = StringUtils.StripPrettyPrintChars(countryCode)
 
-    Local url = RQWeatherClient._baseUrl .. "/geo?city="
+    Local url = RQWeatherClient._geoRoot() .. "?city="
     url = url .. city
 
     If Not (StringUtils.IsEmpty(stateCode))
-        url = url .. stateCode
+        url = url .. "&stateCode=" .. stateCode
     EndIf
 
     If Not (StringUtils.IsEmpty(countryCode))
-        url = url .. countryCode
+        url = url .. "&countryCode=" .. countryCode
     EndIf
 
+	Local response = {}
     Local result = RQWeatherClient._getWithNotification(url, 30)
-    Return (GeoDTO:ParseFromJsonString(result))
+	DebugPrint("DEBUG: Geo result: " .. result)
+	If StringUtils.IsEmpty(result)
+		Return (response)
+	EndIf
+	
+    Local temp = DeserializeTable(result)
+	If Not IsTableEmpty(temp)
+		Local pos = 0
+		Local geoTemp = Nil
+		Local n, i = NextItem(temp)
+		While GetType(n) <> #NIL
+			geoTemp = GeoDTO:LoadFromTable(i)
+			InsertItem(response, geoTemp, pos)
+			pos = pos + 1
+			n, i = NextItem(temp, n)
+		Wend
+	EndIf
+	
+	Return (response)
 EndFunction
 
 Function RQWeatherClient.GetFile(inUrl, localFile)
+	DebugPrint("DEBUG: GetFile(): inUrl: " .. inUrl)
+	DebugPrint("DEBUg: GetFile(): localFile: " .. localFile)
 	Local done = False
 	RQWeatherClient._downloading = True
 
-    RQWeatherClient._dlHandle = DownloadFile(inUrl, {Async=True, Adapter="hurl", File=localFile}, RQWeatherClient._eventXferProgress)
+	Local opts = {Async=True, Adapter="hurl", File=localFile}
+    RQWeatherClient._dlHandle = DownloadFile(inUrl, opts, RQWeatherClient._eventXferProgress)
 	Repeat done = ContinueAsyncOperation(RQWeatherClient._dlHandle)
 		VWait()
 	Until done Or Not RQWeatherClient._downloading
 	
 	RQWeatherClient._downloading = False
-	Local stat = RQWeatherClient._hurl:GetInfo_ResponseCode()
+	Local stat = RQWeatherClient._hurl:GetInfo_Response_Code()
 	RQWeatherClient._eventDownloadComplete(inUrl, stat, localFile)
 EndFunction

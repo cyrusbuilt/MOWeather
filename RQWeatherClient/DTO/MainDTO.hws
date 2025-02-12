@@ -23,7 +23,7 @@ Function MainDTO:New()
     Return (CopyTable(self))
 EndFunction
 
-Function MainDTO.LoadFromTable(inTable)
+Function MainDTO:LoadFromTable(inTable)
     Local instance = MainDTO:New()
 
     If (IsNil(inTable) Or IsTableEmpty(inTable))
