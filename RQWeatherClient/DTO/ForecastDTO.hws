@@ -47,8 +47,12 @@ Function ForecastDTO:LoadFromTable(inTable)
 
     If (HaveItem(inTable, #K_FC_LIST_KEY))
         If Not IsNil(inTable.list) And Not IsTableEmpty(inTable.list)
-            ForEach(inTable.list, ForecastDTO:_populateList, instance)
-        EndIf
+			Local n, i = NextItem(inTable.list)
+			While GetType(n) <> #NIL
+        		self:_populateList(i, instance)
+				n, i = NextItem(inTable.list, n)
+			Wend
+		EndIf
     EndIf
 
     If (HaveItem(inTable, #K_FC_CITY_KEY))
@@ -57,8 +61,12 @@ Function ForecastDTO:LoadFromTable(inTable)
 
     If (HaveItem(inTable, #K_FC_AGG_KEY))
         If Not IsNil(inTable.aggregates) And Not IsTableEmpty(inTable.aggregates)
-            ForEach(inTable.aggregates, ForecastDTO:_populateAggs, instance)
-        EndIf
+			Local n, i = NextItem(inTable.aggregates)
+			While GetType(n) <> #NIL
+        		self:_populateAggs(i, instance)
+				n, i = NextItem(inTable.aggregates, n)
+			Wend
+		EndIf
     EndIf
 
     Return (instance)

@@ -38,14 +38,19 @@ Const #LBL_VISIBILITY = "lblVisibility"
 Const #LBL_WIND = "lblWind"
 Const #LBL_SNOW = "lblSnow"
 Const #LBL_SUNSET = "lblSunset"
+Const #LBL_DAY_1 = "lblDay1"
 Const #LBL_DAY_1_COND = "lblDay1Cond"
 Const #LBL_DAY_1_TEMPS = "lblDay1Temps"
+Const #LBL_DAY_2 = "lblDay2"
 Const #LBL_DAY_2_COND = "lblDay2Cond"
 Const #LBL_DAY_2_TEMPS = "lblDay2Temps"
+Const #LBL_DAY_3 = "lblDay3"
 Const #LBL_DAY_3_COND = "lblDay3Cond"
 Const #LBL_DAY_3_TEMPS = "lblDay3Temps"
+Const #LBL_DAY_4 = "lblDay4"
 Const #LBL_DAY_4_COND = "lblDay4Cond"
 Const #LBL_DAY_4_TEMPS = "lblDay4Temps"
+Const #LBL_DAY_5 = "lblDay5"
 Const #LBL_DAY_5_COND = "lblDay5Cond"
 Const #LBL_DAY_5_TEMPS = "lblDay5Temps"
 
@@ -84,6 +89,7 @@ MainWindow._imageIndex = 0
 MainWindow._currentFilename = StringUtils.EMPTY
 MainWindow._prefsWindow = {}
 MainWindow._selLocWindow = {}
+MainWindow._forecast = {}
 
 Function MainWindow:_log(text)
     Local eolIndex = 0
@@ -148,30 +154,27 @@ Function MainWindow:SetCurrentLocation(location)
 EndFunction
 
 Function MainWindow:_populateImage(expectedFileName, fileNameActual)
-	DebugPrint("fileNameActual: " .. fileNameActual)
 	If expectedFileName = self._currentFilename
 		Local id = Rnd(50)
-		DebugPrint("generated ID: " .. ToString(id))
 		Local absPath = CanonizePath(fileNameActual)
-		DebugPrint("abs path: " .. absPath)
 		If Not Exists(absPath)
-			DebugPrint("file not found")
+			Return ()
 		EndIf
-		Local brushId = LoadBrush(id, absPath)
-		DebugPrint("DEBUG: brush ID: " .. ToString(brushId))
+		
+		LoadBrush(id, absPath)
 		Switch self._imageIndex
 		Case 0:
 			moai.Set(#IMG_COND, "Brush", id)
 		Case 1:
-			moai.Set(#IMG_DAY_1_COND, "Brush", brushId)
+			moai.Set(#IMG_DAY_1_COND, "Brush", id)
 		Case 2:
-			moai.Set(#IMG_DAY_2_COND, "Brush", brushId)
+			moai.Set(#IMG_DAY_2_COND, "Brush", id)
 		Case 3:
-			moai.Set(#IMG_DAY_3_COND, "Brush", brushId)
+			moai.Set(#IMG_DAY_3_COND, "Brush", id)
 		Case 4:
-			moai.Set(#IMG_DAY_4_COND, "Brush", brushId)
+			moai.Set(#IMG_DAY_4_COND, "Brush", id)
 		Case 5:
-			moai.Set(#IMG_DAY_5_COND, "Brush", brushId)
+			moai.Set(#IMG_DAY_5_COND, "Brush", id)
 		EndSwitch
 	EndIf
 EndFunction
@@ -179,8 +182,6 @@ EndFunction
 Function MainWindow:_loadImageFromCacheOrSource(fileUri)
 	Local nameParts = StringUtils.StringSplit(fileUri, "/")
 	self._currentFilename = GetItem(nameParts, TableItems(nameParts) - 1)
-	DebugPrint("DEBUG: _loadImageFromCacheOrSource(): current filename: " .. self._currentFilename)
-	DebugPrint("DEBUG: _loadImageFromCacheOrSource(): fileUri: " .. fileUri)
 
 	Local imageFile = IconCache.GetIcon(self._currentFilename)
 	If IsNil(imageFile)
@@ -208,8 +209,7 @@ Function MainWindow:_getCurrentWeather()
 	If currentWeather.code = #HTTPStatus_STATUS_200_OK
 		; Get current condition
 		Local condition = currentWeather.weather[0]
-		pImageIndex = 0
-		DebugPrint("DEBUG: _getCurrentWeather(): icon: " ..condition.icon)
+		self._imageIndex = 0
 		self:_loadImageFromCacheOrSource(condition.icon)
 
 		; Adjust timestamp for timezone
@@ -281,6 +281,61 @@ Function MainWindow:_getCurrentWeather()
 	RQWeatherClient.Close()
 EndFunction
 
+Function MainWindow:_getForecast()
+	If IsNil(self._currentLocation) Or IsTableEmpty(self._currentLocation)
+		Return ()
+	EndIf
+	
+	Local lat = self._currentLocation.latitude
+	Local lon = self._currentLocation.longitude
+	
+	RQWeatherClient.Init()
+	Local forecast = RQWeatherClient.GetForecast(lat, lon)
+	If forecast.code = #HTTPStatus_STATUS_200_OK
+		self._forecast = forecast
+		DebugPrint("DEBUG: forecast data: " .. SerializeTable(self._forecast))
+		Local n, i = NextItem(forecast.aggregates)
+		While GetType(n) <> #NIL
+			self._imageIndex = i.dayNum
+			self:_loadImageFromCacheOrSource(i.icon)
+			
+			Local dayLabel = StringUtils.EMPTY
+			Local conLabel = StringUtils.EMPTY
+			Local tempLabel = StringUtils.EMPTY
+			Switch i.dayNum
+			Case 1:
+				dayLabel = #LBL_DAY_1
+				conLabel = #LBL_DAY_1_COND
+				tempLabel = #LBL_DAY_1_TEMPS
+			Case 2:
+				dayLabel = #LBL_DAY_2
+				conLabel = #LBL_DAY_2_COND
+				tempLabel = #LBL_DAY_2_TEMPS
+			Case 3:
+				dayLabel = #LBL_DAY_3
+				conLabel = #LBL_DAY_3_COND
+				tempLabel = #LBL_DAY_3_TEMPS
+			Case 4:
+				dayLabel = #LBL_DAY_4
+				conLabel = #LBL_DAY_4_COND
+				tempLabel = #LBL_DAY_4_TEMPS
+			Case 5:
+				dayLabel = #LBL_DAY_5
+				conLabel = #LBL_DAY_5_COND
+				tempLabel = #LBL_DAY_5_TEMPS
+			EndSwitch
+			
+			moai.Set(dayLabel, "Text", i.dateString)
+			moai.Set(conLabel, "Text", i.weatherType)
+			moai.Set(tempLabel, "Text", "Hi: " .. ToString(i.tempHigh) .. " Lo " .. ToString(i.tempLow))
+			n, i = NextItem(forecast.aggregates, n)
+		Wend
+	EndIf
+	
+	CheckEvents()
+	RQWeatherClient.Close()
+EndFunction
+
 Function MainWindow:ProcessGUI(message)
 	If IsNil(message) Then Return ()
 	DebugPrint("DEBUG: Event class: " .. message.Class)
@@ -296,11 +351,7 @@ Function MainWindow:ProcessGUI(message)
             Case #BTN_GET_WEATHER:
 				self:_getCurrentWeather()
             Case #BTN_FETCH:
-			
-			Case #BTN_PREFS_CANCEL:
-				self._prefsWindow:Close()
-			Case #BTN_PREFS_SAVE:
-				self._prefsWindow:SaveAndClose()
+				self:_getForecast()
             EndSwitch
         EndSwitch
     Case #MSG_CLASS_MNUITM:
@@ -317,8 +368,11 @@ Function MainWindow:ProcessGUI(message)
 		EndSwitch
     EndSwitch
 	
+	If self._prefsWindow.Shown
+		self._prefsWindow:DoEvents(message)
+	EndIf
+	
 	If self._selLocWindow.Shown
-		DebugPrint("DEBUG: Select location window shown")
 		self._selLocWindow:DoEvents(message)
 	EndIf
 EndFunction

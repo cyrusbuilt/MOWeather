@@ -8,6 +8,7 @@ Const #TE_PREFS_API_HOST = "tePrefsApiHost"
 Const #TE_PREFS_API_PORT = "tePrefsApiPort"
 
 Global PrefsWindow = {}
+PrefsWindow.Shown = False
 
 Function PrefsWindow:New()
 	Return (CopyTable(self))
@@ -18,10 +19,12 @@ Function PrefsWindow:Show()
 	moai.Set(#TE_PREFS_API_HOST, "Text", Preferences.ApiHostAddress)
 	moai.Set(#TE_PREFS_API_PORT, "Text", Preferences.ApiHostPort)
 	moai.Set(#WIN_PREFS, "Open", True)
+	self.Shown = True
 EndFunction
 
 Function PrefsWindow:Close()
 	moai.Set(#WIN_PREFS, "Open", False)
+	self.Shown = False
 EndFunction
 
 Function PrefsWindow:SaveAndClose()
@@ -40,4 +43,19 @@ Function PrefsWindow:SaveAndClose()
 	Preferences.ApiHostPort = apiPort
 	Preferences.Save()
 	self:Close()
+EndFunction
+
+Function PrefsWindow:DoEvents(message)
+	Switch message.Class
+	Case #MSG_CLASS_BUTTON:
+		Switch message.Attribute
+		Case #MSG_ATTR_PRESSED:
+			Switch message.ID
+			Case #BTN_PREFS_CANCEL:
+				self:Close()
+			Case #BTN_PREFS_SAVE:
+				self:SaveAndClose()
+			EndSwitch
+		EndSwitch
+	EndSwitch
 EndFunction
