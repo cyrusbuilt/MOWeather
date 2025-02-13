@@ -101,6 +101,10 @@
             <Option inproject="1"/>
             <Option filetype="16"/>
         </FileUnit>
+        <FileUnit filepath="ForecastDetailWindow.hws">
+            <Option inproject="1"/>
+            <Option filetype="16"/>
+        </FileUnit>
         <FileUnit filepath="RQWeatherClient/DTO/ForecastDTO.hws">
             <Option inproject="1"/>
             <Option filetype="16"/>

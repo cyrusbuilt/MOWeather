@@ -71,6 +71,7 @@ Const #FILE_BRUSH_DEF_ICON = "icons/weather.png"
 Const #ID_WINDOW_DEF = 1
 Const #ID_BRUSH_WEATHER_COND = 2
 
+@INCLUDE "JSONLib/JSONLib.hws"
 @INCLUDE "RQWeatherClient/RQWeatherClient.hws"
 @INCLUDE "RQWeatherClient/HTTPStatus.hws"
 @INCLUDE "RQWeatherClient/DTO/GeoDTO.hws"
@@ -101,7 +102,7 @@ Function MainWindow:_log(text)
     EndIf
 
     Local timestamp = GetDate() .. " " .. GetTime()
-    currentText = currentText .. "\n" .. timestamp .. " - " .. text .. "\n"
+    currentText = currentText .. timestamp .. " - " .. text .. "\n"
     moai.Set(#MSG_TE_LOG, "Text", currentText)
 
     Local pos = StringUtils.StringLength(currentText) - 1
@@ -436,6 +437,10 @@ Function MainWindow:Show()
 	RQWeatherClient.OnApiError = Function(errorCode, desc, inUrl, inResponse) self:_apiError(errorCode, desc, inUrl, inResponse) EndFunction
 	
 	self:_reload()
+	self:_log("CyrusBuilt RQWeatherClient Version: " .. RQWeatherClient.VERSION)
+	self:_log("CyrusBuilt StringLib Version: " .. StringUtils.VERSION)
+	self:_log("CyrusBuilt JSONLib Version: " .. JSONLib.VERSION)
+	self:_log("CyrusBuilt IconCacheLib Version: " .. IconCache.VERSION)
 	self:_log("Ready.")
 EndFunction
 

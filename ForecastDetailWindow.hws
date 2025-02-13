@@ -1,0 +1,7 @@
+Global ForecastDetailWindow = {}
+ForecastDetailWindow.Shown = False
+
+Function ForecastDetailWindow:New()
+	Return (CopyTable(self))
+EndFunction
+
