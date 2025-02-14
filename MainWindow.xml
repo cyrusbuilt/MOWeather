@@ -118,6 +118,7 @@
                         <hspace width="50" />
                         <vgroup>
                             <image id="imgCondition" brush="2"/>
+                            <busybar id="bbReqBusy"/>
                         </vgroup>
                     </hgroup>
                 </vgroup>
@@ -127,30 +128,35 @@
                     <vgroup halign="Center">
                         <label align="Center" id="lblDay1">Day 1</label>
                         <image id="imgDay1Cond" brush="2"/>
+                        <button id="btnDay1">Detail</button>
                         <label align="Center" id="lblDay1Cond">Condition</label>
                         <label align="Center" id="lblDay1Temps">Temps</label>
                     </vgroup>
                     <vgroup>
                         <label align="Center" id="lblDay2">Day 2</label>
                         <image id="imgDay2Cond" brush="2"/>
+                        <button id="btnDay2">Detail</button>
                         <label align="Center" id="lblDay2Cond">Condition</label>
                         <label align="Center" id="lblDay2Temps">Temps</label>
                     </vgroup>
                     <vgroup>
                         <label align="Center" id="lblDay3">Day 3</label>
                         <image id="imgDay3Cond" brush="2"/>
+                        <button id="btnDay3">Detail</button>
                         <label align="Center" id="lblDay3Cond">Condition</label>
                         <label align="Center" id="lblDay3Temps">Temps</label>
                     </vgroup>
                     <vgroup>
                         <label align="Center" id="lblDay4">Day 4</label>
                         <image id="imgDay4Cond" brush="2"/>
+                        <button id="btnDay4">Detail</button>
                         <label align="Center" id="lblDay4Cond">Condition</label>
                         <label align="Center" id="lblDay4Temps">Temps</label>
                     </vgroup>
                     <vgroup>
                         <label align="Center" id="lblDay5">Day 5</label>
                         <image id="imgDay5Cond" brush="2"/>
+                        <button id="btnDay5">Detail</button>
                         <label align="Center" id="lblDay5Cond">Condition</label>
                         <label align="Center" id="lblDay5Temps">Temps</label>
                     </vgroup>
@@ -217,6 +223,471 @@
             <hgroup halign="Left">
                 <button id="btnSelAccept">Accept</button>
                 <button id="btnSelCancel">Cancel</button>
+            </hgroup>
+        </vgroup>
+    </window>
+    <window id="winForecastDetail" title="Forecast Detail" open="False">
+        <vgroup>
+            <pageview id="pvDetails" mode="Tabs" position="Top">
+                <vgroup id="tp0" title="Tab 0">
+                    <vgroup halign="Left">
+                        <hgroup halign="Left">
+                            <label align="Left">Condition:&#160;</label>
+                            <label align="Left" id="lblFcCondition0">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left" id="lblFcTemp0">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">High:&#160;</label>
+                            <label align="Left" id="lblFcHigh0">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left">Low:&#160;</label>
+                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Humidity:&#160;</label>
+                            <label align="Left" id="lblFcHumidity0">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Cloudiness:&#160;</label>
+                            <label align="Left" id="lblFcCloudiness0">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Rain:&#160;</label>
+                            <label align="Left" id="lblFcRain0">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    <vgroup>
+                    <vspace/>
+                    <vgroup halign="Left">
+                        <hgroup align="Left">
+                            <label align="Left">Feels Like:&#160;</label>
+                            <label align="Left" id="lblFcFeelsLike0">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Possibility of Precipitation:&#160;</label>
+                            <label align="Left" id="lblFcPop0">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Pressure:&#160;</label>
+                            <label align="Left" id="lblFcPressure0">0 hPa&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Visibility&#160;</label>
+                            <label align="Left" id="lblFcVisibility0">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Wind:&#160;</label>
+                            <label align="Left" id="lblFcWind0">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Snow:&#160;</label>
+                            <label align="Left" id="lblFcSnow0">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    </vgroup>
+                </vgroup>
+                <vgroup id="tp1" halign="Left" title="Tab 1">
+                    <vgroup halign="Left">
+                        <hgroup halign="Left">
+                            <label align="Left">Condition:&#160;</label>
+                            <label align="Left" id="lblFcCondition1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left" id="lblFcTemp1">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">High:&#160;</label>
+                            <label align="Left" id="lblFcHigh1">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left">Low:&#160;</label>
+                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Humidity:&#160;</label>
+                            <label align="Left" id="lblFcHumidity1">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Cloudiness:&#160;</label>
+                            <label align="Left" id="lblFcCloudiness1">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Rain:&#160;</label>
+                            <label align="Left" id="lblFcRain1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    <vgroup>
+                    <vspace/>
+                    <vgroup halign="Left">
+                        <hgroup align="Left">
+                            <label align="Left">Feels Like:&#160;</label>
+                            <label align="Left" id="lblFcFeelsLike1">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Possibility of Precipitation:&#160;</label>
+                            <label align="Left" id="lblFcPop1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Pressure:&#160;</label>
+                            <label align="Left" id="lblFcPressure1">0 hPa&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Visibility&#160;</label>
+                            <label align="Left" id="lblFcVisibility1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Wind:&#160;</label>
+                            <label align="Left" id="lblFcWind1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Snow:&#160;</label>
+                            <label align="Left" id="lblFcSnow1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    </vgroup>
+                </vgroup>
+                <vgroup id="tp2" halign="Left" title="Tab 2">
+                    <vgroup halign="Left">
+                        <hgroup halign="Left">
+                            <label align="Left">Condition:&#160;</label>
+                            <label align="Left" id="lblFcCondition2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left" id="lblFcTemp2">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">High:&#160;</label>
+                            <label align="Left" id="lblFcHigh2">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left">Low:&#160;</label>
+                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Humidity:&#160;</label>
+                            <label align="Left" id="lblFcHumidity2">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Cloudiness:&#160;</label>
+                            <label align="Left" id="lblFcCloudiness2">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Rain:&#160;</label>
+                            <label align="Left" id="lblFcRain2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    <vgroup>
+                    <vspace/>
+                    <vgroup halign="Left">
+                        <hgroup align="Left">
+                            <label align="Left">Feels Like:&#160;</label>
+                            <label align="Left" id="lblFcFeelsLike2">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Possibility of Precipitation:&#160;</label>
+                            <label align="Left" id="lblFcPop2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Pressure:&#160;</label>
+                            <label align="Left" id="lblFcPressure2">0 hPa&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Visibility&#160;</label>
+                            <label align="Left" id="lblFcVisibility2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Wind:&#160;</label>
+                            <label align="Left" id="lblFcWind2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Snow:&#160;</label>
+                            <label align="Left" id="lblFcSnow2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    </vgroup>
+                </vgroup>
+                <vgroup id="tp3" halign="Left" title="Tab 3">
+                    <vgroup halign="Left">
+                        <hgroup halign="Left">
+                            <label align="Left">Condition:&#160;</label>
+                            <label align="Left" id="lblFcCondition3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left" id="lblFcTemp3">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">High:&#160;</label>
+                            <label align="Left" id="lblFcHigh3">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left">Low:&#160;</label>
+                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Humidity:&#160;</label>
+                            <label align="Left" id="lblFcHumidity3">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Cloudiness:&#160;</label>
+                            <label align="Left" id="lblFcCloudiness3">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Rain:&#160;</label>
+                            <label align="Left" id="lblFcRain3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    <vgroup>
+                    <vspace/>
+                    <vgroup halign="Left">
+                        <hgroup align="Left">
+                            <label align="Left">Feels Like:&#160;</label>
+                            <label align="Left" id="lblFcFeelsLike3">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Possibility of Precipitation:&#160;</label>
+                            <label align="Left" id="lblFcPop3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Pressure:&#160;</label>
+                            <label align="Left" id="lblFcPressure3">0 hPa&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Visibility&#160;</label>
+                            <label align="Left" id="lblFcVisibility3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Wind:&#160;</label>
+                            <label align="Left" id="lblFcWind3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Snow:&#160;</label>
+                            <label align="Left" id="lblFcSnow3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    </vgroup>
+                </vgroup>
+                <vgroup id="tp4" halign="Left" title="Tab 4">
+                    <vgroup halign="Left">
+                        <hgroup halign="Left">
+                            <label align="Left">Condition:&#160;</label>
+                            <label align="Left" id="lblFcCondition4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left" id="lblFcTemp4">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">High:&#160;</label>
+                            <label align="Left" id="lblFcHigh4">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left">Low:&#160;</label>
+                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Humidity:&#160;</label>
+                            <label align="Left" id="lblFcHumidity4">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Cloudiness:&#160;</label>
+                            <label align="Left" id="lblFcCloudiness4">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Rain:&#160;</label>
+                            <label align="Left" id="lblFcRain4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    <vgroup>
+                    <vspace/>
+                    <vgroup halign="Left">
+                        <hgroup align="Left">
+                            <label align="Left">Feels Like:&#160;</label>
+                            <label align="Left" id="lblFcFeelsLike4">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Possibility of Precipitation:&#160;</label>
+                            <label align="Left" id="lblFcPop4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Pressure:&#160;</label>
+                            <label align="Left" id="lblFcPressure4">0 hPa&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Visibility&#160;</label>
+                            <label align="Left" id="lblFcVisibility4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Wind:&#160;</label>
+                            <label align="Left" id="lblFcWind4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Snow:&#160;</label>
+                            <label align="Left" id="lblFcSnow4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    </vgroup>
+                </vgroup>
+                <vgroup id="tp5" halign="Left" title="Tab 5">
+                    <vgroup halign="Left">
+                        <hgroup halign="Left">
+                            <label align="Left">Condition:&#160;</label>
+                            <label align="Left" id="lblFcCondition5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left" id="lblFcTemp5">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">High:&#160;</label>
+                            <label align="Left" id="lblFcHigh5">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left">Low:&#160;</label>
+                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Humidity:&#160;</label>
+                            <label align="Left" id="lblFcHumidity5">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Cloudiness:&#160;</label>
+                            <label align="Left" id="lblFcCloudiness5">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Rain:&#160;</label>
+                            <label align="Left" id="lblFcRain5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    <vgroup>
+                    <vspace/>
+                    <vgroup halign="Left">
+                        <hgroup align="Left">
+                            <label align="Left">Feels Like:&#160;</label>
+                            <label align="Left" id="lblFcFeelsLike5">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Possibility of Precipitation:&#160;</label>
+                            <label align="Left" id="lblFcPop5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Pressure:&#160;</label>
+                            <label align="Left" id="lblFcPressure5">0 hPa&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Visibility&#160;</label>
+                            <label align="Left" id="lblFcVisibility5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Wind:&#160;</label>
+                            <label align="Left" id="lblFcWind5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Snow:&#160;</label>
+                            <label align="Left" id="lblFcSnow5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    </vgroup>
+                </vgroup>
+                <vgroup id="tp6" halign="Left" title="Tab 6">
+                    <vgroup halign="Left">
+                        <hgroup halign="Left">
+                            <label align="Left">Condition:&#160;</label>
+                            <label align="Left" id="lblFcCondition6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left" id="lblFcTemp6">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">High:&#160;</label>
+                            <label align="Left" id="lblFcHigh6">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left">Low:&#160;</label>
+                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Humidity:&#160;</label>
+                            <label align="Left" id="lblFcHumidity6">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Cloudiness:&#160;</label>
+                            <label align="Left" id="lblFcCloudiness6">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Rain:&#160;</label>
+                            <label align="Left" id="lblFcRain6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    <vgroup>
+                    <vspace/>
+                    <vgroup halign="Left">
+                        <hgroup align="Left">
+                            <label align="Left">Feels Like:&#160;</label>
+                            <label align="Left" id="lblFcFeelsLike6">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Possibility of Precipitation:&#160;</label>
+                            <label align="Left" id="lblFcPop6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Pressure:&#160;</label>
+                            <label align="Left" id="lblFcPressure6">0 hPa&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Visibility&#160;</label>
+                            <label align="Left" id="lblFcVisibility6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Wind:&#160;</label>
+                            <label align="Left" id="lblFcWind6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Snow:&#160;</label>
+                            <label align="Left" id="lblFcSnow6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    </vgroup>
+                </vgroup>
+                <vgroup id="tp7" halign="Left" title="Tab 7">
+                    <vgroup halign="Left">
+                        <hgroup halign="Left">
+                            <label align="Left">Condition:&#160;</label>
+                            <label align="Left" id="lblFcCondition7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left" id="lblFcTemp7">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">High:&#160;</label>
+                            <label align="Left" id="lblFcHigh7">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left">Low:&#160;</label>
+                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Humidity:&#160;</label>
+                            <label align="Left" id="lblFcHumidity7">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Cloudiness:&#160;</label>
+                            <label align="Left" id="lblFcCloudiness7">0%&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Rain:&#160;</label>
+                            <label align="Left" id="lblFcRain7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    <vgroup>
+                    <vspace/>
+                    <vgroup halign="Left">
+                        <hgroup align="Left">
+                            <label align="Left">Feels Like:&#160;</label>
+                            <label align="Left" id="lblFcFeelsLike7">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Possibility of Precipitation:&#160;</label>
+                            <label align="Left" id="lblFcPop7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Pressure:&#160;</label>
+                            <label align="Left" id="lblFcPressure7">0 hPa&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Visibility&#160;</label>
+                            <label align="Left" id="lblFcVisibility7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup halign="Left">
+                            <label align="Left">Wind:&#160;</label>
+                            <label align="Left" id="lblFcWind7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                        <hgroup align="Left">
+                            <label align="Left">Snow:&#160;</label>
+                            <label align="Left" id="lblFcSnow7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                        </hgroup>
+                    </vgroup>
+                </vgroup>
+            </pageview>
+            <hgroup halign="Right">
+                <button id="btnFcClose">Close</button>
             </hgroup>
         </vgroup>
     </window>

@@ -3,6 +3,10 @@
 Global AppUtil = {}
 
 Function AppUtil.PrettyTimestamp(inTimestampString, timeOnly)
+    If StringUtils.IsEmpty(inTimestampString)
+        Return (StringUtils.EMPTY)
+    EndIf
+
     If IsNil(timeOnly) Then timeOnly = False
     Local result = inTimestampString
     result = StringUtils.StringReplace(result, "Z", StringUtils.EMPTY)
@@ -22,6 +26,51 @@ Function AppUtil.PrettyTimestamp(inTimestampString, timeOnly)
 EndFunction
 
 Function AppUtil.PrettyTimeOnly(inTimestampString)
+    If StringUtils.IsEmpty(inTimestampString)
+        Return (StringUtils.EMPTY)
+    EndIf
+
     Local result = AppUtil.PrettyTimestamp(inTimestampString)
     Return (StringUtils.Substring(result, 0, 6))
+EndFunction
+
+Function AppUtil.ConvertHollywoodDateStrToYMDHMS(inStr)
+    If StringUtils.IsEmpty(inStr)
+        Return (StringUtils.EMPTY)
+    EndIf
+
+    Local parts = StringUtils.StringSplit(inStr, StringUtils.DEFAULT_PAD_CHAR)
+    Local dateParts = StringUtils.StringSplit(parts[0], "-")
+
+    Local month = StringUtils.EMPTY
+    Switch dateParts[1]
+    Case "Jan":
+        month = "01"
+    Case "Feb":
+        month = "02"
+    Case "Mar":
+        month = "03"
+    Case "Apr":
+        month = "04"
+    Case "May":
+        month = "05"
+    Case "Jun":
+        month = "06"
+    Case "Jul":
+        month = "07"
+    Case "Aug":
+        month = "08"
+    Case "Sep":
+        month = "09"
+    Case "Oct":
+        month = "10"
+    Case "Nov":
+        month = "11"
+    Case "Dec":
+        month = "12"
+    EndSwitch
+
+    Local result = dateParts[2] .. month .. dateParts[0]
+    result = result .. StringUtils.DEFAULT_PAD_CHAR .. parts[1]
+    Return (result)
 EndFunction

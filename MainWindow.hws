@@ -10,6 +10,11 @@ Const #MSG_TE_LOG = "teLog"
 Const #BTN_SEL_LOC = "btnSelectLoc"
 Const #BTN_GET_WEATHER = "btnGetWeather"
 Const #BTN_FETCH = "btnFetch"
+Const #BTN_DAY_1 = "btnDay1"
+Const #BTN_DAY_2 = "btnDay2"
+Const #BTN_DAY_3 = "btnDay3"
+Const #BTN_DAY_4 = "btnDay4"
+Const #BTN_DAY_5 = "btnDay5"
 
 ; Menus
 Const #MNU_ABOUT = "mnuAbout"
@@ -57,6 +62,9 @@ Const #LBL_DAY_5_TEMPS = "lblDay5Temps"
 ; Progress bars
 Const #PB_PROGRESS = "pbProgress"
 
+; BusyBar
+Const #BB_REQ_BUSY = "bbReqBusy"
+
 ; Image boxes
 Const #IMG_COND = "imgCondition"
 Const #IMG_DAY_1_COND = "imgDay1Cond"
@@ -71,12 +79,16 @@ Const #FILE_BRUSH_DEF_ICON = "icons/weather.png"
 Const #ID_WINDOW_DEF = 1
 Const #ID_BRUSH_WEATHER_COND = 2
 
+Const #MAX_RECS_PER_DAY = 8
+
+@INCLUDE "JSONLib/JSONLib.hws"
 @INCLUDE "RQWeatherClient/RQWeatherClient.hws"
 @INCLUDE "RQWeatherClient/HTTPStatus.hws"
 @INCLUDE "RQWeatherClient/DTO/GeoDTO.hws"
 @INCLUDE "RQWeatherClient/DTO/PrecipitationDTO.hws"
 @INCLUDE "StringLib/StringUtils.hws"
 @INCLUDE "AppUtil.hws"
+@INCLUDE "ForecastDetailWindow.hws"
 @INCLUDE "Preferences.hws"
 @INCLUDE "PrefsWindow.hws"
 @INCLUDE "SelectLocationWindow.hws"
@@ -90,6 +102,8 @@ MainWindow._currentFilename = StringUtils.EMPTY
 MainWindow._prefsWindow = {}
 MainWindow._selLocWindow = {}
 MainWindow._forecast = {}
+MainWindow._busyInterval = 0
+MainWindow._detailWindow = {}
 
 Function MainWindow:_log(text)
     Local eolIndex = 0
@@ -101,7 +115,7 @@ Function MainWindow:_log(text)
     EndIf
 
     Local timestamp = GetDate() .. " " .. GetTime()
-    currentText = currentText .. "\n" .. timestamp .. " - " .. text .. "\n"
+    currentText = currentText .. timestamp .. " - " .. text .. "\n"
     moai.Set(#MSG_TE_LOG, "Text", currentText)
 
     Local pos = StringUtils.StringLength(currentText) - 1
@@ -113,6 +127,18 @@ Function MainWindow:_setProgressBar(current, maxVal)
 	If IsNil(maxVal) Then max = 0
 	moai.Set(#PB_PROGRESS, "Max", maxVal)
 	moai.Set(#PB_PROGRESS, "Level", current)
+EndFunction
+
+Function MainWindow:_startBusyAnim()
+	If self._busyInterval <> 0 Then Return ()
+	self._busyInterval = SetInterval(Nil, Function() moai.DoMethod(#BB_REQ_BUSY, "Move") EndFunction, 40)
+EndFunction
+
+Function MainWindow:_stopBusyAnim()
+	If self._busyInterval = 0 Then Return ()
+	ClearInterval(self._busyInterval)
+	moai.DoMethod(#BB_REQ_BUSY, "Reset")
+	self._busyInterval = 0
 EndFunction
 
 Function MainWindow:_reload()
@@ -200,6 +226,7 @@ Function MainWindow:_getCurrentWeather()
 		Return ()
 	EndIf
 	
+	self:_startBusyAnim()
 	RQWeatherClient.Init()
 	Local lat = self._currentLocation.latitude
 	Local lon = self._currentLocation.longitude
@@ -279,6 +306,7 @@ Function MainWindow:_getCurrentWeather()
 
 	CheckEvents()
 	RQWeatherClient.Close()
+	self:_stopBusyAnim()
 EndFunction
 
 Function MainWindow:_getForecast()
@@ -286,6 +314,7 @@ Function MainWindow:_getForecast()
 		Return ()
 	EndIf
 	
+	self:_startBusyAnim()
 	Local lat = self._currentLocation.latitude
 	Local lon = self._currentLocation.longitude
 	
@@ -334,6 +363,30 @@ Function MainWindow:_getForecast()
 	
 	CheckEvents()
 	RQWeatherClient.Close()
+	self:_stopBusyAnim()
+EndFunction
+
+Function MainWindow:_loadForecastDetailForDay(day)
+	If GetType(self._forecast) <> #TABLE Or day < 1 Or day > 5
+		Return ()
+	EndIf
+
+	Local daily = {}
+	Local i = 0
+	Local j = 0
+	Local maxIdx = ListItems(self._forecast) - 1
+	Local startIdx = (day - 1) * #MAX_RECS_PER_DAY
+	Local endIdx = startIdx + #MAX_RECS_PER_DAY - 1
+
+	If startIdx < 0 Then startIdx = 0
+	If endIdx > maxIdx Then endIdx = maxIdx
+
+	For i = startIdx To endIdx
+		j = (i - endIdx) + (#MAX_RECS_PER_DAY - 1)
+		daily[j] = self._forecast.list[i]
+	Next
+
+	self._detailWindow:Show(self._forecast.city.timezone, daily)
 EndFunction
 
 Function MainWindow:ProcessGUI(message)
@@ -352,6 +405,16 @@ Function MainWindow:ProcessGUI(message)
 				self:_getCurrentWeather()
             Case #BTN_FETCH:
 				self:_getForecast()
+			Case #BTN_DAY_1:
+				self._forecastDetailWindow = self:_loadForecastDetailForDay(1)
+			Case #BTN_DAY_2:
+				self._forecastDetailWindow = self:_loadForecastDetailForDay(2)
+			Case #BTN_DAY_3:
+				self._forecastDetailWindow = self:_loadForecastDetailForDay(3)
+			Case #BTN_DAY_4:
+				self._forecastDetailWindow = self:_loadForecastDetailForDay(4)
+			Case #BTN_DAY_5:
+				self._forecastDetailWindow = self:_loadForecastDetailForDay(5)
             EndSwitch
         EndSwitch
     Case #MSG_CLASS_MNUITM:
@@ -374,6 +437,10 @@ Function MainWindow:ProcessGUI(message)
 	
 	If self._selLocWindow.Shown
 		self._selLocWindow:DoEvents(message)
+	EndIf
+
+	If self._detailWindow.Shown
+		self._detailWindow:DoEvents(message)
 	EndIf
 EndFunction
 
@@ -436,6 +503,10 @@ Function MainWindow:Show()
 	RQWeatherClient.OnApiError = Function(errorCode, desc, inUrl, inResponse) self:_apiError(errorCode, desc, inUrl, inResponse) EndFunction
 	
 	self:_reload()
+	self:_log("CyrusBuilt RQWeatherClient Version: " .. RQWeatherClient.VERSION)
+	self:_log("CyrusBuilt StringLib Version: " .. StringUtils.VERSION)
+	self:_log("CyrusBuilt JSONLib Version: " .. JSONLib.VERSION)
+	self:_log("CyrusBuilt IconCacheLib Version: " .. IconCache.VERSION)
 	self:_log("Ready.")
 EndFunction
 
@@ -443,5 +514,6 @@ Function MainWindow:New()
 	Local instance = CopyTable(self)
 	instance._prefsWindow = PrefsWindow:New()
 	instance._selLocWindow = SelectLocationWindow:New(instance)
+	self._detailWindow = ForecastDetailWindow:New()
 	Return (instance)
 EndFunction
