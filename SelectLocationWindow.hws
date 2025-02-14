@@ -50,7 +50,6 @@ Function SelectLocationWindow:_onDropDownSelected()
 	Local value = moai.Get(#CB_SEL_LOCATION, "Value")
 	Local selected = self:_getLocationByName(value)
 	If Not IsNil(selected)
-		DebugPrint("Match found!")
 		moai.Set(#LBL_SEL_LAT, "Text", ToString(selected.latitude))
 		moai.Set(#LBL_SEL_LON, "Text", ToString(selected.longitude))
 	EndIf

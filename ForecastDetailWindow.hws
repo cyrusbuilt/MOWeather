@@ -1,7 +1,148 @@
+@INCLUDE "AppUtil.hws"
+@INCLUDE "StringLib/StringUtils.hws"
+
+Const #WIN_FORECAST_DETAIL = "winForecastDetail"
+Const #PV_FC_DETAIL = "pvDetails"
+Const #BTN_FC_CLOSE = "btnFcClose"
+
+; Tab pages
+Const #TP_FC_DETAIL_0 = "tp0"
+Const #TP_FC_DETAIL_1 = "tp1"
+Const #TP_FC_DETAIL_2 = "tp2"
+Const #TP_FC_DETAIL_3 = "tp3"
+Const #TP_FC_DETAIL_4 = "tp4"
+Const #TP_FC_DETAIL_5 = "tp5"
+Const #TP_FC_DETAIL_6 = "tp6"
+Const #TP_FC_DETAIL_7 = "tp7"
+
+; Labels
+Const #LBL_FC_COND_0 = "lblFcCondition0"
+Const #LBL_FC_TEMP_0 = "lblFcTemp0"
+Const #LBL_FC_HIGH_0 = "lblFcHigh0"
+Const #LBL_FC_LOW_0 = "lblFcLow0"
+Const #LBL_FC_HUMIDITY_0 = "lblFcHumidity0"
+Const #LBL_FC_CLOUDINESS_0 = "lblFcCloudiness0"
+Const #LBL_FC_RAIN_0 = "lblFcRain0"
+Const #LBL_FC_SNOW_0 = "lblFcSnow0"
+Const #LBL_FC_FEELS_LIKE_0 = "lblFcFeelsLike0"
+Const #LBL_FC_POP_0 = "lblFcPop0"
+Const #LBL_FC_PRESSURE_0 = "lblFcPressure0"
+Const #LBL_FC_VISIBILITY_0 = "lblFcVisibility0"
+Const #LBL_FC_WIND_0 = "lblFcWind0"
+
 Global ForecastDetailWindow = {}
 ForecastDetailWindow.Shown = False
+ForecastDetailWindow._timezone = 0
+ForecastDetailWindow._forecastData = {}
 
-Function ForecastDetailWindow:New()
+Function ForecastDetailWindow:New(f)
 	Return (CopyTable(self))
 EndFunction
 
+Function ForecastDetailWindow:_loadDetail()
+	If GetType(self._forecastData) <> #TABLE Or IsTableEmpty(self._forecastData)
+		Return ()
+	EndIf
+
+	Local index = 0
+	Local forecast = {}
+	For index = 0 To ListItems(self._forecastData) - 1
+		Local indexStr = ToString(index)
+		Local forecast = self._forecastData[index]
+		Local condition = forecast.weather[0]
+
+		Local timestamp = forecast.timestamp
+		Local tstamp = DateToTimestamp(MakeDate(timestamp))
+		tstamp = tstamp + forecast.timezone
+		
+		Local tstampStr = TimestampToDate(tstamp)
+		tstampStr = AppUtil.ConvertHollywoodDateStrToYMDHMS(tstampStr)
+		tstampStr = AppUtil.PrettyTimeOnly(tstampStr)
+		
+		Local titleId = StringUtils.Substring(#TP_FC_DETAIL_0, 0, StringUtils.StringLength(#TP_FC_DETAIL_0) - 1)
+		moai.Set(titleId .. indexStr, "Title", tstampStr)
+
+		Local condId = StringUtils.Substring(#LBL_FC_COND_0, 0, StringUtils.StringLength(#LBL_FC_COND_0) - 1)
+		moai.Set(condId .. indexStr, "Text", condition.description)
+
+		Local feelsLikeId = StringUtils.Substring(#LBL_FC_FEELS_LIKE_0, 0, StringUtils.StringLength(#LBL_FC_FEELS_LIKE_0) - 1)
+		moai.Set(feelsLikeId .. indexStr, "Text", ToString(forecast.main.feelsLike) .. "F")
+
+		Local tempId = StringUtils.Substring(#LBL_FC_TEMP_0, 0, StringUtils.StringLength(#LBL_FC_TEMP_0) - 1)
+		moai.Set(tempId .. indexStr, "Text", ToString(forecast.main.temp) .. "F")
+
+		Local popId = StringUtils.Substring(#LBL_FC_POP_0, 0, StringUtils.StringLength(#LBL_FC_POP_0) - 1)
+		moai.Set(popId .. indexStr, "Text", forecast.possibilityOfPrecipitation .. "%")
+
+		Local highId = StringUtils.Substring(#LBL_FC_HIGH_0, 0, StringUtils.StringLength(#LBL_FC_HIGH_0) - 1)
+		moai.Set(highId .. indexStr, "Text", ToString(forecast.main.tempMax) .. "F")
+
+		Local lowId = StringUtils.Substring(#LBL_FC_LOW_0, 0, StringUtils.StringLength(#LBL_FC_LOW_0) - 1)
+		moai.Set(lowId .. indexStr, "Text", ToString(forecast.main.tempMin) .. "F")
+
+		Local pressureId = StringUtils.Substring(#LBL_FC_PRESSURE_0, 0, StringUtils.StringLength(#LBL_FC_PRESSURE_0) - 1)
+		moai.Set(pressureId .. indexStr, "Text", ToString(forecast.main.pressure) .. " hPa")
+
+		Local humidityId = StringUtils.Substring(#LBL_FC_HUMIDITY_0, 0, StringUtils.StringLength(#LBL_FC_HUMIDITY_0) - 1)
+		moai.Set(humidityId .. indexStr, "Text", ToString(forecast.main.humidity) .. "%")
+
+		Local visibilityId = StringUtils.Substring(#LBL_FC_VISIBILITY_0, 0, StringUtils.StringLength(#LBL_FC_VISIBILITY_0) - 1)
+		moai.Set(visibilityId .. indexStr, "Text", ToString(forecast.visibility * 0.0006211371) .. " Miles")
+
+		If GetType(forecast.clouds) = #TABLE And Not IsTableEmpty(forecast.clouds)
+			Local cloudId = StringUtils.Substring(#LBL_FC_CLOUDINESS_0, 0, StringUtils.StringLength(#LBL_FC_CLOUDINESS_0) - 1)
+			moai.Set(cloudId .. indexStr, "Text", ToString(forecast.clouds.all) .. "%")
+		EndIf
+
+		Local label = StringUtils.EMPTY
+		If GetType(forecast.wind) = #TABLE And Not IsTableEmpty(forecast.wind)
+			Local windSpeed = forecast.wind.speed
+			Local direction = forecast.wind:ToWindDirection()
+			Local gust = forecast.wind.gust
+			Local windId = StringUtils.Substring(#LBL_FC_WIND_0, 0, StringUtils.StringLength(#LBL_FC_WIND_0) - 1)
+			label = ToString(windSpeed) .. "MPH " .. direction .. ", Gust: " .. ToString(gust) .. "MPH"
+			moai.Set(windId .. indexStr, "Text", label)
+		EndIf
+
+		Local threeHour = 0
+		If GetType(forecast.rain) = #TABLE And Not IsTableEmpty(forecast.rain)
+			threeHour = forecast.rain.threeHour / 2.54
+			Local rainId = StringUtils.Substring(#LBL_FC_RAIN_0, 0, StringUtils.StringLength(#LBL_FC_RAIN_0) - 1)
+			moai.Set(rainId .. indexStr, "Text", "Last 3 Hours: " .. ToString(threeHour) .. """")
+		EndIf
+
+		If GetType(forecast.snow) = #TABLE And Not IsTableEmpty(forecast.snow)
+			threeHour = forecast.snow.threeHour / 2.54
+			Local snowId = StringUtils.Substring(#LBL_FC_SNOW_0, 0, StringUtils.StringLength(#LBL_FC_SNOW_0) - 1)
+			moai.Set(snowId .. indexStr, "Text", "Last 3 Hours: " .. ToString(threeHour) .. """")
+		EndIf
+	Next
+EndFunction
+
+Function ForecastDetailWindow:Show(timezone, dailyForecast)
+	If IsNil(timezone) Then timezone = 0
+	If IsNil(dailyForecast) Then dailyForecast = {}
+	self._timezone = timezone
+	self._forecastData = dailyForecast
+	self:_loadDetail()
+	moai.Set(#WIN_FORECAST_DETAIL, "Open", True)
+	self.Shown = True
+EndFunction
+
+Function ForecastDetailWindow:Close()
+	moai.Set(#WIN_FORECAST_DETAIL, "Open", False)
+	self.Shown = False
+EndFunction
+
+Function ForecastDetailWindow::DoEvents(message)
+	Switch message.Class
+	Case #MSG_CLASS_BUTTON:
+		Switch message.Attribute
+		Case #MSG_ATTR_PRESSED:
+			Switch message.ID
+			Case #BTN_FC_CLOSE:
+				self:Close()
+			EndSwitch
+		EndSwitch
+	EndSwitch
+EndFunction
