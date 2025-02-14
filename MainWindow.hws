@@ -406,15 +406,15 @@ Function MainWindow:ProcessGUI(message)
             Case #BTN_FETCH:
 				self:_getForecast()
 			Case #BTN_DAY_1:
-				self._forecastDetailWindow = self:_loadForecastDetailForDay(1)
+				self:_loadForecastDetailForDay(1)
 			Case #BTN_DAY_2:
-				self._forecastDetailWindow = self:_loadForecastDetailForDay(2)
+				self:_loadForecastDetailForDay(2)
 			Case #BTN_DAY_3:
-				self._forecastDetailWindow = self:_loadForecastDetailForDay(3)
+				self:_loadForecastDetailForDay(3)
 			Case #BTN_DAY_4:
-				self._forecastDetailWindow = self:_loadForecastDetailForDay(4)
+				self:_loadForecastDetailForDay(4)
 			Case #BTN_DAY_5:
-				self._forecastDetailWindow = self:_loadForecastDetailForDay(5)
+				self:_loadForecastDetailForDay(5)
             EndSwitch
         EndSwitch
     Case #MSG_CLASS_MNUITM:
