@@ -53,9 +53,9 @@ Function ForecastDetailWindow:_loadDetail()
 
 		Local timestamp = forecast.timestamp
 		Local tstamp = DateToTimestamp(MakeDate(timestamp))
-		tstamp = tstamp + forecast.timezone
+		tstamp = tstamp + self._timezone
 		
-		Local tstampStr = TimestampToDate(tstamp)
+		Local tstampStr = TimestampToDate(tstamp, True)
 		tstampStr = AppUtil.ConvertHollywoodDateStrToYMDHMS(tstampStr)
 		tstampStr = AppUtil.PrettyTimeOnly(tstampStr)
 		
@@ -94,27 +94,27 @@ Function ForecastDetailWindow:_loadDetail()
 			moai.Set(cloudId .. indexStr, "Text", ToString(forecast.clouds.all) .. "%")
 		EndIf
 
-		Local label = StringUtils.EMPTY
+		Local theLabel = StringUtils.EMPTY
 		If GetType(forecast.wind) = #TABLE And Not IsTableEmpty(forecast.wind)
 			Local windSpeed = forecast.wind.speed
 			Local direction = forecast.wind:ToWindDirection()
 			Local gust = forecast.wind.gust
 			Local windId = StringUtils.Substring(#LBL_FC_WIND_0, 0, StringUtils.StringLength(#LBL_FC_WIND_0) - 1)
-			label = ToString(windSpeed) .. "MPH " .. direction .. ", Gust: " .. ToString(gust) .. "MPH"
-			moai.Set(windId .. indexStr, "Text", label)
+			theLabel = ToString(windSpeed) .. "MPH " .. direction .. ", Gust: " .. ToString(gust) .. "MPH"
+			moai.Set(windId .. indexStr, "Text", theLabel)
 		EndIf
 
 		Local threeHour = 0
 		If GetType(forecast.rain) = #TABLE And Not IsTableEmpty(forecast.rain)
 			threeHour = forecast.rain.threeHour / 2.54
 			Local rainId = StringUtils.Substring(#LBL_FC_RAIN_0, 0, StringUtils.StringLength(#LBL_FC_RAIN_0) - 1)
-			moai.Set(rainId .. indexStr, "Text", "Last 3 Hours: " .. ToString(threeHour) .. """")
+			moai.Set(rainId .. indexStr, "Text", "Last 3 Hours: " .. ToString(threeHour) .. Chr(34))
 		EndIf
 
 		If GetType(forecast.snow) = #TABLE And Not IsTableEmpty(forecast.snow)
 			threeHour = forecast.snow.threeHour / 2.54
 			Local snowId = StringUtils.Substring(#LBL_FC_SNOW_0, 0, StringUtils.StringLength(#LBL_FC_SNOW_0) - 1)
-			moai.Set(snowId .. indexStr, "Text", "Last 3 Hours: " .. ToString(threeHour) .. """")
+			moai.Set(snowId .. indexStr, "Text", "Last 3 Hours: " .. ToString(threeHour).. Chr(34))
 		EndIf
 	Next
 EndFunction
@@ -134,7 +134,7 @@ Function ForecastDetailWindow:Close()
 	self.Shown = False
 EndFunction
 
-Function ForecastDetailWindow::DoEvents(message)
+Function ForecastDetailWindow:DoEvents(message)
 	Switch message.Class
 	Case #MSG_CLASS_BUTTON:
 		Switch message.Attribute

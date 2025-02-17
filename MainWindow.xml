@@ -243,7 +243,7 @@
                             <label align="Left">High:&#160;</label>
                             <label align="Left" id="lblFcHigh0">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             <label align="Left">Low:&#160;</label>
-                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left" id="lblFcLow0">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">Humidity:&#160;</label>
@@ -257,14 +257,14 @@
                             <label align="Left">Rain:&#160;</label>
                             <label align="Left" id="lblFcRain0">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                    <vgroup>
+                    </vgroup>
                     <vspace/>
                     <vgroup halign="Left">
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Feels Like:&#160;</label>
                             <label align="Left" id="lblFcFeelsLike0">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Possibility of Precipitation:&#160;</label>
                             <label align="Left" id="lblFcPop0">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -280,7 +280,7 @@
                             <label align="Left">Wind:&#160;</label>
                             <label align="Left" id="lblFcWind0">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Snow:&#160;</label>
                             <label align="Left" id="lblFcSnow0">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -293,14 +293,14 @@
                             <label align="Left" id="lblFcCondition1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
-                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left">Temp:&#160;</label>
                             <label align="Left" id="lblFcTemp1">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">High:&#160;</label>
                             <label align="Left" id="lblFcHigh1">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             <label align="Left">Low:&#160;</label>
-                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left" id="lblFcLow1">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">Humidity:&#160;</label>
@@ -314,14 +314,14 @@
                             <label align="Left">Rain:&#160;</label>
                             <label align="Left" id="lblFcRain1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                    <vgroup>
+                    </vgroup>
                     <vspace/>
                     <vgroup halign="Left">
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Feels Like:&#160;</label>
                             <label align="Left" id="lblFcFeelsLike1">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Possibility of Precipitation:&#160;</label>
                             <label align="Left" id="lblFcPop1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -337,7 +337,7 @@
                             <label align="Left">Wind:&#160;</label>
                             <label align="Left" id="lblFcWind1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Snow:&#160;</label>
                             <label align="Left" id="lblFcSnow1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -350,14 +350,14 @@
                             <label align="Left" id="lblFcCondition2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
-                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left">Temp:&#160;</label>
                             <label align="Left" id="lblFcTemp2">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">High:&#160;</label>
                             <label align="Left" id="lblFcHigh2">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             <label align="Left">Low:&#160;</label>
-                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left" id="lblFcLow2">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">Humidity:&#160;</label>
@@ -371,14 +371,14 @@
                             <label align="Left">Rain:&#160;</label>
                             <label align="Left" id="lblFcRain2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                    <vgroup>
+                    </vgroup>
                     <vspace/>
                     <vgroup halign="Left">
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Feels Like:&#160;</label>
                             <label align="Left" id="lblFcFeelsLike2">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Possibility of Precipitation:&#160;</label>
                             <label align="Left" id="lblFcPop2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -394,7 +394,7 @@
                             <label align="Left">Wind:&#160;</label>
                             <label align="Left" id="lblFcWind2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Snow:&#160;</label>
                             <label align="Left" id="lblFcSnow2">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -407,14 +407,14 @@
                             <label align="Left" id="lblFcCondition3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
-                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left">Temp:&#160;</label>
                             <label align="Left" id="lblFcTemp3">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">High:&#160;</label>
                             <label align="Left" id="lblFcHigh3">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             <label align="Left">Low:&#160;</label>
-                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left" id="lblFcLow3">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">Humidity:&#160;</label>
@@ -428,14 +428,14 @@
                             <label align="Left">Rain:&#160;</label>
                             <label align="Left" id="lblFcRain3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                    <vgroup>
+                    </vgroup>
                     <vspace/>
                     <vgroup halign="Left">
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Feels Like:&#160;</label>
                             <label align="Left" id="lblFcFeelsLike3">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Possibility of Precipitation:&#160;</label>
                             <label align="Left" id="lblFcPop3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -451,7 +451,7 @@
                             <label align="Left">Wind:&#160;</label>
                             <label align="Left" id="lblFcWind3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Snow:&#160;</label>
                             <label align="Left" id="lblFcSnow3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -464,14 +464,14 @@
                             <label align="Left" id="lblFcCondition4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
-                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left">Temp:&#160;</label>
                             <label align="Left" id="lblFcTemp4">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">High:&#160;</label>
                             <label align="Left" id="lblFcHigh4">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             <label align="Left">Low:&#160;</label>
-                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left" id="lblFcLow4">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">Humidity:&#160;</label>
@@ -485,14 +485,14 @@
                             <label align="Left">Rain:&#160;</label>
                             <label align="Left" id="lblFcRain4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                    <vgroup>
+                    </vgroup>
                     <vspace/>
                     <vgroup halign="Left">
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Feels Like:&#160;</label>
                             <label align="Left" id="lblFcFeelsLike4">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Possibility of Precipitation:&#160;</label>
                             <label align="Left" id="lblFcPop4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -508,7 +508,7 @@
                             <label align="Left">Wind:&#160;</label>
                             <label align="Left" id="lblFcWind4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Snow:&#160;</label>
                             <label align="Left" id="lblFcSnow4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -528,7 +528,7 @@
                             <label align="Left">High:&#160;</label>
                             <label align="Left" id="lblFcHigh5">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             <label align="Left">Low:&#160;</label>
-                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left" id="lblFcLow5">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">Humidity:&#160;</label>
@@ -542,14 +542,14 @@
                             <label align="Left">Rain:&#160;</label>
                             <label align="Left" id="lblFcRain5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                    <vgroup>
+                    </vgroup>
                     <vspace/>
                     <vgroup halign="Left">
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Feels Like:&#160;</label>
                             <label align="Left" id="lblFcFeelsLike5">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Possibility of Precipitation:&#160;</label>
                             <label align="Left" id="lblFcPop5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -565,7 +565,7 @@
                             <label align="Left">Wind:&#160;</label>
                             <label align="Left" id="lblFcWind5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Snow:&#160;</label>
                             <label align="Left" id="lblFcSnow5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -578,14 +578,14 @@
                             <label align="Left" id="lblFcCondition6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
-                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left">Temp:&#160;</label>
                             <label align="Left" id="lblFcTemp6">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">High:&#160;</label>
                             <label align="Left" id="lblFcHigh6">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             <label align="Left">Low:&#160;</label>
-                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left" id="lblFcLow6">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">Humidity:&#160;</label>
@@ -599,14 +599,14 @@
                             <label align="Left">Rain:&#160;</label>
                             <label align="Left" id="lblFcRain6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                    <vgroup>
+                    </vgroup>
                     <vspace/>
                     <vgroup halign="Left">
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Feels Like:&#160;</label>
                             <label align="Left" id="lblFcFeelsLike6">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Possibility of Precipitation:&#160;</label>
                             <label align="Left" id="lblFcPop6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -622,7 +622,7 @@
                             <label align="Left">Wind:&#160;</label>
                             <label align="Left" id="lblFcWind6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Snow:&#160;</label>
                             <label align="Left" id="lblFcSnow6">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -635,14 +635,14 @@
                             <label align="Left" id="lblFcCondition7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
-                         <label align="Left">Temp:&#160;</label>
+                            <label align="Left">Temp:&#160;</label>
                             <label align="Left" id="lblFcTemp7">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">High:&#160;</label>
                             <label align="Left" id="lblFcHigh7">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                             <label align="Left">Low:&#160;</label>
-                            <label align="Left">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
+                            <label align="Left" id="lblFcLow7">0F&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
                         <hgroup halign="Left">
                             <label align="Left">Humidity:&#160;</label>
@@ -656,14 +656,14 @@
                             <label align="Left">Rain:&#160;</label>
                             <label align="Left" id="lblFcRain7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                    <vgroup>
+                    </vgroup>
                     <vspace/>
                     <vgroup halign="Left">
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Feels Like:&#160;</label>
                             <label align="Left" id="lblFcFeelsLike7">0F&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Possibility of Precipitation:&#160;</label>
                             <label align="Left" id="lblFcPop7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
@@ -679,7 +679,7 @@
                             <label align="Left">Wind:&#160;</label>
                             <label align="Left" id="lblFcWind7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
-                        <hgroup align="Left">
+                        <hgroup halign="Left">
                             <label align="Left">Snow:&#160;</label>
                             <label align="Left" id="lblFcSnow7">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</label>
                         </hgroup>
