@@ -130,12 +130,12 @@ Function MainWindow:_setProgressBar(current, maxVal)
 EndFunction
 
 Function MainWindow:_startBusyAnim()
-	If self._busyInterval <> 0 Then Return ()
+	If GetType(self._busyInterval) = #LIGHTUSERDATA Then Return ()
 	self._busyInterval = SetInterval(Nil, Function() moai.DoMethod(#BB_REQ_BUSY, "Move") EndFunction, 40)
 EndFunction
 
 Function MainWindow:_stopBusyAnim()
-	If self._busyInterval = 0 Then Return ()
+	If GetType(self._busyInterval) <> #LIGHTUSERDATA Then Return ()
 	ClearInterval(self._busyInterval)
 	moai.DoMethod(#BB_REQ_BUSY, "Reset")
 	self._busyInterval = 0
@@ -181,12 +181,12 @@ EndFunction
 
 Function MainWindow:_populateImage(expectedFileName, fileNameActual)
 	If expectedFileName = self._currentFilename
-		Local id = Rnd(50)
 		Local absPath = CanonizePath(fileNameActual)
 		If Not Exists(absPath)
 			Return ()
 		EndIf
 		
+		Local id = self._imageIndex + 2
 		LoadBrush(id, absPath)
 		Switch self._imageIndex
 		Case 0:
@@ -243,7 +243,7 @@ Function MainWindow:_getCurrentWeather()
 		Local timestamp = currentWeather.timestamp
 		Local tstamp = DateToTimestamp(MakeDate(timestamp))
 		tstamp = tstamp + currentWeather.timezone
-		Local tstampStr = TimestampToDate(tstamp)
+		Local tstampStr = TimestampToDate(tstamp, True)
 
 		; Display current conditions
 		moai.Set(#LBL_RIGHT_NOW, "Text", condition.description .. " as of " .. tstampStr)
@@ -281,7 +281,7 @@ Function MainWindow:_getCurrentWeather()
 		EndIf
 
 		; Display snow data if present
-		If GetType(currentWeather.snow) = #table
+		If GetType(currentWeather.snow) = #TABLE
 			If HaveItem(currentWeather.snow, #K_P_ONE_HOUR_KEY) And HaveItem(currentWeather.snow, #K_P_THREE_HOUR_KEY)
 				oneHour = currentWeather.snow.oneHour / 25.4
 				threeHour = currentWeather.snow.threeHour / 25.4
@@ -293,14 +293,14 @@ Function MainWindow:_getCurrentWeather()
 		timestamp = currentWeather.system.sunrise
 		tstamp = DateToTimestamp(MakeDate(timestamp))
 		tstamp = tstamp + currentWeather.timezone
-		Local sunrise = TimestampToDate(tstamp)
+		Local sunrise = TimestampToDate(tstamp, True)
 		moai.Set(#LBL_SUNRISE, "Text", sunrise)
 
 		; Compute and display sunset timestamp adjusted for timezone
 		timestamp = currentWeather.system.sunset
 		tstamp = DateToTimestamp(MakeDate(timestamp))
 		tstamp = tstamp + currentWeather.timezone
-		Local sunset = TimestampToDate(tstamp)
+		Local sunset = TimestampToDate(tstamp, True)
 		moai.Set(#LBL_SUNSET, "Text", sunset)
 	EndIf
 
@@ -322,48 +322,49 @@ Function MainWindow:_getForecast()
 	Local forecast = RQWeatherClient.GetForecast(lat, lon)
 	If forecast.code = #HTTPStatus_STATUS_200_OK
 		self._forecast = forecast
-		DebugPrint("DEBUG: forecast data: " .. SerializeTable(self._forecast))
 		Local n, i = NextItem(forecast.aggregates)
-		While GetType(n) <> #NIL
-			self._imageIndex = i.dayNum
-			self:_loadImageFromCacheOrSource(i.icon)
+		While GetType(n) <> #nil
+			If i.dayNum < 6
+				self._imageIndex = i.dayNum
+				self:_loadImageFromCacheOrSource(i.icon)
 			
-			Local dayLabel = StringUtils.EMPTY
-			Local conLabel = StringUtils.EMPTY
-			Local tempLabel = StringUtils.EMPTY
-			Switch i.dayNum
-			Case 1:
-				dayLabel = #LBL_DAY_1
-				conLabel = #LBL_DAY_1_COND
-				tempLabel = #LBL_DAY_1_TEMPS
-			Case 2:
-				dayLabel = #LBL_DAY_2
-				conLabel = #LBL_DAY_2_COND
-				tempLabel = #LBL_DAY_2_TEMPS
-			Case 3:
-				dayLabel = #LBL_DAY_3
-				conLabel = #LBL_DAY_3_COND
-				tempLabel = #LBL_DAY_3_TEMPS
-			Case 4:
-				dayLabel = #LBL_DAY_4
-				conLabel = #LBL_DAY_4_COND
-				tempLabel = #LBL_DAY_4_TEMPS
-			Case 5:
-				dayLabel = #LBL_DAY_5
-				conLabel = #LBL_DAY_5_COND
-				tempLabel = #LBL_DAY_5_TEMPS
-			EndSwitch
+				Local dayLabel = StringUtils.EMPTY
+				Local conLabel = StringUtils.EMPTY
+				Local tempLabel = StringUtils.EMPTY
+				Switch i.dayNum
+				Case 1:
+					dayLabel = #LBL_DAY_1
+					conLabel = #LBL_DAY_1_COND
+					tempLabel = #LBL_DAY_1_TEMPS
+				Case 2:
+					dayLabel = #LBL_DAY_2
+					conLabel = #LBL_DAY_2_COND
+					tempLabel = #LBL_DAY_2_TEMPS
+				Case 3:
+					dayLabel = #LBL_DAY_3
+					conLabel = #LBL_DAY_3_COND
+					tempLabel = #LBL_DAY_3_TEMPS
+				Case 4:
+					dayLabel = #LBL_DAY_4
+					conLabel = #LBL_DAY_4_COND
+					tempLabel = #LBL_DAY_4_TEMPS
+				Case 5:
+					dayLabel = #LBL_DAY_5
+					conLabel = #LBL_DAY_5_COND
+					tempLabel = #LBL_DAY_5_TEMPS
+				EndSwitch
 			
-			moai.Set(dayLabel, "Text", i.dateString)
-			moai.Set(conLabel, "Text", i.weatherType)
-			moai.Set(tempLabel, "Text", "Hi: " .. ToString(i.tempHigh) .. " Lo " .. ToString(i.tempLow))
+				moai.Set(dayLabel, "Text", i.dateString)
+				moai.Set(conLabel, "Text", i.weatherType)
+				moai.Set(tempLabel, "Text", "Hi: " .. ToString(i.tempHigh) .. " Lo " .. ToString(i.tempLow))
+			EndIf
 			n, i = NextItem(forecast.aggregates, n)
 		Wend
 	EndIf
 	
-	CheckEvents()
 	RQWeatherClient.Close()
 	self:_stopBusyAnim()
+	CheckEvents()
 EndFunction
 
 Function MainWindow:_loadForecastDetailForDay(day)
@@ -374,7 +375,7 @@ Function MainWindow:_loadForecastDetailForDay(day)
 	Local daily = {}
 	Local i = 0
 	Local j = 0
-	Local maxIdx = ListItems(self._forecast) - 1
+	Local maxIdx = ListItems(self._forecast.list) - 1
 	Local startIdx = (day - 1) * #MAX_RECS_PER_DAY
 	Local endIdx = startIdx + #MAX_RECS_PER_DAY - 1
 
@@ -514,6 +515,6 @@ Function MainWindow:New()
 	Local instance = CopyTable(self)
 	instance._prefsWindow = PrefsWindow:New()
 	instance._selLocWindow = SelectLocationWindow:New(instance)
-	self._detailWindow = ForecastDetailWindow:New()
+	instance._detailWindow = ForecastDetailWindow:New()
 	Return (instance)
 EndFunction

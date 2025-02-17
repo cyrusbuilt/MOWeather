@@ -81,6 +81,10 @@
             <Option objcincludes="-I/SDK/Frameworks/include"/>
             <Option objcdefines=""/>
         </CompilerSettings>
+        <FileUnit filepath="AppUtil.hws">
+            <Option inproject="1"/>
+            <Option filetype="16"/>
+        </FileUnit>
         <FileUnit filepath="RQWeatherClient/DTO/CityDTO.hws">
             <Option inproject="1"/>
             <Option filetype="16"/>

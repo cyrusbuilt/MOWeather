@@ -190,7 +190,6 @@ Function RQWeatherClient._preflight(inUrl, inTimeout)
     Local rawStr = RQWeatherClient._recvBuffer
     If StringUtils.IsEmpty(rawStr)
         desc = "No response from server"
-		DebugPrint("DEBUG: preflight: " .. desc)
         RQWeatherClient.LastHttpStatus = #HTTPStatus_STATUS_NEG_1_SOCKET_TIMEOUT
         RQWeatherClient._eventApiError(RQWeatherClient.LastHttpStatus, desc, inUrl, rawStr)
         Return (False)
@@ -203,8 +202,6 @@ Function RQWeatherClient._preflight(inUrl, inTimeout)
     If RQWeatherClient.LastHttpStatus >= #HTTPStatus_STATUS_400_BAD_REQUEST
         isError = True
     EndIf
-	
-	DebugPrint("DEBUG: preflight: last status: " .. ToString(RQWeatherClient.LastHttpStatus))
 
     If isError
         RQWeatherClient._eventApiError(RQWeatherClient.LastHttpStatus, desc, inUrl, rawStr)

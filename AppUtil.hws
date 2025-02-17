@@ -11,7 +11,13 @@ Function AppUtil.PrettyTimestamp(inTimestampString, timeOnly)
     Local result = inTimestampString
     result = StringUtils.StringReplace(result, "Z", StringUtils.EMPTY)
 
-    Local tsParts = StringUtils.StringSplit(result, "T")
+    Local tsParts = {}
+	If StringUtils.Contains("T")
+		tsParts = StringUtils.StringSplit(result, "T")
+	Else
+		tsParts = StringUtils.StringSplit(result, StringUtils.DEFAULT_PAD_CHAR)
+	EndIf
+	
     Local dateParts = StringUtils.StringSplit(tsParts[0], "-")
     Local timePart = tsParts[1]
 
@@ -30,8 +36,8 @@ Function AppUtil.PrettyTimeOnly(inTimestampString)
         Return (StringUtils.EMPTY)
     EndIf
 
-    Local result = AppUtil.PrettyTimestamp(inTimestampString)
-    Return (StringUtils.Substring(result, 0, 6))
+    Local result = AppUtil.PrettyTimestamp(inTimestampString, True)
+    Return (StringUtils.Substring(result, 0, 8))
 EndFunction
 
 Function AppUtil.ConvertHollywoodDateStrToYMDHMS(inStr)
@@ -70,7 +76,7 @@ Function AppUtil.ConvertHollywoodDateStrToYMDHMS(inStr)
         month = "12"
     EndSwitch
 
-    Local result = dateParts[2] .. month .. dateParts[0]
+    Local result = dateParts[2] .. "-" .. month .. "-" .. dateParts[0]
     result = result .. StringUtils.DEFAULT_PAD_CHAR .. parts[1]
     Return (result)
 EndFunction
