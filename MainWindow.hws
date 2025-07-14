@@ -368,7 +368,7 @@ Function MainWindow:_getForecast()
 EndFunction
 
 Function MainWindow:_loadForecastDetailForDay(day)
-	If GetType(self._forecast) <> #TABLE Or day < 1 Or day > 5
+	If GetType(self._forecast) <> #TABLE Or Not HaveItem(self._forecast, "list") Or day < 1 Or day > 5
 		Return ()
 	EndIf
 

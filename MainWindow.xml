@@ -226,7 +226,7 @@
             </hgroup>
         </vgroup>
     </window>
-    <window id="winForecastDetail" title="Forecast Detail" open="False">
+    <window id="winForecastDetail" title="Forecast Detail" open="False" closeGadget="False">
         <vgroup>
             <pageview id="pvDetails" mode="Tabs" position="Top">
                 <vgroup id="tp0" title="Tab 0">
